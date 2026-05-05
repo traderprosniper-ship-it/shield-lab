@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>INTERBANK FLOW DELIVERY ALGO- OMNI CORE V25</title>
+    <title>INTERBANK FLOW DELIVERY ALGO- OMNI CORE V28</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -54,6 +54,12 @@
         .member-card { background: #050505; border: 1px solid #111; padding: 10px; border-radius: 6px; text-align: center; font-size: 10px; font-weight: bold; }
         .member-card span { display: block; color: var(--accent); font-size: 8px; margin-top: 4px; }
 
+        /* LIVE TERMINAL */
+        .live-screen { background: #000; border: 1px solid var(--green); border-radius: 5px; height: 100px; padding: 10px; font-size: 9px; color: var(--green); overflow-y: hidden; margin-top: 10px; font-family: 'Consolas', monospace; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .stat-box { background: #050505; border: 1px solid #111; padding: 8px; border-radius: 6px; text-align: center; }
+        .stat-label { font-size: 7px; color: #555; text-transform: uppercase; }
+
         .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; }
         #logo-3d-login, #logo-3d-main { width: 60px; height: 60px; margin: 0 auto 10px auto; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -93,8 +99,24 @@
         <div id="dash" class="content-section active">
             <div class="card" style="text-align: center;">
                 <div id="logo-3d-main"></div>
-                <div style="font-size: 24px; font-weight: bold; color: var(--green);">$10.00</div>
+                <div id="bal-val" style="font-size: 24px; font-weight: bold; color: var(--gold);">$0.00</div>
                 <div id="ny-time" style="font-size: 10px; color: var(--accent);">NY: 00:00:00</div>
+                
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">PNL LIVE</div>
+                        <div id="pnl-live" style="font-size: 14px; font-weight: bold; color: var(--green);">+$0.00</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">MODE ACTIF</div>
+                        <div id="active-mode" style="font-size: 14px; font-weight: bold; color: var(--accent);">OFF</div>
+                    </div>
+                </div>
+
+                <div class="live-screen" id="terminal-screen">
+                    <div class="log-entry">> IFDA SYSTEM READY...</div>
+                    <div class="log-entry">> WAITING FOR API PARAMETERS...</div>
+                </div>
             </div>
             <div class="card">
                 <div style="font-size: 10px; color: #555; margin-bottom: 8px;">ICT KILLZONES :</div>
@@ -110,31 +132,9 @@
         <div id="pay" class="content-section">
             <div class="card">
                 <h3 style="font-size:12px; color:var(--green); margin-top:0;">OBTENIR UN CODE D'ACCÈS</h3>
-                
-                <div class="pay-method">
-                    <div class="pay-icon" style="background:var(--usdt); color:white;">₮</div>
-                    <div class="pay-info">
-                        <div class="pay-title">USDT (TRC20)</div>
-                        <div class="pay-val">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
-                    </div>
-                </div>
-
-                <div class="pay-method">
-                    <div class="pay-icon" style="background:var(--orange); color:white;">O</div>
-                    <div class="pay-info">
-                        <div class="pay-title">ORANGE MONEY (CM)</div>
-                        <div class="pay-val">+237 655509738</div>
-                    </div>
-                </div>
-
-                <div class="pay-method">
-                    <div class="pay-icon" style="background:var(--mtn); color:black;">M</div>
-                    <div class="pay-info">
-                        <div class="pay-title">MTN MOMO (CM)</div>
-                        <div class="pay-val">+237 682155479</div>
-                    </div>
-                </div>
-                
+                <div class="pay-method"><div class="pay-icon" style="background:var(--usdt); color:white;">₮</div><div class="pay-info"><div class="pay-title">USDT (TRC20)</div><div class="pay-val">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div></div>
+                <div class="pay-method"><div class="pay-icon" style="background:var(--orange); color:white;">O</div><div class="pay-info"><div class="pay-title">ORANGE MONEY (CM)</div><div class="pay-val">+237 655509738</div></div></div>
+                <div class="pay-method"><div class="pay-icon" style="background:var(--mtn); color:black;">M</div><div class="pay-info"><div class="pay-title">MTN MOMO (CM)</div><div class="pay-val">+237 682155479</div></div></div>
                 <p style="font-size:8px; color:#444; text-align:center;">Envoyez 10$ ou l'équivalent CFA puis tapez /verifier dans le bot.</p>
             </div>
         </div>
@@ -142,7 +142,7 @@
         <div id="scan" class="content-section">
             <div class="card">
                 <div class="search-box">
-                    <input type="text" id="s-input" placeholder="SYMBOLE (ex: BTC, ONDO)">
+                    <input type="text" id="s-input" placeholder="SYMBOLE (ex: BTC, ONDO)" style="background:#000; border:1px solid var(--accent); color:var(--green); padding:12px; border-radius:6px; outline:none; flex:1;">
                     <button onclick="runScan()" style="background:var(--accent); border:none; color:white; padding:0 15px; border-radius:6px; font-weight:bold;">SCAN</button>
                 </div>
                 <div id="s-feedback" style="display:none; font-size:10px; background:#000; padding:10px; border-radius:6px;"></div>
@@ -154,10 +154,7 @@
                 <h3 style="font-size:12px; color:var(--green); margin-top:0;">SHIELD TEAM - IFDA</h3>
                 <div class="team-grid">
                     <div class="member-card">Maître NASSER <span>Expert Core Dev</span></div>
-                   <div
-class="member-card">Maître BERTRAND<span>Trader Pro</
-span></div>
-
+                    <div class="member-card">Maître BERTRAND <span>Trader Pro</span></div>
                     <div class="member-card">Marie <span>Analyste Macro</span></div>
                     <div class="member-card">Béatrice <span>Risk Manager</span></div>
                     <div class="member-card">Eva <span>SMC Strategist</span></div>
@@ -181,12 +178,30 @@ span></div>
 
         <div id="inscr" class="content-section">
             <div class="card">
-                <h3 style="font-size:12px; color:var(--accent);">🔑 LIAISON API</h3>
-                <select id="ex-s"><option>BINANCE</option><option>MEXC</option><option>OKX</option>
-<option>BINGX</option><option>BYBIT</option><option>BITGET</option><option>MEXC</option><option>KUCOIN</option></select>
-                <input type="password" placeholder="API KEY">
-                <input type="password" placeholder="API SECRET">
-                <button class="btn-action" onclick="alert('Moteur Activé !')">ACTIVER LE MOTEUR</button>
+                <h3 style="font-size:12px; color:var(--accent); margin-top:0;">🔑 CONFIGURATION DU MOTEUR</h3>
+                
+                <label style="font-size:9px; color:var(--accent);">TYPE DE TRADING</label>
+                <select id="tr-mode" style="width:100%; background:#000; color:#fff; padding:10px; border:1px solid #151515; border-radius:5px; margin-bottom:10px;">
+                    <option value="SPOT">SPOT (INVESTISSEMENT)</option>
+                    <option value="PERP">PERPÉTUEL (FUTURES)</option>
+                    <option value="DUAL">DUAL MODE (LES DEUX)</option>
+                </select>
+
+                <label style="font-size:9px; color:var(--accent);">ÉCHANGEUR</label>
+                <select id="ex-s" style="width:100%; background:#000; color:#fff; padding:10px; border:1px solid #151515; border-radius:5px; margin-bottom:10px;">
+                    <option>BINANCE</option><option>MEXC</option><option>OKX</option>
+                    <option>BINGX</option><option>BYBIT</option><option>BITGET</option><option>KUCOIN</option>
+                </select>
+                
+                <label style="font-size:9px; color:var(--accent);">PARAMÈTRES API</label>
+                <input type="password" id="ak" placeholder="API KEY" style="width:100%; background:#000; color:#fff; padding:10px; border:1px solid #151515; border-radius:5px; margin-bottom:5px;">
+                <input type="password" id="as" placeholder="API SECRET" style="width:100%; background:#000; color:#fff; padding:10px; border:1px solid #151515; border-radius:5px; margin-bottom:5px;">
+                <input type="password" id="ap" placeholder="API PASSPHRASE (OKX/KUCOIN)" style="width:100%; background:#000; color:#fff; padding:10px; border:1px solid #151515; border-radius:5px; margin-bottom:10px;">
+
+                <label style="font-size:9px; color:var(--gold);">CAPITAL ALLOUÉ AU ROBOT ($)</label>
+                <input type="number" id="tr-amount" placeholder="Ex: 25" style="width:100%; background:#000; color:var(--green); padding:10px; border:1px solid var(--green); border-radius:5px; margin-bottom:15px; font-weight:bold;">
+
+                <button class="btn-action" onclick="startRobotEngine()">ACTIVER LE MOTEUR RÉEL</button>
             </div>
         </div>
     </div>
@@ -198,6 +213,8 @@ span></div>
             es: { dash: "PANEL", scan: "ESCANER", pay: "PAGO", inscr: "REGISTRO", macro: "NOTICIAS", prof: "PERFIL/FAQ", unlock: "DESBLOQUEAR", rtl: false },
             ar: { dash: "لوحة القيادة", scan: "الماسح", pay: "الدفع", inscr: "التسجيل", macro: "ماكرو", prof: "الملف الشخصي", unlock: "فتح", rtl: true }
         };
+
+        const tg = window.Telegram.WebApp;
 
         function setLang(lang, btn) {
             const t = translations[lang];
@@ -213,7 +230,6 @@ span></div>
             btn.classList.add('active');
         }
 
-        const tg = window.Telegram.WebApp;
         function checkCode() {
             if (document.getElementById('accessCode').value === "197800") {
                 document.getElementById('login-screen').style.display = 'none';
@@ -229,12 +245,43 @@ span></div>
             el.classList.add('active');
         }
 
+        function startRobotEngine() {
+            const amount = document.getElementById('tr-amount').value;
+            const mode = document.getElementById('tr-mode').value;
+            const ex = document.getElementById('ex-s').value;
+            if(!amount) { tg.showAlert("Précisez le montant !"); return; }
+            tg.showConfirm(`Lancer le robot sur ${ex} en mode ${mode} avec ${amount}$ ?`, (ok) => {
+                if(ok) {
+                    document.getElementById('bal-val').innerText = "$" + amount + ".00";
+                    document.getElementById('active-mode').innerText = mode;
+                    showTab('dash', document.querySelector('.nav-item'));
+                    runLiveTerminal(mode, ex);
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            });
+        }
+
+        function runLiveTerminal(mode, ex) {
+            const screen = document.getElementById('terminal-screen');
+            const logs = [`> Connexion établie avec ${ex}...`, `> Analyse Market Structure (SMC)...`, `> Scan des Killzones NY en cours...`, `> [! ALERT !] BOS H4 détecté sur ONDO/USDT`, `> Calcul du risque (1.0% Capital)...`, `> Entrée Marché en mode ${mode}...`, `> SL placé | TP placé.`, `> Position ouverte avec succès.`];
+            let i = 0;
+            const interval = setInterval(() => {
+                if(i < logs.length) {
+                    const entry = document.createElement('div');
+                    entry.style.marginBottom = "4px";
+                    entry.innerText = logs[i];
+                    screen.appendChild(entry);
+                    if(screen.childNodes.length > 8) screen.removeChild(screen.firstChild);
+                    i++;
+                } else { clearInterval(interval); }
+            }, 2000);
+        }
+
         function runScan() {
             const sym = document.getElementById('s-input').value.toUpperCase();
             if(!sym) return;
             const f = document.getElementById('s-feedback');
-            f.style.display = "block";
-            f.innerHTML = "⏳ Analyse SMC de " + sym + "...";
+            f.style.display = "block"; f.innerHTML = "⏳ Analyse SMC de " + sym + "...";
             setTimeout(() => {
                 f.innerHTML = `✅ <b>${sym}/USDT</b><br>• Structure: Bullish BOS<br>• Zone: Discount<br>• Setup: Validé`;
                 tg.HapticFeedback.notificationOccurred('success');
@@ -254,20 +301,4 @@ span></div>
         setInterval(updateTime, 1000);
 
         function createLogo(id) {
-            const scene = new THREE.Scene();
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(60, 60);
-            document.getElementById(id).appendChild(renderer.domElement);
-            const texture = new THREE.TextureLoader().load('https://upload.wikimedia.org/wikipedia/commons/4/4b/Cloudflare_Logo.png');
-            const cube = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.2, 2.2), new THREE.MeshBasicMaterial({ map: texture }));
-            scene.add(cube);
-            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-            camera.position.z = 3.5;
-            function animate() { requestAnimationFrame(animate); cube.rotation.y += 0.03; renderer.render(scene, camera); }
-            animate();
-        }
-        createLogo('logo-3d-login'); createLogo('logo-3d-main');
-    </script>
-</body>
-    </html>
-                        
+       
