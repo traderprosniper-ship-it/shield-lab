@@ -226,15 +226,56 @@
     // 2. MÉMOIRE DU DASHBOARD (TES DONNÉES NE S'EFFACENT PLUS)
     window.onload = function() {
         if(localStorage.getItem('shield_active') === 'true') {
+<script>
+    const tg = window.Telegram.WebApp; 
+    tg.expand();
+
+    // --- 1. TRADUCTIONS (5 LANGUES) ---
+    const translations = {
+        fr: { login: "IFDA ENGINE ACCESS", unlock: "DÉVERROUILLER LE LABO", dash: "DASHBOARD", scan: "SCANNER", inscr: "INSCRIPTION", cap: "SMC CAPITAL ALLOCATION", status: "STATUS", engine: "LANCER LE BOUCLIER", faq: "❓ FAQ STRATÉGIQUE" },
+        en: { login: "IFDA ACCESS", unlock: "UNLOCK LAB", dash: "DASHBOARD", scan: "SCANNER", inscr: "REGISTRATION", cap: "SMC CAPITAL ALLOCATION", status: "STATUS", engine: "LAUNCH SHIELD", faq: "❓ STRATEGIC FAQ" },
+        de: { login: "IFDA ZUGANG", unlock: "LABOR ENTSPERREN", dash: "DASHBOARD", scan: "SCANNER", inscr: "ANMELDUNG", cap: "SMC KAPITALALLOKATION", status: "STATUS", engine: "SCHILD STARTEN", faq: "❓ STRATEGISCHE FAQ" },
+        es: { login: "ACCESO IFDA", unlock: "DESBLOQUEAR LAB", dash: "PANEL", scan: "ESCANER", inscr: "INSCRIPCIÓN", cap: "ASIGNACIÓN DE CAPITAL SMC", status: "ESTADO", engine: "INICIAR ESCUDO", faq: "❓ FAQ ESTRATÉGICA" },
+        ar: { login: "IFDA الوصول", unlock: "فتح المختبر", dash: "لوحة القيادة", scan: "ماسح", inscr: "تسجيل", cap: "تخصيص رأس المال", status: "الحالة", engine: "إطلاق الدرع", faq: "❓ الأسئلة الشائعة" }
+    };
+
+    function changeLanguage(lang) {
+        const t = translations[lang] || translations.fr;
+        document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        
+        // Mise à jour des textes
+        document.querySelector('#login-screen h2').innerText = t.login;
+        document.querySelector('#login-screen button').innerText = t.unlock;
+        document.getElementById('t-dash').innerText = t.dash;
+        document.getElementById('t-scan').innerText = t.scan;
+        document.getElementById('t-inscr').innerText = t.inscr;
+        document.getElementById('txt-cap-alloc').innerText = t.cap;
+        document.getElementById('txt-status-label').innerText = t.status;
+        document.getElementById('txt-engine-btn').innerText = t.engine;
+        document.getElementById('txt-faq-title').innerText = t.faq;
+    }
+
+    // --- 2. SÉCURITÉ D'ACCÈS (197800) ---
+    function checkCode() {
+        const input = document.getElementById('accessCode').value.trim();
+        if(input === "197800") {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
+        } else { alert("CODE INCORRECT"); }
+    }
+
+    // --- 3. MÉMOIRE DU DASHBOARD ---
+    window.onload = function() {
+        if(localStorage.getItem('shield_active') === 'true') {
             document.getElementById('bal-val').innerText = "$" + localStorage.getItem('shield_amt');
             const st = document.getElementById('robot-status');
             st.innerText = "ACTIVE (" + localStorage.getItem('shield_market') + ")";
             st.style.color = "#00ff88";
-            document.getElementById('terminal').innerHTML = "> SESSION RESTAURÉE...<br>> SURVEILLANCE EN COURS.";
+            document.getElementById('terminal').innerHTML = "> SESSION RESTAURÉE...<br>> SURVEILLANCE ACTIVE.";
         }
     };
 
-    // 3. NAVIGATION ENTRE LES ONGLETS
+    // --- 4. NAVIGATION ---
     function showTab(id, el) {
         document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
         document.getElementById(id).style.display = 'block';
@@ -242,76 +283,132 @@
         if(el) el.classList.add('active');
     }
 
-    // 4. ACTIVATION ET ENVOI AU PYTHON (TERMUX)
+    // --- 5. ACTION LANCER LE ROBOT ---
     function activateEngine() {
-        const ex = document.getElementById('ex-s').value;
         const amt = document.getElementById('tr-amount').value;
         const market = document.getElementById('market-type').value;
+        const ex = document.getElementById('ex-s').value;
 
-        if(!amt) { alert("Indique le capital !"); return; }
+        if(!amt) return alert("Indique le capital");
+<script>
+    const tg = window.Telegram.WebApp; 
+    tg.expand();
 
-        const payload = {
-            action: "START",
-            exchange: ex,
-            ak: document.getElementById('ak').value,
-            as: document.getElementById('as').value,
-            ap: document.getElementById('ap').value,
-            amt: amt,
-            market: market
-        };
+    // --- 1. TRADUCTIONS (5 LANGUES) ---
+    const translations = {
+        fr: { login: "IFDA ENGINE ACCESS", unlock: "DÉVERROUILLER LE LABO", dash: "DASHBOARD", scan: "SCANNER", inscr: "INSCRIPTION", cap: "SMC CAPITAL ALLOCATION", status: "STATUS", engine: "LANCER LE BOUCLIER", faq: "❓ FAQ STRATÉGIQUE" },
+        en: { login: "IFDA ACCESS", unlock: "UNLOCK LAB", dash: "DASHBOARD", scan: "SCANNER", inscr: "REGISTRATION", cap: "SMC CAPITAL ALLOCATION", status: "STATUS", engine: "LAUNCH SHIELD", faq: "❓ STRATEGIC FAQ" },
+        de: { login: "IFDA ZUGANG", unlock: "LABOR ENTSPERREN", dash: "DASHBOARD", scan: "SCANNER", inscr: "ANMELDUNG", cap: "SMC KAPITALALLOKATION", status: "STATUS", engine: "SCHILD STARTEN", faq: "❓ STRATEGISCHE FAQ" },
+        es: { login: "ACCESO IFDA", unlock: "DESBLOQUEAR LAB", dash: "PANEL", scan: "ESCANER", inscr: "INSCRIPCIÓN", cap: "ASIGNACIÓN DE CAPITAL SMC", status: "ESTADO", engine: "INICIAR ESCUDO", faq: "❓ FAQ ESTRATÉGICA" },
+        ar: { login: "IFDA الوصول", unlock: "فتح المختبر", dash: "لوحة القيادة", scan: "ماسح", inscr: "تسجيل", cap: "تخصيص رأس المال", status: "الحالة", engine: "إطلاق الدرع", faq: "❓ الأسئلة الشائعة" }
+    };
 
-        // Sauvegarde pour l'affichage Web
+    function changeLanguage(lang) {
+        const t = translations[lang] || translations.fr;
+        document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        
+        // Mise à jour des textes
+        document.querySelector('#login-screen h2').innerText = t.login;
+        document.querySelector('#login-screen button').innerText = t.unlock;
+        document.getElementById('t-dash').innerText = t.dash;
+        document.getElementById('t-scan').innerText = t.scan;
+        document.getElementById('t-inscr').innerText = t.inscr;
+        document.getElementById('txt-cap-alloc').innerText = t.cap;
+        document.getElementById('txt-status-label').innerText = t.status;
+        document.getElementById('txt-engine-btn').innerText = t.engine;
+        document.getElementById('txt-faq-title').innerText = t.faq;
+    }
+
+    // --- 2. SÉCURITÉ D'ACCÈS (197800) ---
+    function checkCode() {
+        const input = document.getElementById('accessCode').value.trim();
+        if(input === "197800") {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
+        } else { alert("CODE INCORRECT"); }
+    }
+
+    // --- 3. MÉMOIRE DU DASHBOARD ---
+    window.onload = function() {
+        if(localStorage.getItem('shield_active') === 'true') {
+            document.getElementById('bal-val').innerText = "$" + localStorage.getItem('shield_amt');
+            const st = document.getElementById('robot-status');
+            st.innerText = "ACTIVE (" + localStorage.getItem('shield_market') + ")";
+            st.style.color = "#00ff88";
+            document.getElementById('terminal').innerHTML = "> SESSION RESTAURÉE...<br>> SURVEILLANCE ACTIVE.";
+        }
+    };
+
+    // --- 4. NAVIGATION ---
+    function showTab(id, el) {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        if(el) el.classList.add('active');
+    }
+
+    // --- 5. ACTION LANCER LE ROBOT ---
+    function activateEngine() {
+        const amt = document.getElementById('tr-amount').value;
+        const market = document.getElementById('market-type').value;
+        const ex = document.getElementById('ex-s').value;
+
+        if(!amt) return alert("Indique le capital");
+
+        // Sauvegarde et affichage
         localStorage.setItem('shield_active', 'true');
         localStorage.setItem('shield_amt', amt);
         localStorage.setItem('shield_market', market);
 
-        // Envoi au bot Python
-        tg.sendData(JSON.stringify(payload));
-
-        // Mise à jour immédiate de l'écran
-        document.getElementById('bal-val').innerText = "$" + parseFloat(amt).toFixed(2);
+        document.getElementById('bal-val').innerText = "$" + amt;
         const statusEl = document.getElementById('robot-status');
         statusEl.innerText = "ACTIVE (" + market + ")";
         statusEl.style.color = "#00ff88";
+        
         document.getElementById('terminal').innerHTML = `> CONNECTÉ À ${ex}<br>> CAPITAL : ${amt}$<br>> MODE : ${market}`;
+
+        // Envoi au Python (Termux)
+        tg.sendData(JSON.stringify({
+            action: "START", exchange: ex, amt: amt, market: market,
+            ak: document.getElementById('ak').value,
+            as: document.getElementById('as').value,
+            ap: document.getElementById('ap').value
+        }));
 
         showTab('dash', document.getElementById('t-dash'));
     }
 
-    // 5. FONCTIONS SUPPLÉMENTAIRES (SCAN & FAQ)
+    // --- 6. SCANNER ET OPTIONS ---
     function runFractalScan() {
         const sym = document.getElementById('s-input').value.toUpperCase();
-        if(!sym) return;
-        tg.sendData(JSON.stringify({action: "SCAN_REEL", symbol: sym}));
+        if(sym) tg.sendData(JSON.stringify({action: "SCAN_REEL", symbol: sym}));
     }
 
-    function syncMacro() {
-        tg.sendData(JSON.stringify({action: "GET_MACRO"}));
-    }
+    function syncMacro() { tg.sendData(JSON.stringify({action: "GET_MACRO"})); }
 
     function toggleFaq(el) {
         const a = el.querySelector('.faq-ans');
         a.style.display = (a.style.display === 'block') ? 'none' : 'block';
     }
 
-    // HORLOGE NY ET FOND ANIMÉ (ON GARDE TOUT)
     setInterval(() => {
         const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
         document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
     }, 1000);
 
+    // FOND THREE.JS
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     const geo = new THREE.BufferGeometry(); const pts = [];
-    for(let i=0; i<2000; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+    for(let i=0; i<1500; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
     const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
     scene.add(mat); camera.position.z = 500;
     function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
 </script>
-    
+      
 </body>
                     </html>
     
