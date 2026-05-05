@@ -197,8 +197,12 @@
             document.getElementById('txt-faq-title').innerText = t.faqT;
             document.getElementById('txt-engine-btn').innerText = t.engine;
         }
-
-        function checkCode() { if(document.getElementById('accessCode').value === "197800") { document.getElementById('login-screen').style.display='none'; document.getElementById('main-interface').style.display='block'; } }
+function checkCode() {
+    alert("Bouton cliqué !"); 
+    document.getElementById('login-screen').style.display = 'none'; 
+    document.getElementById('main-interface').style.display = 'block';
+        }
+        
         function checkCode() { 
     if(document.getElementById('accessCode').value === "197800") { 
         document.getElementById('login-screen').style.display = 'none'; 
