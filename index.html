@@ -232,25 +232,7 @@
             const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
             document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
             
-            // Gestion visuelle des Killzones
-            const h = ny.getHours();
-            document.querySelectorAll('.kz-box').forEach(b => b.classList.remove('active'));
-            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('active');
-            if (h >= 8 && h < 11) document.getElementById('kz-ny-am').classList.add('active');
-            if (h >= 13 && h < 16) document.getElementById('kz-ny-pm').classList.add('active');
-        }, 1000);
-
-        // FOND ANIMÉ
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        const geo = new THREE.BufferGeometry(); const pts = [];
-        for(let i=0; i<2000; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
-        scene.add(mat); camera.position.z = 500;
-        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
+on animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
     </script>
 </body>
                     </html>
