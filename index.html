@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SANGMELIMA SHIELD V45 - FULL POWER</title>
+    <title>SANGMELIMA SHIELD V45 - PNL LIVE EDITION</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -15,65 +15,54 @@
         .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
         .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
         input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; outline: none; font-size: 14px; }
-        .kz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 12px; }
-        .kz-box { border: 1px solid #222; padding: 6px; border-radius: 4px; font-size: 7px; text-align: center; opacity: 0.3; color: var(--accent); }
-        .kz-box.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 10px var(--accent); font-weight: bold; }
-        .live-screen { background: rgba(0,0,0,0.9); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; margin-top: 15px; text-align: left; }
-        .pay-box { border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 8px; background: rgba(0,0,0,0.3); }
+        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+        .live-screen { background: rgba(0,0,0,0.9); border: 1px solid var(--green); height: 110px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; margin-top: 15px; text-align: left; }
         .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .member { background: #050505; padding: 10px; border-radius: 6px; border: 1px solid #222; font-size: 9px; text-align: center; color: var(--accent); }
-        .faq-item { border-bottom: 1px solid #111; padding: 10px 0; cursor: pointer; }
-        .faq-q { font-size: 10px; font-weight: bold; color: var(--gold); }
-        .faq-a { display: none; font-size: 9px; color: #999; padding-top: 5px; }
     </style>
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
 
     <div id="main-interface">
-        <div style="display: flex; justify-content: flex-end; padding: 10px;">
-            <select onchange="changeLanguage(this.value)" style="width: auto; padding: 5px; font-size: 10px; margin: 0; background: #111; color: var(--gold); border: none;">
-                <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option><option value="ar">Arabe</option>
-            </select>
-        </div>
-
         <div class="nav-tabs">
             <div class="nav-item active" id="t-dash" onclick="showTab('dash', this)">DASHBOARD</div>
             <div class="nav-item" id="t-scan" onclick="showTab('scan', this)">SCANNER</div>
-            <div class="nav-item" id="t-pay" onclick="showTab('pay', this)">PAIEMENT</div>
+            <div class="nav-item" id="t-inscr" onclick="showTab('inscr', this)">INSCRIPTION</div>
         </div>
         <div class="nav-tabs" style="top:40px;">
-            <div class="nav-item" id="t-inscr" onclick="showTab('inscr', this)">INSCRIPTION</div>
+            <div class="nav-item" id="t-pay" onclick="showTab('pay', this)">PAIEMENT</div>
             <div class="nav-item" onclick="syncMacro()">MACRO RSS</div>
             <div class="nav-item" id="t-prof" onclick="showTab('prof', this)">TEAM/FAQ</div>
         </div>
 
         <div id="dash" class="content-section">
             <div class="card" style="text-align: center;">
-                <div id="txt-cap" style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
+                <div style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
                 <div id="bal-val" style="font-size: 42px; font-weight: bold; color: var(--gold); margin: 5px 0;">$0.00</div>
+                
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
                     <div style="background:#050505; padding:10px; border-radius:10px; border:1px solid #222;">
-                        <small style="font-size:7px; color:#555;">PNL LIVE</small><br><b id="pnl-val" style="color:var(--green); font-size:18px;">+$0.00</b>
+                        <small style="font-size:7px; color:#555;">PNL LIVE (Gains/Pertes)</small><br>
+                        <b id="pnl-val" style="color:var(--green); font-size:20px;">+$0.00</b>
                     </div>
                     <div style="background:#050505; padding:10px; border-radius:10px; border:1px solid #222;">
-                        <small id="txt-stat" style="font-size:7px; color:#555;">STATUS</small><br><b id="robot-status" style="color:var(--red); font-size:14px;">IDLE</b>
+                        <small style="font-size:7px; color:#555;">STATUS</small><br>
+                        <b id="robot-status" style="color:var(--red); font-size:14px;">INACTIF</b>
                     </div>
                 </div>
-                <div id="ny-time" style="font-size: 11px; color: var(--accent); margin-top: 15px; font-weight: bold;">NY: 00:00:00</div>
-                <div class="kz-grid">
-                    <div id="kz-asia" class="kz-box">ASIA</div><div id="kz-london" class="kz-box">LDN</div>
-                    <div id="kz-ny-am" class="kz-box">NY-AM</div><div id="kz-ny-pm" class="kz-box">NY-PM</div>
+
+                <div class="live-screen" id="terminal">
+                    > SANGMELIMA SHIELD V45 ONLINE...<br>
+                    > EN ATTENTE D'ACTIVATION SMC...
                 </div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD ONLINE...</div>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <select id="market-type"><option value="PERP">PERPÉTUEL</option><option value="SPOT">SPOT</option></select>
+                <select id="market-type"><option value="SPOT">SPOT</option><option value="PERP">PERPÉTUEL</option></select>
                 <select id="ex-s">
                     <option value="BINGX">BINGX</option><option value="OKX">OKX</option>
                     <option value="BINANCE">BINANCE</option><option value="BYBIT">BYBIT</option>
@@ -82,17 +71,9 @@
                 </select>
                 <input type="password" id="ak" placeholder="API KEY">
                 <input type="password" id="as" placeholder="SECRET KEY">
-                <input type="password" id="ap" placeholder="PASSPHRASE (OBLIGATOIRE POUR OKX)">
+                <input type="password" id="ap" placeholder="PASSPHRASE (OKX)">
                 <input type="number" id="tr-amount" placeholder="CAPITAL ($)">
-                <button id="btn-launch" class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
-            </div>
-        </div>
-
-        <div id="pay" class="content-section" style="display:none;">
-            <div class="card">
-                <div class="pay-box"><b>🟢 USDT (TRC20)</b><br><code>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</code></div>
-                <div class="pay-box"><b>🟠 ORANGE MONEY</b><br><code>+237 655509738</code></div>
-                <div class="pay-box"><b>🟡 MTN MOMO</b><br><code>+237 682155479</code></div>
+                <button class="btn-launch" class="btn-action" style="width:100%; padding:15px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-weight:bold; margin-top:10px;" onclick="activateEngine()">LANCER LE BOUCLIER</button>
             </div>
         </div>
 
@@ -102,31 +83,10 @@
                 <div class="team-grid">
                     <div class="member">LEADER NASSER</div><div class="member">ALBERT (TOGO)</div>
                     <div class="member">MARIE (GUAD)</div><div class="member">BERTRAND (DLA)</div>
-                    <div class="member">SÉBASTIEN (BENIN)</div><div class="member">EVA (ANALYSTE)</div>
-                    <div class="member">JULIEN (DEV)</div><div class="member">OMAR (SENEGAL)</div>
-                    <div class="member">SOPHIE (FRANCE)</div><div class="member">FRANCO(BENIN)</div>
+                    <div class="member">SÉBASTIEN (BENIN)</div><div class="member">FRANCO (BENIN)</div>
+                    <div class="member">EVA (ANALYSTE)</div><div class="member">JULIEN (DEV)</div>
+                    <div class="member">OMAR (SENEGAL)</div><div class="member">SOPHIE (FRANCE)</div>
                 </div>
-            </div>
-            <div class="card">
-                <h3 id="txt-faq" style="font-size:11px; color:var(--gold);">FAQ STRATÉGIQUE (10 POINTS)</h3>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">1. Pourquoi le Sweep PDH/PDL ?</div><div class="faq-a">Éliminer les retails avant l'institutionnel.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">2. Utilité du FVG ?</div><div class="faq-a">Déséquilibre servant d'aimant au prix.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">3. L'Order Block (OB) ?</div><div class="faq-a">Zone de forte accumulation bancaire.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">4. MSS vs BOS ?</div><div class="faq-a">Retournement vs Continuation.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">5. Target Liquidity ?</div><div class="faq-a">Viser les zones opposées (BSL/SSL).</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">6. Pourquoi 25$ ?</div><div class="faq-a">Démontrer la puissance du risk management.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">7. Mode Perpétuel ?</div><div class="faq-a">Exploiter le levier sur sweep.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">8. Mode Spot ?</div><div class="faq-a">Accumulation d'actifs réels.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">9. Risk Management ?</div><div class="faq-a">Stop Loss chirurgical derrière la mèche.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">10. Automation ?</div><div class="faq-a">Scanner 30 actifs sans émotion.</div></div>
-            </div>
-        </div>
-
-        <div id="scan" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 style="font-size:12px; color:var(--accent);">SCANNER PRÉCISION</h3>
-                <input type="text" id="s-input" placeholder="SYMBOLE (ex: SOL)">
-                <button class="btn-action" onclick="runFractalScan()">DÉTECTER LIQUIDITÉ</button>
             </div>
         </div>
     </div>
@@ -134,26 +94,20 @@
     <script>
         const tg = window.Telegram.WebApp; tg.expand();
 
-        function changeLanguage(lang) {
-            const translations = {
-                fr: { cap: "SMC CAPITAL ALLOCATION", stat: "STATUS", launch: "LANCER LE BOUCLIER", faq: "FAQ STRATÉGIQUE" },
-                en: { cap: "SMC ALLOCATION", stat: "STATUS", launch: "LAUNCH SHIELD", faq: "STRATEGIC FAQ" },
-                ar: { cap: "تخصيص رأس المال", stat: "الحالة", launch: "إطلاق الدرع", faq: "الأسئلة الشائعة" }
-            };
-            const t = translations[lang] || translations.fr;
-            document.getElementById('txt-cap').innerText = t.cap;
-            document.getElementById('txt-stat').innerText = t.stat;
-            document.getElementById('btn-launch').innerText = t.launch;
-            document.getElementById('txt-faq').innerText = t.faq;
-            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-        }
-
+        // CHARGEMENT ET MÉMOIRE PNL
         window.onload = function() {
             document.getElementById('main-interface').style.display = 'block';
-            if(localStorage.getItem('shield_active') === 'true') {
-                document.getElementById('bal-val').innerText = "$" + localStorage.getItem('shield_amt');
+            const savedAmt = localStorage.getItem('shield_amt');
+            const savedPnl = localStorage.getItem('shield_pnl') || "+$0.00";
+            
+            if(savedAmt && savedAmt > 0) {
+                document.getElementById('bal-val').innerText = "$" + parseFloat(savedAmt).toFixed(2);
+                document.getElementById('pnl-val').innerText = savedPnl;
+                // Ajuster la couleur du PNL (vert si +, rouge si -)
+                document.getElementById('pnl-val').style.color = savedPnl.includes('-') ? 'var(--red)' : 'var(--green)';
+                
                 const st = document.getElementById('robot-status');
-                st.innerText = "ACTIVE (" + localStorage.getItem('shield_market') + ")";
+                st.innerText = "ACTIF (" + localStorage.getItem('shield_market') + ")";
                 st.style.color = "#00ff88";
             }
         };
@@ -165,47 +119,43 @@
             if(el) el.classList.add('active');
         }
 
-        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display==='block')?'none':'block'; }
-
         function activateEngine() {
             const amt = document.getElementById('tr-amount').value;
             const market = document.getElementById('market-type').value;
-            const ex = document.getElementById('ex-s').value;
-            if(!amt) return alert("Capital?");
-            localStorage.setItem('shield_active', 'true');
+            if(!amt || amt <= 0) return alert("Veuillez entrer un montant.");
+
             localStorage.setItem('shield_amt', amt);
             localStorage.setItem('shield_market', market);
-            document.getElementById('bal-val').innerText = "$" + amt;
-            const st = document.getElementById('robot-status');
-            st.innerText = "ACTIVE (" + market + ")"; st.style.color = "#00ff88";
-            document.getElementById('terminal').innerHTML += `<br>> Lancement ${market} sur ${ex}...`;
-            tg.sendData(JSON.stringify({ action: "START", market, amt, exchange: ex, ak: document.getElementById('ak').value, as: document.getElementById('as').value, ap: document.getElementById('ap').value }));
+            localStorage.setItem('shield_pnl', "+$0.00"); // Reset PNL au départ
+
+            document.getElementById('bal-val').innerText = "$" + parseFloat(amt).toFixed(2);
+            document.getElementById('pnl-val').innerText = "+$0.00";
+            document.getElementById('robot-status').innerText = "ACTIF (" + market + ")";
+            document.getElementById('robot-status').style.color = "#00ff88";
+
+            document.getElementById('terminal').innerHTML = `> Moteur SMC activé...<br>> Stratégie : Sweep PDH/PDL<br>> Robot en attente d'un signal d'entrée...`;
+
+            tg.sendData(JSON.stringify({ 
+                action: "START", market, amt, exchange: document.getElementById('ex-s').value,
+                ak: document.getElementById('ak').value, as: document.getElementById('as').value, ap: document.getElementById('ap').value 
+            }));
+            
             showTab('dash', document.getElementById('t-dash'));
         }
 
-        function runFractalScan() {
-            const sym = document.getElementById('s-input').value.toUpperCase();
-            if(!sym) return;
-            document.getElementById('terminal').innerHTML += `<br>> Scan SMC sur ${sym}...`;
-            tg.sendData(JSON.stringify({action: "SCAN_REEL", symbol: sym}));
-            showTab('dash', document.getElementById('t-dash'));
+        // FONCTION POUR METTRE À JOUR LE PNL DEPUIS LE PYTHON (SIMULATION)
+        function updatePnlWeb(value) {
+            const pnlEl = document.getElementById('pnl-val');
+            pnlEl.innerText = (value >= 0 ? "+$" : "-$") + Math.abs(value).toFixed(2);
+            pnlEl.style.color = value >= 0 ? 'var(--green)' : 'var(--red)';
+            localStorage.setItem('shield_pnl', pnlEl.innerText);
         }
 
         function syncMacro() { 
-            document.getElementById('terminal').innerHTML += `<br>> Synchro Macro RSS...`;
+            document.getElementById('terminal').innerHTML += `<br>> Sync Macro RSS...`;
             tg.sendData(JSON.stringify({action: "GET_MACRO"})); 
             showTab('dash', document.getElementById('t-dash'));
         }
-
-        setInterval(() => {
-            const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
-            const h = ny.getHours();
-            document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
-            document.querySelectorAll('.kz-box').forEach(b => b.classList.remove('active'));
-            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('active');
-            if (h >= 8 && h < 11) document.getElementById('kz-ny-am').classList.add('active');
-            if (h >= 13 && h < 16) document.getElementById('kz-ny-pm').classList.add('active');
-        }, 1000);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -219,5 +169,5 @@
         function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
     </script>
 </body>
-    </html>
-                
+                                             </html>
+    
