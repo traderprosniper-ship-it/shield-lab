@@ -8,20 +8,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root { --bg: #010101; --card: rgba(8, 8, 8, 0.9); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #151515; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100%; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; height: 100%; }
         #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         #main-interface { display: none; position: relative; z-index: 10; height: 100vh; overflow-y: auto; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(15px); }
         .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
-        .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #666; border-bottom: 2px solid transparent; }
+        .nav-item { padding: 12px 2px; text-align: center; font-size: 8px; font-weight: bold; cursor: pointer; color: #666; border-bottom: 2px solid transparent; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .kz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
-        .kz-box { border: 1px solid #222; padding: 5px; border-radius: 4px; font-size: 8px; text-align: center; opacity: 0.3; color: var(--accent); }
-        .kz-box.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 8px var(--accent); font-weight: bold; }
-        input, select { width: 100%; background: rgba(15,15,15,0.8); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; outline: none; }
-        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; }
-        .live-screen { background: #000; border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); font-family: monospace; overflow-y: hidden; margin-top: 10px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .stat-box { background: rgba(5,5,5,0.8); border: 1px solid #111; padding: 8px; border-radius: 6px; text-align: center; }
+        .kz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 12px; }
+        .kz-box { border: 1px solid #222; padding: 6px; border-radius: 4px; font-size: 7px; text-align: center; opacity: 0.3; color: var(--accent); font-weight: bold; }
+        .kz-box.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 10px var(--accent); animation: blink 2s infinite; }
+        .live-screen { background: rgba(0,0,0,0.8); border: 1px solid var(--green); height: 70px; padding: 8px; font-size: 9px; color: var(--green); font-family: monospace; overflow: hidden; margin-top: 5px; }
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .member-card { background: rgba(5,5,5,0.8); padding: 10px; border-radius: 6px; text-align: center; font-size: 9px; border: 1px solid #111; }
+        .member-card span { display: block; color: var(--accent); font-size: 7px; margin-top: 3px; }
+        .faq-item { border-bottom: 1px solid #111; padding: 10px 0; cursor: pointer; font-size: 10px; }
+        .faq-ans { display: none; font-size: 9px; color: #999; padding-top: 5px; line-height: 1.3; }
+        input, select { width: 100%; background: rgba(0,0,0,0.7); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; box-sizing: border-box; margin-top: 5px; outline: none; }
+        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .lang-bar { display: flex; justify-content: flex-end; padding: 5px; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border); }
+        .lang-bar select { width: auto; padding: 5px; font-size: 12px; margin: 0; background: #111; border: none; color: var(--gold); }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        [dir="rtl"] { text-align: right; }
     </style>
 </head>
 <body>
@@ -29,98 +40,124 @@
 
     <div id="login-screen">
         <div class="card" style="width: 280px; text-align: center;">
-            <h2 style="font-size: 12px; color: var(--accent);">IFDA ENGINE ACCESS</h2>
+            <h2 id="txt-login-title" style="font-size: 11px; color: var(--accent);">IFDA ENGINE ACCESS</h2>
             <input type="password" id="accessCode" placeholder="CODE SECRET" inputmode="numeric">
             <button id="txt-login-btn" class="btn-action" onclick="checkCode()">DÉVERROUILLER LE LABO</button>
         </div>
     </div>
 
     <div id="main-interface">
+        <div class="lang-bar">
+            <select onchange="changeLanguage(this.value)">
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇺🇸 EN</option>
+                <option value="de">🇩🇪 DE</option>
+                <option value="es">🇪🇸 ES</option>
+                <option value="ar">🇸🇦 AR</option>
+            </select>
+        </div>
         <div class="nav-tabs">
-            <div class="nav-item active" onclick="showTab('dash', this)">DASHBOARD</div>
-            <div class="nav-item" onclick="showTab('scan', this)">SCANNER</div>
-            <div class="nav-item" onclick="showTab('inscr', this)">INSCRIPTION</div>
+            <div class="nav-item active" id="t-dash" onclick="showTab('dash', this)">DASHBOARD</div>
+            <div class="nav-item" id="t-scan" onclick="showTab('scan', this)">SCANNER</div>
+            <div class="nav-item" id="t-pay" onclick="showTab('pay', this)">PAIEMENT</div>
+        </div>
+        <div class="nav-tabs">
+            <div class="nav-item" id="t-inscr" onclick="showTab('inscr', this)">INSCRIPTION</div>
+            <div class="nav-item" id="t-macro" onclick="showTab('macro', this)">MACRO</div>
+            <div class="nav-item" id="t-profil" onclick="showTab('profil', this)" style="color:var(--green)">PROFIL/FAQ</div>
         </div>
 
         <div id="dash" class="content-section">
             <div class="card" style="text-align: center;">
-                <div style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
-                <div id="bal-val" style="font-size: 35px; font-weight: bold; color: var(--gold);">$0.00</div>
-                <div id="robot-status" style="color: var(--red); font-size: 10px; font-weight: bold;">SYSTEM IDLE</div>
-                <div id="ny-time" style="font-size: 10px; color: var(--accent); margin-top: 5px;">NY: 00:00:00</div>
+                <div id="txt-cap-alloc" style="font-size: 7px; color: #777;">SMC CAPITAL ALLOCATION</div>
+                <div id="bal-val" style="font-size: 32px; font-weight: bold; color: var(--gold);">$0.00</div>
+                <div class="stat-grid">
+                    <div class="stat-box"><small id="txt-pnl-live" style="font-size:7px;">PNL LIVE</small><br><b style="color:var(--green)">+$0.00</b></div>
+                    <div class="stat-box"><small id="txt-status-label" style="font-size:7px;">STATUS</small><br><b id="robot-status" style="color:var(--red)">IDLE</b></div>
+                </div>
+                <div id="ny-time" style="font-size: 9px; color: var(--accent); margin-top: 8px;">NY: 00:00:00</div>
                 <div class="kz-grid">
                     <div id="kz-asia" class="kz-box">ASIA</div>
                     <div id="kz-london" class="kz-box">LDN</div>
                     <div id="kz-ny-am" class="kz-box">NY-AM</div>
                     <div id="kz-ny-pm" class="kz-box">NY-PM</div>
                 </div>
-                <div class="live-screen" id="terminal">> WAITING FOR ACTIVATION...</div>
+                <div class="live-screen" id="terminal">> INITIALIZING IFDA FLOW...</div>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="font-size: 12px; color: var(--accent);">CONFIGURATION DU BOUCLIER</h3>
-                <select id="market-type">
-                    <option value="PERP">MARCHÉ PERPÉTUEL (FUTURES)</option>
-                    <option value="SPOT">MARCHÉ SPOT (COMPTANT)</option>
-                </select>
+                <select id="market-type"><option value="PERP">PERPÉTUEL / FUTURES</option><option value="SPOT">SPOT</option></select>
                 <select id="ex-s">
-                    <option>BINANCE</option><option>BYBIT</option><option>BITGET</option>
-                    <option>GATE.IO</option><option>BINGX</option><option>KUCOIN</option>
-                    <option>OKX</option><option>MEXC</option>
+                    <option>BINANCE</option><option>BYBIT</option><option>BITGET</option><option>GATE.IO</option>
+                    <option>BINGX</option><option>KUCOIN</option><option>OKX</option><option>MEXC</option>
                 </select>
-                <input type="password" id="ak" placeholder="API KEY">
-                <input type="password" id="as" placeholder="SECRET KEY">
+                <input type="password" placeholder="API KEY"><input type="password" placeholder="SECRET">
                 <input type="number" id="tr-amount" placeholder="CAPITAL ($)">
-                <button class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
+                <button id="txt-engine-btn" class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
             </div>
         </div>
 
-        <div id="scan" class="content-section" style="display:none;">
+        <div id="profil" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="font-size: 12px; color: var(--accent);">SCANNER SMC/ICT</h3>
-                <input type="text" id="s-input" placeholder="SYMBOLE (ex: BTC)">
-                <button class="btn-action" onclick="runScan()">DÉTECTER LIQUIDITÉ (SWEEP)</button>
+                <div class="team-grid">
+                    <div class="member-card">NASSER<span>Core Dev</span></div><div class="member-card">BERTRAND<span>Trader Pro</span></div>
+                    <div class="member-card">Marie<span>Macro</span></div><div class="member-card">Béatrice<span>Risk</span></div>
+                    <div class="member-card">Eva<span>SMC</span></div><div class="member-card">Albert<span>Data</span></div>
+                    <div class="member-card">Sébastien<span>Sec</span></div><div class="member-card">Franco<span>Liquid</span></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3 id="txt-faq-title" style="font-size:12px; color:var(--accent);">❓ FAQ STRATÉGIQUE</h3>
+                <div class="faq-item" onclick="toggleFaq(this)">1. Pourquoi Sweep ?<div class="faq-ans">Pour éliminer les retail traders.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">2. PDH/PDL ?<div class="faq-ans">Zones de liquidité d'hier.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">3. Capital 25$ ?<div class="faq-ans">Optimisé pour les petits comptes.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">4. FVG ?<div class="faq-ans">Déséquilibre qui attire le prix.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">5. Réintégration ?<div class="faq-ans">Signal que le piège est fini.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">6. Stop Loss ?<div class="faq-ans">Protégé par la mèche du sweep.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">7. Sessions ?<div class="faq-ans">Londres et New York uniquement.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">8. News rouges ?<div class="faq-ans">Attendre 15min après annonce.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">9. Sniper IFDA ?<div class="faq-ans">Confluence Algo + SMC.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">10. Devenir Leader ?<div class="faq-ans">Contactez @Leader_Nasser.</div></div>
             </div>
         </div>
+
+        <div id="scan" class="content-section" style="display:none;"><div class="card"><h3 id="txt-scan-title">SCANNER</h3><input type="text" placeholder="SYMBOLE"><button id="txt-scan-btn" class="btn-action">DÉTECTER POI</button></div></div>
+        <div id="pay" class="content-section" style="display:none;"><div class="card"><h3 id="txt-pay-title">PAIEMENT</h3><p style="font-size:10px;">USDT (TRC20): TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</p></div></div>
+        <div id="macro" class="content-section" style="display:none;"><div class="card"><h3 id="txt-macro-title">MACRO</h3><p id="txt-macro-desc" style="font-size:9px;">Consultez votre bot Telegram.</p></div></div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        const tg = window.Telegram.WebApp; tg.expand();
+        const translations = {
+            fr: { login: "IFDA ENGINE ACCESS", unlock: "DÉVERROUILLER LE LABO", dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", inscr: "INSCRIPTION", macro: "MACRO", profil: "PROFIL/FAQ", cap: "SMC CAPITAL ALLOCATION", status: "STATUS", pnl: "PNL LIVE", scanT: "SCANNER INTERBANCAIRE", scanB: "DÉTECTER POI/LIQUIDITÉ", payT: "ACCÈS SANGMELIMA SHIELD", macroT: "🔥 ALERTE MACRO", macroD: "Consultez votre bot Telegram pour le flux live.", faqT: "❓ FAQ STRATÉGIQUE", engine: "LANCER LE BOUCLIER" },
+            en: { login: "IFDA ENGINE ACCESS", unlock: "UNLOCK LAB", dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", inscr: "REGISTRATION", macro: "MACRO", profil: "PROFILE/FAQ", cap: "SMC CAPITAL ALLOCATION", status: "STATUS", pnl: "LIVE PNL", scanT: "INTERBANK SCANNER", scanB: "DETECT POI/LIQUIDITY", payT: "SANGMELIMA SHIELD ACCESS", macroT: "🔥 MACRO ALERT", macroD: "Check your Telegram bot for live feed.", faqT: "❓ STRATEGIC FAQ", engine: "LAUNCH SHIELD" },
+            de: { login: "IFDA MOTORZUGANG", unlock: "LABOR ENTSPERREN", dash: "DASHBOARD", scan: "SCANNER", pay: "ZAHLUNG", inscr: "ANMELDUNG", macro: "MAKRO", profil: "PROFIL/FAQ", cap: "SMC KAPITALALLOKATION", status: "STATUS", pnl: "LIVE PNL", scanT: "INTERBANK-SCANNER", scanB: "POI ERKENNEN", payT: "SHIELD ZUGANG", macroT: "🔥 MAKRO-ALARM", macroD: "Überprüfen Sie Ihren Telegram-Bot.", faqT: "❓ STRATEGISCHE FAQ", engine: "SCHILD STARTEN" },
+            es: { login: "ACCESO AL MOTOR IFDA", unlock: "DESBLOQUEAR LABORATORIO", dash: "PANEL", scan: "ESCANER", pay: "PAGO", inscr: "REGISTRO", macro: "MACRO", profil: "PERFIL/FAQ", cap: "ASIGNACIÓN DE CAPITAL", status: "ESTADO", pnl: "PNL EN VIVO", scanT: "ESCANER INTERBANCARIO", scanB: "DETECTAR POI", payT: "ACCESO SHIELD", macroT: "🔥 ALERTA MACRO", macroD: "Consulte su bot de Telegram.", faqT: "❓ FAQ ESTRATÉGICA", engine: "LANZAR ESCUDO" },
+            ar: { login: "IFDA الوصول إلى محرك", unlock: "فتح المختبر", dash: "لوحة القيادة", scan: "ماسح ضوئي", pay: "دفع", inscr: "تسجيل", macro: "ماكرو", profil: "الملف الشخصي", cap: "SMC تخصيص رأس المال", status: "الحالة", pnl: "الربح المباشر", scanT: "الماسح الضوئي", scanB: "كشف السيولة", payT: "SANGMELIMA SHIELD الوصول إلى", macroT: "🔥 تنبيه ماكرو", macroD: "تحقق من بوت التليجرام الخاص بك.", faqT: "❓ الأسئلة الشائعة", engine: "إطلاق الدرع" }
+        };
 
-        function checkCode() {
-            const val = document.getElementById('accessCode').value.trim();
-            if(val === "197800") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-interface').style.display = 'block';
-                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            } else {
-                alert("CODE INVALIDE");
-            }
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            document.getElementById('txt-login-title').innerText = t.login; document.getElementById('txt-login-btn').innerText = t.unlock;
+            document.getElementById('t-dash').innerText = t.dash; document.getElementById('t-scan').innerText = t.scan;
+            document.getElementById('t-pay').innerText = t.pay; document.getElementById('t-inscr').innerText = t.inscr;
+            document.getElementById('t-macro').innerText = t.macro; document.getElementById('t-profil').innerText = t.profil;
+            document.getElementById('txt-cap-alloc').innerText = t.cap; document.getElementById('txt-pnl-live').innerText = t.pnl;
+            document.getElementById('txt-status-label').innerText = t.status; document.getElementById('txt-scan-title').innerText = t.scanT;
+            document.getElementById('txt-scan-btn').innerText = t.scanB; document.getElementById('txt-pay-title').innerText = t.payT;
+            document.getElementById('txt-macro-title').innerText = t.macroT; document.getElementById('txt-macro-desc').innerText = t.macroD;
+            document.getElementById('txt-faq-title').innerText = t.faqT; document.getElementById('txt-engine-btn').innerText = t.engine;
         }
 
-        function showTab(id, el) {
-            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-        }
+        function checkCode() { if(document.getElementById('accessCode').value.trim() === "197800") { document.getElementById('login-screen').style.display = 'none'; document.getElementById('main-interface').style.display = 'block'; }}
+        function showTab(id, el) { document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none'); document.getElementById(id).style.display = 'block'; document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+        function activateEngine() { const amt = document.getElementById('tr-amount').value; document.getElementById('bal-val').innerText = "$" + parseFloat(amt || 0).toFixed(2); document.getElementById('robot-status').innerText = "ACTIVE"; document.getElementById('robot-status').style.color = "var(--green)"; showTab('dash', document.getElementById('t-dash')); }
+        function toggleFaq(el) { const a = el.querySelector('.faq-ans'); a.style.display = a.style.display==='block'?'none':'block'; }
 
-        function activateEngine() {
-            const m = document.getElementById('market-type').value;
-            const amt = document.getElementById('tr-amount').value;
-            document.getElementById('bal-val').innerText = "$" + parseFloat(amt || 0).toFixed(2);
-            document.getElementById('robot-status').innerText = "ACTIVE - " + m;
-            document.getElementById('robot-status').style.color = "var(--green)";
-            showTab('dash', document.querySelector('.nav-item'));
-            const term = document.getElementById('terminal');
-            term.innerHTML = "> Engine Started...<br>> Market: " + m + "<br>> Connecting API...";
-        }
-
-        // --- SESSIONS NY TIME & KILLZONES ---
-        function updateClock() {
+        setInterval(() => {
             const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
             const h = ny.getHours();
             document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
@@ -129,24 +166,18 @@
             if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('active');
             if (h >= 8 && h < 11) document.getElementById('kz-ny-am').classList.add('active');
             if (h >= 13 && h < 16) document.getElementById('kz-ny-pm').classList.add('active');
-        }
-        setInterval(updateClock, 1000);
+        }, 1000);
 
-        // --- BACKGROUND ANIMATION ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        const geo = new THREE.BufferGeometry();
-        const verts = [];
-        for (let i = 0; i < 3000; i++) verts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
-        const pts = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0x3b82f6, size: 2 }));
-        scene.add(pts);
-        camera.position.z = 500;
-        function animate() { requestAnimationFrame(animate); pts.rotation.y += 0.001; renderer.render(scene, camera); }
-        animate();
+        const geo = new THREE.BufferGeometry(); const pts = [];
+        for(let i=0; i<3000; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
+        scene.add(mat); camera.position.z = 500;
+        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
     </script>
 </body>
-                    </html>
+            </html>
     
