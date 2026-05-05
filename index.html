@@ -178,13 +178,20 @@
         tg.expand();
 
         function checkCode() {
-            const input = document.getElementById('accessCode').value.trim();
-            if (input === "197800") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-interface').style.display = 'block';
-                tg.HapticFeedback.notificationOccurred('success');
-            } else { tg.showAlert("CODE INCORRECT"); }
+    // AJOUT DE .value POUR RÉCUPÉRER LE CHIFFRE
+    const inputVal = document.getElementById('accessCode').value.trim();
+    const masterCode = "197800";
+    
+    if (inputVal === masterCode) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-interface').style.display = 'block';
+        tg.HapticFeedback.notificationOccurred('success');
+    } else { 
+        tg.showAlert("CODE INCORRECT : Tapez 197800"); 
+        tg.HapticFeedback.notificationOccurred('error');
+    }
         }
+        
 
         function setLang(lang, btn) {
             const t = translations[lang];
