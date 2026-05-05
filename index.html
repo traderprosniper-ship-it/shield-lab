@@ -199,13 +199,21 @@
         }
 
         function checkCode() { if(document.getElementById('accessCode').value === "197800") { document.getElementById('login-screen').style.display='none'; document.getElementById('main-interface').style.display='block'; } }
-        function showTab(id, el) { 
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            if(id === 'macro') tg.sendData(JSON.stringify({action:"GET_MACRO"}));
-        } }
+        function checkCode() { 
+    if(document.getElementById('accessCode').value === "197800") { 
+        document.getElementById('login-screen').style.display = 'none'; 
+        document.getElementById('main-interface').style.display = 'block'; 
+    } 
+}
+
+function showTab(id, el) { 
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    if(id === 'macro') tg.sendData(JSON.stringify({action:"GET_MACRO"}));
+        }
+        
         function activateEngine() {
             const amt = document.getElementById('tr-amount').value;
             const p = { action:"START", amt:amt, ak:document.getElementById('ak').value, as:document.getElementById('as').value, exchange:document.getElementById('ex-s').value };
