@@ -3,32 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SANGMELIMA SHIELD V45 - FULL EDITION</title>
+    <title>SANGMELIMA SHIELD V45 - ULTIMATE</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        :root { --bg: #010101; --card: rgba(10, 10, 10, 0.9); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
+        :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; height: 100%; }
         #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-bottom: 80px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(15px); }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); }
         .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
         .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; }
+        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
         input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; outline: none; }
-        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .member { background: #050505; padding: 10px; border-radius: 5px; border: 1px solid #222; font-size: 9px; text-align: center; color: var(--accent); }
+        .kz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 12px; }
+        .kz-box { border: 1px solid #222; padding: 6px; border-radius: 4px; font-size: 7px; text-align: center; opacity: 0.3; color: var(--accent); }
+        .kz-box.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 10px var(--accent); font-weight: bold; }
+        .live-screen { background: rgba(0,0,0,0.9); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; margin-top: 15px; text-align: left; }
+        .pay-box { border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 8px; background: rgba(0,0,0,0.3); }
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .member { background: #050505; padding: 10px; border-radius: 6px; border: 1px solid #222; font-size: 9px; text-align: center; color: var(--accent); }
         .faq-item { border-bottom: 1px solid #111; padding: 10px 0; cursor: pointer; }
         .faq-q { font-size: 10px; font-weight: bold; color: var(--gold); }
-        .faq-a { display: none; font-size: 9px; color: #888; padding-top: 5px; line-height: 1.4; }
-        .pay-box { border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 10px; }
+        .faq-a { display: none; font-size: 9px; color: #999; padding-top: 5px; }
     </style>
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
 
     <div id="main-interface">
+        <div style="display: flex; justify-content: flex-end; padding: 10px;">
+            <select onchange="changeLanguage(this.value)" style="width: auto; padding: 5px; font-size: 10px; margin: 0; background: #111; color: var(--gold); border: none;">
+                <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option>
+                <option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option><option value="ar">Arabe</option>
+            </select>
+        </div>
+
         <div class="nav-tabs">
             <div class="nav-item active" id="t-dash" onclick="showTab('dash', this)">DASHBOARD</div>
             <div class="nav-item" id="t-scan" onclick="showTab('scan', this)">SCANNER</div>
@@ -42,12 +53,75 @@
 
         <div id="dash" class="content-section">
             <div class="card" style="text-align: center;">
-                <div style="font-size: 7px; color: #777;">SMC CAPITAL ALLOCATION</div>
-                <div id="bal-val" style="font-size: 38px; font-weight: bold; color: var(--gold);">$0.00</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-                    <div><small style="font-size:7px;">PNL LIVE</small><br><b style="color:var(--green)">+$0.00</b></div>
-                    <div><small style="font-size:7px;">STATUS</small><br><b id="robot-status" style="color:var(--red)">IDLE</b></div>
+                <div id="txt-cap" style="font-size: 8px; color: #777; letter-spacing: 1px;">SMC CAPITAL ALLOCATION</div>
+                <div id="bal-val" style="font-size: 40px; font-weight: bold; color: var(--gold); margin: 5px 0;">$0.00</div>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
+                    <div style="background:#050505; padding:10px; border-radius:10px; border:1px solid #222;">
+                        <small style="font-size:7px; color:#555;">PNL LIVE</small><br>
+                        <b id="pnl-val" style="color:var(--green); font-size:18px;">+$0.00</b>
+                    </div>
+                    <div style="background:#050505; padding:10px; border-radius:10px; border:1px solid #222;">
+                        <small id="txt-stat" style="font-size:7px; color:#555;">STATUS</small><br>
+                        <b id="robot-status" style="color:var(--red); font-size:14px;">IDLE</b>
+                    </div>
                 </div>
+
+                <div id="ny-time" style="font-size: 11px; color: var(--accent); margin-top: 15px; font-weight: bold; font-family: monospace;">NY: 00:00:00</div>
+                
+                <div class="kz-grid">
+                    <div id="kz-asia" class="kz-box">ASIA</div><div id="kz-london" class="kz-box">LDN</div>
+                    <div id="kz-ny-am" class="kz-box">NY-AM</div><div id="kz-ny-pm" class="kz-box">NY-PM</div>
+                </div>
+
+                <div class="live-screen" id="terminal">
+                    > SANGMELIMA SHIELD LAB V45...<br>
+                    > MOTEURS PRÊTS (SPOT/PERP)...<br>
+                    > EN ATTENTE DE SIGNAL...
+                </div>
+            </div>
+        </div>
+
+        <div id="scan" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="txt-scan-title" style="font-size:12px; color:var(--accent);">SCANNER PRÉCISION 30 ACTIFS</h3>
+                <input type="text" id="s-input" placeholder="SYMBOLE (ex: SOL, BTC, RWA)">
+                <button class="btn-action" onclick="runFractalScan()">DÉTECTER LIQUIDITÉ SMC</button>
+            </div>
+        </div>
+
+        <div id="pay" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="font-size:12px; color:var(--gold);">MÉTHODES D'ACTIVATION</h3>
+                <div class="pay-box"><b>🟢 USDT (TRC20)</b><br><code style="font-size:9px;">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</code></div>
+                <div class="pay-box"><b>🟠 ORANGE MONEY</b><br><code>+237 655509738</code></div>
+                <div class="pay-box"><b>🟡 MTN MOMO</b><br><code>+237 682155479</code></div>
+            </div>
+        </div>
+
+        <div id="prof" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="font-size:11px; color:var(--accent);">SHIELD TEAM LAB</h3>
+                <div class="team-grid">
+                    <div class="member">LEADER NASSER</div><div class="member">ALBERT (TOGO)</div>
+                    <div class="member">MARIE (GUAD)</div><div class="member">BERTRAND (DLA)</div>
+                    <div class="member">SÉBASTIEN (BENIN)</div><div class="member">EVA (ANALYSTE)</div>
+                    <div class="member">JULIEN (DEV)</div><div class="member">OMAR (SENEGAL)</div>
+                    <div class="member">SOPHIE (FRANCE)</div>
+                </div>
+            </div>
+            <div class="card">
+                <h3 id="txt-faq" style="font-size:11px; color:var(--gold);">FAQ STRATÉGIQUE (10 POINTS)</h3>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">1. Pourquoi le Sweep PDH/PDL ?</div><div class="faq-a">Pour piéger les retails avant l'injection institutionnelle.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">2. Utilité du FVG ?</div><div class="faq-a">C'est le déséquilibre où le prix doit revenir pour s'équilibrer.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">3. L'Order Block (OB) ?</div><div class="faq-a">Dernière bougie inverse avant une forte cassure de structure.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">4. MSS vs BOS ?</div><div class="faq-a">Le MSS indique un retournement, le BOS une continuation.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">5. Target Liquidity ?</div><div class="faq-a">Toujours viser le côté opposé du range (BSL/SSL).</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">6. Pourquoi 25$ ?</div><div class="faq-a">Pour prouver que la précision SMC bat le levier excessif.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">7. Mode Perpétuel ?</div><div class="faq-a">Permet de trader avec levier pour maximiser les petites mèche.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">8. Mode Spot ?</div><div class="faq-a">Achat réel d'actifs pour le long terme sur sweep majeur.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">9. Risk Management ?</div><div class="faq-a">Stop Loss serré juste derrière la mèche qui a balayé.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">10. Automation SHIELD ?</div><div class="faq-a">Supprime l'émotion et exécute à la milliseconde près.</div></div>
             </div>
         </div>
 
@@ -58,81 +132,29 @@
                 <input type="password" id="ak" placeholder="API KEY">
                 <input type="password" id="as" placeholder="SECRET KEY">
                 <input type="number" id="tr-amount" placeholder="CAPITAL ($)">
-                <button class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
-            </div>
-        </div>
-
-        <div id="pay" class="content-section" style="display:none;">
-            <div class="card">
-                <div class="pay-box"><b>🟢 USDT (TRC20)</b><br><code>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</code></div>
-                <div class="pay-box"><b>🟠 ORANGE MONEY</b><br><code>+237 655509738</code></div>
-                <div class="pay-box"><b>🟡 MTN MOMO</b><br><code>+237 682155479</code></div>
-            </div>
-        </div>
-
-        <div id="prof" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 style="font-size:11px; color:var(--accent);">SANGMELIMA SHIELD TEAM</h3>
-                <div class="team-grid">
-                    <div class="member"><b>NASSER</b><br>Cameroun (Lead)</div>
-                    <div class="member"><b>ALBERT</b><br>Togo</div>
-                    <div class="member"><b>MARIE</b><br>Guadeloupe</div>
-                    <div class="member"><b>SÉBASTIEN</b><br>Bénin</div>
-                    <div class="member"><b>BERTRAND</b><br>Douala</div>
-                    <div class="member"><b>EVA</b><br>Analyste</div>
-                    <div class="member"><b>JULIEN</b><br>Dev</div>
-                    <div class="member"><b>OMAR</b><br>Sénégal</div>
-                    <div class="member"><b>SOPHIE</b><br>France</div>
-                </div>
-            </div>
-            <div class="card">
-                <h3 style="font-size:11px; color:var(--accent);">FAQ STRATÉGIQUE SMC/ICT</h3>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">1. Pourquoi le Sweep PDH/PDL ?</div>
-                    <div class="faq-a">C'est le balayage de liquidité nécessaire pour piéger les retails avant le mouvement institutionnel.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">2. Qu'est-ce qu'un FVG (Fair Value Gap) ?</div>
-                    <div class="faq-a">Un déséquilibre de prix qui agit comme un aimant. On attend souvent un retour dans le FVG pour entrer.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">3. Le rôle de l'Order Block ?</div>
-                    <div class="faq-a">C'est la dernière bougie contraire avant un fort mouvement. Elle marque la zone d'intérêt des banques.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">4. Pourquoi le Market Structure Shift (MSS) ?</div>
-                    <div class="faq-a">C'est le premier signe de retournement. Sans MSS, on ne prend jamais de trade contre-tendance.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">5. Quel est l'objectif (Target) ?</div>
-                    <div class="faq-a">On vise systématiquement la liquidité opposée (BSL ou SSL) ou le prochain FVG majeur.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">6. Pourquoi trader les Killzones ?</div>
-                    <div class="faq-a">C'est là que le volume est maximum (Londres et New York). Le reste du temps, le prix manipule.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">7. C'est quoi l'Inducement (IDM) ?</div>
-                    <div class="faq-a">Une fausse cassure qui incite les traders à entrer trop tôt avant le vrai mouvement.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">8. Gestion du Risque (RR) ?</div>
-                    <div class="faq-a">Minimum 1:3. Avec un capital de 25$, la précision est obligatoire.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">9. Le Sniper Signal ?</div>
-                    <div class="faq-a">Réintégration + Rejet (mèche) + Confluence Daily Array.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">10. Pourquoi automatiser avec SHIELD ?</div>
-                    <div class="faq-a">Pour supprimer l'émotion humaine et scanner 30 actifs simultanément 24h/24.</div>
-                </div>
+                <button id="btn-launch" class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
             </div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp; tg.expand();
+
+        // 1. TRADUCTION COMPLÈTE
+        const translations = {
+            fr: { cap: "SMC CAPITAL ALLOCATION", stat: "STATUS", launch: "LANCER LE BOUCLIER", faq: "FAQ STRATÉGIQUE" },
+            en: { cap: "SMC ALLOCATION", stat: "STATUS", launch: "LAUNCH SHIELD", faq: "STRATEGIC FAQ" },
+            ar: { cap: "تخصيص رأس المال", stat: "الحالة", launch: "إطلاق الدرع", faq: "الأسئلة الشائعة" }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations.fr;
+            document.getElementById('txt-cap').innerText = t.cap;
+            document.getElementById('txt-stat').innerText = t.stat;
+            document.getElementById('btn-launch').innerText = t.launch;
+            document.getElementById('txt-faq').innerText = t.faq;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
 
         window.onload = function() {
             document.getElementById('main-interface').style.display = 'block';
@@ -141,6 +163,7 @@
                 const st = document.getElementById('robot-status');
                 st.innerText = "ACTIVE (" + localStorage.getItem('shield_market') + ")";
                 st.style.color = "#00ff88";
+                document.getElementById('terminal').innerHTML = "> SESSION RESTAURÉE...<br>> MONITORING PRÉCISION ACTIF.";
             }
         };
 
@@ -151,26 +174,51 @@
             if(el) el.classList.add('active');
         }
 
-        function toggleFaq(el) {
-            const a = el.querySelector('.faq-a');
-            a.style.display = (a.style.display === 'block') ? 'none' : 'block';
-        }
+        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display==='block')?'none':'block'; }
 
         function activateEngine() {
             const amt = document.getElementById('tr-amount').value;
             const market = document.getElementById('market-type').value;
+            const ex = document.getElementById('ex-s').value;
             if(!amt) return alert("Capital?");
+            
             localStorage.setItem('shield_active', 'true');
             localStorage.setItem('shield_amt', amt);
             localStorage.setItem('shield_market', market);
+            
             document.getElementById('bal-val').innerText = "$" + amt;
-            document.getElementById('robot-status').innerText = "ACTIVE (" + market + ")";
-            document.getElementById('robot-status').style.color = "#00ff88";
-            tg.sendData(JSON.stringify({ action: "START", market: market, amt: amt, exchange: document.getElementById('ex-s').value }));
+            const statusEl = document.getElementById('robot-status');
+            statusEl.innerText = "ACTIVE (" + market + ")";
+            statusEl.style.color = "#00ff88";
+            
+            document.getElementById('terminal').innerHTML += `<br>> CONNEXION ${ex}...<br>> MOTEUR ${market} DÉMARRÉ SUR ${amt}$.`;
+
+            tg.sendData(JSON.stringify({ action: "START", market: market, amt: amt, exchange: ex }));
             showTab('dash', document.getElementById('t-dash'));
         }
 
-        function syncMacro() { tg.sendData(JSON.stringify({action: "GET_MACRO"})); }
+        function runFractalScan() {
+            const sym = document.getElementById('s-input').value.toUpperCase();
+            if(!sym) return;
+            document.getElementById('terminal').innerHTML += `<br>> ANALYSE SMC SUR ${sym}...`;
+            tg.sendData(JSON.stringify({action: "SCAN_REEL", symbol: sym}));
+            showTab('dash', document.getElementById('t-dash'));
+        }
+
+        function syncMacro() { 
+            document.getElementById('terminal').innerHTML += `<br>> SYNC MACRO NEWS RSS...`;
+            tg.sendData(JSON.stringify({action: "GET_MACRO"})); 
+        }
+
+        setInterval(() => {
+            const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
+            const h = ny.getHours();
+            document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
+            document.querySelectorAll('.kz-box').forEach(b => b.classList.remove('active'));
+            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('active');
+            if (h >= 8 && h < 11) document.getElementById('kz-ny-am').classList.add('active');
+            if (h >= 13 && h < 16) document.getElementById('kz-ny-pm').classList.add('active');
+        }, 1000);
 
         // FOND ANIMÉ
         const scene = new THREE.Scene();
@@ -178,7 +226,7 @@
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         const geo = new THREE.BufferGeometry(); const pts = [];
-        for(let i=0; i<800; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
         const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
         scene.add(mat); camera.position.z = 500;
@@ -186,4 +234,4 @@
     </script>
 </body>
     </html>
-    
+                    
