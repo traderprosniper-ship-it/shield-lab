@@ -188,11 +188,30 @@
             showTab('dash', document.getElementById('t-dash'));
         }
 
+        // --- SCANNER EN TEMPS RÉEL CONNECTÉ AU PYTHON ---
         function runFractalScan() {
             const sym = document.getElementById('s-input').value.toUpperCase().trim();
-            if(!sym) return;
+            if(!sym) return tg.showAlert("ENTREZ UN SYMBOLE !");
+            
             document.getElementById('scan-res-area').style.display = "block";
-            document.getElementById('scan-results').innerHTML = `🔍 <b>REPORT ${sym}</b><br>• H4: Bias Haussier<br>• M15: IDM Balayé ✅<br>• M1: Rejet + CISD OK<br><hr><b>ACTION: SNIPER ENTRY</b>`;
+            document.getElementById('scan-results').innerHTML = "⏳ Analyse des flux interbancaires...";
+
+            // Envoi de la commande au script Python pour récupérer les vrais prix
+            const payload = {
+                action: "SCAN_REEL",
+                symbol: sym
+            };
+            
+            tg.sendData(JSON.stringify(payload));
+            
+            setTimeout(() => {
+                document.getElementById('scan-results').innerHTML = `
+                    <b style="color:var(--accent)">REQUÊTE ENVOYÉE</b><br>
+                    Le rapport détaillé pour <b>${sym}</b> arrive dans ton chat Telegram...
+                `;
+            }, 1000);
+            
+            tg.HapticFeedback.notificationOccurred('success');
         }
 
         function setLang(lang, btn) {
@@ -241,5 +260,5 @@
         createLogo('logo-3d-login'); createLogo('logo-3d-main');
     </script>
 </body>
-  </html>
-                                                                                                                                         
+                    </html>
+    
