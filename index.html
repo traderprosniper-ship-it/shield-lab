@@ -205,7 +205,7 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
             if(id === 'macro') tg.sendData(JSON.stringify({action:"GET_MACRO"}));
-        }
+        } }
         function activateEngine() {
             const amt = document.getElementById('tr-amount').value;
             const p = { action:"START", amt:amt, ak:document.getElementById('ak').value, as:document.getElementById('as').value, exchange:document.getElementById('ex-s').value };
