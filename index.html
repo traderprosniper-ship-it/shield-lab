@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+                             <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>INTERBANK FLOW DELIVERY ALGO - OMNI CORE V28</title>
+    <title>IFDA OMNI-CORE V42 - SANGMELIMA SHIELD LAB</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -14,17 +14,15 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
         
-        /* 1. LOGIN SCREEN */
+        /* LOGIN */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         .login-box { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; width: 100%; max-width: 320px; text-align: center; }
         .login-box input { width: 100%; padding: 15px; background: #000; border: 1px solid var(--accent); color: var(--green); text-align: center; font-size: 22px; border-radius: 8px; margin-bottom: 15px; outline: none; }
 
-        /* 2. MULTILINGUE BAR (4 LANGUES) */
+        /* NAV & LANG BAR */
         .lang-bar { display: flex; justify-content: center; gap: 15px; padding: 10px; background: #000; border-bottom: 1px solid var(--border); }
-        .lang-btn { font-size: 18px; cursor: pointer; opacity: 0.4; transition: 0.3s; filter: grayscale(1); }
+        .lang-btn { font-size: 18px; cursor: pointer; opacity: 0.4; filter: grayscale(1); transition: 0.3s; }
         .lang-btn.active { opacity: 1; filter: grayscale(0); transform: scale(1.2); }
-
-        /* 3. NAVIGATION */
         #main-interface { display: none; }
         .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: #000; border-bottom: 1px solid var(--border); }
         .nav-item { padding: 12px 2px; text-align: center; font-size: 8px; font-weight: bold; cursor: pointer; color: #444; border-bottom: 2px solid transparent; }
@@ -34,35 +32,30 @@
         .content-section.active { display: block; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 12px; position: relative; }
 
-        /* 4. DASHBOARD & LIVE SCREEN */
-        .live-screen { background: #000; border: 1px solid var(--green); border-radius: 5px; height: 100px; padding: 10px; font-size: 9px; color: var(--green); overflow-y: hidden; margin-top: 10px; font-family: 'Consolas', monospace; line-height: 1.2; }
+        /* DASHBOARD TERMINAL & STATS */
+        .live-screen { background: #000; border: 1px solid var(--green); border-radius: 5px; height: 90px; padding: 10px; font-size: 9px; color: var(--green); overflow-y: hidden; margin-top: 10px; font-family: 'Consolas', monospace; }
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         .stat-box { background: #050505; border: 1px solid #111; padding: 8px; border-radius: 6px; text-align: center; }
-        .stat-label { font-size: 7px; color: #555; text-transform: uppercase; }
 
-        /* 5. KILLZONES */
-        .kz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .kz-box { border: 1px solid #111; padding: 8px; border-radius: 5px; font-size: 8px; text-align: center; opacity: 0.2; font-weight: bold; }
-        .kz-box.active { opacity: 1; animation: blink 1.5s infinite; border-width: 2px; }
-        @keyframes blink { 0%, 100% { box-shadow: 0 0 5px currentColor; } 50% { box-shadow: 0 0 15px currentColor; } }
-        .asia { color: var(--asia); border-color: var(--asia); }
-        .london { color: var(--london); border-color: var(--london); }
-        .ny-am { color: var(--ny-am); border-color: var(--ny-am); }
-        .ny-pm { color: var(--ny-pm); border-color: var(--ny-pm); }
-
-        /* 6. TEAM GRID */
-        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        /* TEAM GRID 9 MEMBERS */
+        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;}
         .member-card { background: #050505; border: 1px solid #111; padding: 10px; border-radius: 6px; text-align: center; font-size: 10px; font-weight: bold; }
         .member-card span { display: block; color: var(--accent); font-size: 8px; margin-top: 4px; }
 
-        /* 7. PAIEMENT ICÔNES */
+        /* FAQ ACCORDION */
+        .faq-item { border-bottom: 1px solid #111; padding: 10px 0; cursor: pointer; }
+        .faq-ans { font-size: 10px; color: #777; display: none; padding-top: 8px; line-height: 1.4; }
+
+        /* PAIEMENT */
         .pay-method { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; background: #050505; border: 1px solid #111; margin-bottom: 10px; }
         .pay-icon { width: 35px; height: 35px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
-        /* 8. FORMULAIRE */
-        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 6px; margin-top: 6px; box-sizing: border-box; }
-        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 6px; margin-top: 6px; box-sizing: border-box; outline: none; }
+        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
         
+        .kz-box { border: 1px solid #111; padding: 8px; border-radius: 5px; font-size: 8px; text-align: center; opacity: 0.2; font-weight: bold; }
+        .kz-box.active { opacity: 1; animation: blink 1.5s infinite; border-width: 2px; }
+
         #logo-3d-login, #logo-3d-main { width: 60px; height: 60px; margin: 0 auto 10px auto; }
         .rtl { direction: rtl; text-align: right; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -73,7 +66,7 @@
     <div id="login-screen">
         <div id="logo-3d-login"></div>
         <div class="login-box">
-            <h2 id="l-title" style="font-size: 12px; color: var(--accent); margin-bottom: 20px;">SHIELD SECURE ACCESS</h2>
+            <h2 id="l-title" style="font-size: 11px; color: var(--accent); margin-bottom: 20px;">SHIELD SECURE ACCESS</h2>
             <input type="password" id="accessCode" placeholder="CODE">
             <button class="btn-action" id="l-btn" onclick="checkCode()">UNLOCK</button>
         </div>
@@ -99,49 +92,60 @@
         </div>
 
         <div id="dash" class="content-section active">
-            <div class="card" style="text-align: center;">
+            <div class="card" style="text-align: center; padding: 20px;">
                 <div id="logo-3d-main"></div>
-                <div id="bal-val" style="font-size: 24px; font-weight: bold; color: var(--gold);">$0.00</div>
-                <div id="ny-time" style="font-size: 10px; color: var(--accent);">NY TIME: 00:00:00</div>
+                <div style="font-size: 7px; color: #555; text-transform: uppercase;">Capital Actif</div>
+                <div id="bal-val" style="font-size: 28px; font-weight: bold; color: var(--gold);">$0.00</div>
                 <div class="stat-grid">
-                    <div class="stat-box"><div class="stat-label">PNL LIVE</div><div id="pnl-live" style="color:var(--green)">+$0.00</div></div>
-                    <div class="stat-box"><div class="stat-label">MODE ACTIVE</div><div id="active-mode" style="color:var(--accent)">OFF</div></div>
+                    <div class="stat-box"><div style="font-size:7px;color:#555">PNL SESSION</div><div id="pnl-live" style="color:var(--green);font-weight:bold">+$0.00</div></div>
+                    <div class="stat-box"><div style="font-size:7px;color:#555">STATUS</div><div id="robot-status" style="color:var(--red);font-weight:bold">IDLE</div></div>
                 </div>
-                <div class="live-screen" id="terminal-screen">
-                    <div class="log-entry">> IFDA SYSTEM READY...</div>
-                </div>
+                <div id="ny-time" style="font-size: 9px; color: var(--accent); margin-top: 10px;">NY: 00:00:00</div>
+                <div class="live-screen" id="terminal-screen">> WAITING FOR ACTIVATION...</div>
             </div>
             <div class="card">
-                <div class="kz-grid">
-                    <div id="kz-asia" class="kz-box asia">ASIA<br>20:00-00:00</div>
-                    <div id="kz-london" class="kz-box london">LONDON<br>02:00-05:00</div>
-                    <div id="kz-ny-am" class="kz-box ny-am">NY AM<br>08:30-11:00</div>
-                    <div id="kz-ny-pm" class="kz-box ny-pm">NY PM<br>13:30-16:00</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div id="kz-asia" class="kz-box" style="color:var(--asia); border-color:var(--asia);">ASIA</div>
+                    <div id="kz-london" class="kz-box" style="color:var(--london); border-color:var(--london);">LONDON</div>
+                    <div id="kz-ny-am" class="kz-box" style="color:var(--ny-am); border-color:var(--ny-am);">NY AM</div>
+                    <div id="kz-ny-pm" class="kz-box" style="color:var(--ny-pm); border-color:var(--ny-pm);">NY PM</div>
                 </div>
             </div>
         </div>
 
-        <div id="inscr" class="content-section">
+        <div id="scan" class="content-section">
             <div class="card">
-                <h3 style="font-size:12px; color:var(--accent); margin-top:0;">🔧 CONFIGURATION DU MOTEUR</h3>
-                <label style="font-size:8px; color:var(--accent);">TRADING MODE</label>
-                <select id="tr-mode"><option value="SPOT">SPOT (INVEST)</option><option value="PERP">PERPÉTUEL (SMC)</option><option value="DUAL">DUAL MODE</option></select>
-                <label style="font-size:8px; color:var(--accent);">ÉCHANGEUR</label>
-                <select id="ex-s"><option>OKX</option><option>BINANCE</option><option>MEXC</option><option>BINGX</option><option>BYBIT</option><option>BITGET</option><option>KUCOIN</option></select>
-                <input type="password" id="ak" placeholder="API KEY">
-                <input type="password" id="as" placeholder="API SECRET">
-                <input type="password" id="ap" placeholder="API PASSPHRASE (OKX)">
-                <input type="number" id="tr-amount" placeholder="MONTANT CAPITAL ($)" style="border:1px solid var(--green);">
-                <button class="btn-action" onclick="startRobotEngine()">ACTIVER LE MOTEUR RÉEL</button>
+                <h3 id="t-s-title" style="font-size:12px; color:var(--accent);">SCANNER INTERBANCAIRE</h3>
+                <input type="text" id="s-input" placeholder="SYMBOLE (ex: ONDO)">
+                <button class="btn-action" onclick="runFractalScan()">DÉTECTER BOS/IDM/MSS</button>
+                <div id="scan-res-area" style="display:none; margin-top:15px; border-top:1px solid #111; padding-top:10px;">
+                    <div id="scan-results" style="font-size:11px; font-family:monospace; color:var(--green); line-height:1.6;"></div>
+                </div>
             </div>
         </div>
 
         <div id="pay" class="content-section">
             <div class="card">
-                <h3 style="font-size:12px; color:var(--green);">PAIEMENT ACCÈS</h3>
-                <div class="pay-method"><div class="pay-icon" style="background:var(--usdt); color:white;">₮</div><div class="pay-info"><div class="pay-title">USDT (TRC20)</div><div class="pay-val">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div></div>
-                <div class="pay-method"><div class="pay-icon" style="background:var(--orange); color:white;">O</div><div class="pay-info"><div class="pay-title">ORANGE MONEY</div><div class="pay-val">+237 655509738</div></div></div>
-                <div class="pay-method"><div class="pay-icon" style="background:var(--mtn); color:black;">M</div><div class="pay-info"><div class="pay-title">MTN MOMO</div><div class="pay-val">+237 682155479</div></div></div>
+                <h3 id="t-p-title" style="font-size:12px; color:var(--green);">ACCÈS IFDA</h3>
+                <div class="pay-method"><div class="pay-icon" style="background:var(--usdt); color:white;">₮</div><div class="pay-info"><div>USDT (TRC20)</div><div style="font-size:10px;">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div></div>
+                <div class="pay-method"><div class="pay-icon" style="background:var(--orange); color:white;">O</div><div class="pay-info"><div>ORANGE (CM)</div><div style="font-size:10px;">+237 655509738</div></div></div>
+                <div class="pay-method"><div class="pay-icon" style="background:var(--mtn); color:black;">M</div><div class="pay-info"><div>MTN MOMO (CM)</div><div style="font-size:10px;">+237 682155479</div></div></div>
+            </div>
+        </div>
+
+        <div id="inscr" class="content-section">
+            <div class="card">
+                <h3 id="t-i-title" style="font-size:12px; color:var(--accent);">CONFIGURATION DUAL ENGINE</h3>
+                <select id="tr-mode"><option value="SPOT">SPOT (BULLISH ONLY)</option><option value="PERP">PERPETUAL (LONG/SHORT)</option></select>
+                <select id="ex-s">
+                    <option>BINANCE</option><option>OKX</option><option>MEXC</option><option>BINGX</option>
+                    <option>BYBIT</option><option>BITGET</option><option>KUCOIN</option><option>GATE.IO</option>
+                </select>
+                <input type="password" id="ak" placeholder="API KEY">
+                <input type="password" id="as" placeholder="API SECRET">
+                <input type="password" id="ap" placeholder="API PASSPHRASE">
+                <input type="number" id="tr-amount" placeholder="CAPITAL ALLOUÉ ($)" style="border:1px solid var(--gold);">
+                <button class="btn-action" onclick="activateEngine()">ACTIVER LE PROTOCOLE SHIELD</button>
             </div>
         </div>
 
@@ -160,10 +164,21 @@
                     <div class="member-card">Leader NASSER <span>Project Manager</span></div>
                 </div>
             </div>
+            <div class="card">
+                <h3 id="t-f-title" style="font-size:12px; color:var(--accent);">❓ FAQ INTERACTIVE</h3>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div style="font-size:10px; font-weight:bold;">Comment le scan valide-t-il le BOS ? <span>+</span></div>
+                    <div class="faq-ans">Le robot vérifie une clôture de bougie au-delà du High/Low protégé (H4) puis cherche le MSS en microstructure (M5/M1).</div>
+                </div>
+            </div>
         </div>
 
-        <div id="scan" class="content-section"><div class="card"><input type="text" id="s-in" placeholder="SYMBOLE"><button class="btn-action" onclick="alert('Scan...')">SCAN</button></div></div>
-        <div id="macro" class="content-section"><div class="card">📅 NEWS : 05 MAI 2026 - ISM Services PMI</div></div>
+        <div id="macro" class="content-section">
+            <div class="card" style="border-left: 3px solid var(--red);">
+                <h3 id="t-m-title" style="font-size:12px; color:var(--red);">📅 STRATÉGIE : 05 MAI 2026</h3>
+                <p style="font-size:10px;"><b>CONSEIL :</b> Attendre le sweep après news ISM PMI de 14h NY. Entrée sur CISD M1 uniquement.</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -178,20 +193,47 @@
         tg.expand();
 
         function checkCode() {
-    // AJOUT DE .value POUR RÉCUPÉRER LE CHIFFRE
-    const inputVal = document.getElementById('accessCode').value.trim();
-    const masterCode = "197800";
-    
-    if (inputVal === masterCode) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-interface').style.display = 'block';
-        tg.HapticFeedback.notificationOccurred('success');
-    } else { 
-        tg.showAlert("CODE INCORRECT : Tapez 197800"); 
-        tg.HapticFeedback.notificationOccurred('error');
-    }
+            const val = document.getElementById('accessCode').value.trim();
+            if (val === "197800") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-interface').style.display = 'block';
+                tg.HapticFeedback.notificationOccurred('success');
+            } else { tg.showAlert("CODE INCORRECT"); }
         }
-        
+
+        function activateEngine() {
+            const amt = document.getElementById('tr-amount').value;
+            if(!amt || amt <= 0) return tg.showAlert("Entrez un montant !");
+            
+            document.getElementById('bal-val').innerText = "$" + parseFloat(amt).toFixed(2);
+            document.getElementById('robot-status').innerText = "ACTIVE";
+            document.getElementById('robot-status').style.color = "var(--green)";
+            
+            tg.sendData(JSON.stringify({ action: "START", amt: amt }));
+            showTab('dash', document.getElementById('t-dash'));
+            runLiveLogs();
+        }
+
+        function runLiveLogs() {
+            const screen = document.getElementById('terminal-screen');
+            const logs = ["> API Linked", "> Scanning SMC H4...", "> BOS Detected M15", "> Entry Sniper M1"];
+            let i = 0;
+            const itv = setInterval(() => {
+                if(i < logs.length) {
+                    const d = document.createElement('div'); d.innerText = logs[i]; screen.appendChild(d);
+                    if(screen.childNodes.length > 4) screen.removeChild(screen.firstChild);
+                    i++;
+                } else clearInterval(itv);
+            }, 2500);
+        }
+
+        function runFractalScan() {
+            const sym = document.getElementById('s-input').value.toUpperCase().trim();
+            if(!sym) return;
+            document.getElementById('scan-res-area').style.display = "block";
+            document.getElementById('scan-results').innerHTML = `🔍 <b>REPORT ${sym}</b><br>• H4: Bias Haussier<br>• M15: IDM Balayé ✅<br>• M1: Rejet + CISD OK<br><hr><b>ACTION: SNIPER ENTRY</b>`;
+            tg.HapticFeedback.notificationOccurred('success');
+        }
 
         function setLang(lang, btn) {
             const t = translations[lang];
@@ -207,6 +249,11 @@
             btn.classList.add('active');
         }
 
+        function toggleFaq(el) {
+            const ans = el.querySelector('.faq-ans');
+            ans.style.display = (ans.style.display === "block") ? "none" : "block";
+        }
+
         function showTab(id, el) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -214,36 +261,15 @@
             el.classList.add('active');
         }
 
-        function startRobotEngine() {
-            const amt = document.getElementById('tr-amount').value;
-            if(!amt) return tg.showAlert("Montant requis !");
-            document.getElementById('bal-val').innerText = "$" + amt + ".00";
-            document.getElementById('active-mode').innerText = document.getElementById('tr-mode').value;
-            showTab('dash', document.getElementById('t-dash'));
-            runTerminal();
-        }
-
-        function runTerminal() {
-            const screen = document.getElementById('terminal-screen');
-            const logs = ["> Connecting API...", "> Scanning Market...", "> BOS Detected...", "> SL/TP Set...", "> Trade Active."];
-            let i = 0;
-            setInterval(() => {
-                if(i < logs.length) {
-                    const d = document.createElement('div'); d.innerText = logs[i]; screen.appendChild(d);
-                    if(screen.childNodes.length > 5) screen.removeChild(screen.firstChild);
-                    i++;
-                }
-            }, 2000);
-        }
-
         function updateTime() {
             const ny = new Date().toLocaleString("en-US", {timeZone: "America/New_York", hour12: false});
             const h = parseInt(ny.split(", ")[1].split(":")[0]);
             document.getElementById('ny-time').innerText = "NY TIME: " + ny.split(", ")[1];
-            document.getElementById('kz-asia').style.opacity = (h >= 20 || h < 0) ? "1" : "0.2";
-            document.getElementById('kz-london').style.opacity = (h >= 2 && h < 5) ? "1" : "0.2";
-            document.getElementById('kz-ny-am').style.opacity = (h >= 8 && h < 11) ? "1" : "0.2";
-            document.getElementById('kz-ny-pm').style.opacity = (h >= 13 && h < 16) ? "1" : "0.2";
+            document.querySelectorAll('.kz-box').forEach(b => b.classList.remove('active'));
+            if (h >= 20 || h < 0) document.getElementById('kz-asia').classList.add('active');
+            else if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('active');
+            else if (h >= 8 && h < 11) document.getElementById('kz-ny-am').classList.add('active');
+            else if (h >= 13 && h < 16) document.getElementById('kz-ny-pm').classList.add('active');
         }
         setInterval(updateTime, 1000);
 
@@ -252,7 +278,7 @@
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(60, 60);
             document.getElementById(id).appendChild(renderer.domElement);
-            const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true }));
+            const cube = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true }));
             scene.add(cube);
             const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000); camera.position.z = 4;
             function animate() { requestAnimationFrame(animate); cube.rotation.y += 0.03; renderer.render(scene, camera); }
@@ -261,6 +287,5 @@
         createLogo('logo-3d-login'); createLogo('logo-3d-main');
     </script>
 </body>
-            </html>
-                                                                                            
-       
+                    </html>
+    
