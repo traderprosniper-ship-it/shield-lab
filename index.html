@@ -1,116 +1,130 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SHIELD TERMINAL</title>
+    <title>SHIELD LAB - PROFIL & FAQ</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        :root {
-            --bg: #f4f7f9;
-            --card: #ffffff;
-            --text: #1e293b;
-            --accent: #3b82f6;
-            --border: #e2e8f0;
-            --green: #10b981;
-            --red: #ef4444;
-        }
-
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-
-        .header { background: var(--card); padding: 10px; text-align: center; border-bottom: 1px solid var(--border); }
-        #logo-3d { width: 60px; height: 60px; margin: 0 auto; }
-
-        .nav-tabs { display: flex; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .nav-item { flex: 1; padding: 15px 5px; text-align: center; font-size: 11px; font-weight: 800; cursor: pointer; color: var(--text); opacity: 0.5; transition: 0.3s; }
-        .nav-item.active { opacity: 1; color: var(--accent); border-bottom: 3px solid var(--accent); }
+        :root { --bg: #020202; --card: #080808; --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --border: #151515; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        
+        /* NAVIGATION (6 SECTIONS) */
+        .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: #000; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #444; }
+        .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
         .content-section { display: none; padding: 15px; animation: fadeIn 0.3s; }
         .content-section.active { display: block; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+
+        /* FAQ STYLE ACCORDÉON */
+        .faq-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
+        .faq-quest { font-size: 12px; font-weight: bold; color: var(--accent); cursor: pointer; display: flex; justify-content: space-between; }
+        .faq-ans { font-size: 11px; color: #888; display: none; padding-top: 8px; line-height: 1.4; }
+
+        /* TEAM STYLE */
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .member { background: #050505; border: 1px solid #111; padding: 10px; border-radius: 4px; text-align: center; }
+        .member-name { font-size: 11px; font-weight: bold; display: block; }
+        .member-role { font-size: 9px; color: #555; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .monitor-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
-        .status-dot { height: 10px; width: 10px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .log-entry { font-family: monospace; font-size: 11px; padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
-
-        .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
-        input { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid var(--border); outline: none; }
-        .btn-scan { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; }
-
-        .news-card { background: #fff; border-left: 4px solid var(--accent); padding: 12px; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .news-impact { font-size: 10px; font-weight: bold; color: var(--red); }
-
-        .footer-shield { text-align: center; font-size: 10px; padding: 20px; color: #94a3b8; }
+        #logo-3d { width: 60px; height: 60px; margin: 5px auto; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div id="logo-3d"></div>
-        <h2 style="margin:0; font-size:16px;">SANGMELIMA SHIELD v2.0</h2>
-    </div>
+    <div id="logo-3d"></div>
 
     <div class="nav-tabs">
-        <div class="nav-item active" onclick="showTab('dashboard', this)">📊 DASHBOARD</div>
-        <div class="nav-item" onclick="showTab('scanner', this)">🔍 SCANNER</div>
-        <div class="nav-item" onclick="showTab('macro', this)">🗓️ MACRO</div>
+        <div class="nav-item active" onclick="showTab('dash', this)">DASHBOARD</div>
+        <div class="nav-item" onclick="showTab('scan', this)">SCANNER</div>
+        <div class="nav-item" onclick="showTab('pay', this)">PAIEMENT</div>
+    </div>
+    <div class="nav-tabs">
+        <div class="nav-item" onclick="showTab('macro', this)">MACRO</div>
+        <div class="nav-item" onclick="showTab('inscr', this)">INSCRIPTION</div>
+        <div class="nav-item" onclick="showTab('profil', this)" style="color:var(--green)">PROFIL/FAQ</div>
     </div>
 
-    <div id="dashboard" class="content-section active">
-        <div class="monitor-card">
-            <div style="font-weight:bold; margin-bottom:10px;"><span class="status-dot"></span> ROBOT EN LIGNE</div>
-            <div class="row" style="display:flex; justify-content:space-between; font-size:13px;">
-                <span>Capital: <b>25.00$</b></span>
-                <span>Trades: <b>0</b></span>
-                <span>Profit: <b style="color:var(--green);">+0.00%</b></span>
+    <div id="profil" class="content-section">
+        <div class="card">
+            <h3 style="font-size:14px; color:var(--accent); margin-top:0;">❓ FOIRE AUX QUESTIONS</h3>
+            
+            <div class="faq-item">
+                <div class="faq-quest" onclick="toggleFaq(this)">Comment fonctionne le Shield ? <span>+</span></div>
+                <div class="faq-ans">Il scanne 4 plateformes (Binance, OKX, MEXC, BingX) pour détecter des balayages de liquidité (Sweep) en temps réel.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-quest" onclick="toggleFaq(this)">Quel est le capital minimum ? <span>+</span></div>
+                <div class="faq-ans">Le système est optimisé pour débuter avec une gestion de risque stricte à partir de 10 USDT.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-quest" onclick="toggleFaq(this)">Le code d'accès est-il permanent ? <span>+</span></div>
+                <div class="faq-ans">Selon votre abonnement, le code peut être valide pour une session ou une durée illimitée.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-quest" onclick="toggleFaq(this)">Qu'est-ce qu'un Sweep PDH/PDL ? <span>+</span></div>
+                <div class="faq-ans">C'est quand le prix dépasse le plus haut ou le plus bas d'hier pour liquider les traders avant de retourner dans la direction opposée.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-quest" onclick="toggleFaq(this)">Le bot trade-t-il pour moi ? <span>+</span></div>
+                <div class="faq-ans">Le bot est un copilote d'analyse. Il vous donne les signaux de précision, mais vous gardez le contrôle de l'exécution.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-quest" onclick="toggleFaq(this)">Comment recevoir mon code ? <span>+</span></div>
+                <div class="faq-ans">Après votre paiement USDT ou Mobile Money, le bot valide la transaction et génère votre clé instantanément.</div>
             </div>
         </div>
-        <h4 style="font-size:12px; color:var(--text-sec);">ACTIVITÉ RÉCENTE :</h4>
-        <div id="bot-logs" class="monitor-card">
-            <div class="log-entry">12:25 - Monitoring Binance / OKX...</div>
-            <div class="log-entry">12:22 - Labo initialisé à Sangmelima.</div>
-        </div>
-    </div>
 
-    <div id="scanner" class="content-section">
-        <div class="search-box">
-            <input type="text" id="symbolInput" placeholder="Ex: ONDO, BTC, SOL...">
-            <button class="btn-scan" onclick="runManualScan()">SCAN</button>
-        </div>
-        <div id="scanResult" style="display:none;" class="monitor-card">
-            <h3 id="resSym" style="margin-top:0;">---</h3>
-            <div id="resData" style="font-size:14px; line-height:1.6;">
-                Vérification des 4 sections...
+        <div class="card">
+            <h3 style="font-size:14px; color:var(--green); margin-top:0;">👥 NOTRE ÉQUIPE</h3>
+            <div class="team-grid">
+                <div class="member"><span class="member-name">Maître Bertrand</span><span class="member-role">Lead Developer</span></div>
+                <div class="member"><span class="member-name">Marie</span><span class="member-role">Analyste SMC</span></div>
+                <div class="member"><span class="member-name">Béatrice</span><span class="member-role">Relations Client</span></div>
+                <div class="member"><span class="member-name">Eva</span><span class="member-role">Gestion Risque</span></div>
+                <div class="member"><span class="member-name">Albert</span><span class="member-role">Admin Réseau</span></div>
+                <div class="member"><span class="member-name">Sébastien</span><span class="member-role">Stratégie ICT</span></div>
+                <div class="member"><span class="member-name">Franco</span><span class="member-role">Support Technique</span></div>
             </div>
         </div>
     </div>
 
-    <div id="macro" class="content-section">
-        <div class="news-card">
-            <div class="news-impact">HIGH IMPACT</div>
-            <div style="font-weight:bold; font-size:14px;">USD - CPI (Inflation)</div>
-            <div style="font-size:12px; color:var(--text-sec);">Aujourd'hui 13:30 UTC</div>
-        </div>
-    </div>
-
-    <div class="footer-shield">
-        © SANGMELIMA SHIELD LAB
-    </div>
+    <div id="dash" class="content-section active"><div class="card">Dashboard en ligne.</div></div>
+    <div id="scan" class="content-section"><div class="card">Scanner prêt.</div></div>
+    <div id="pay" class="content-section"><div class="card">Paiement USDT/Orange/Momo.</div></div>
+    <div id="macro" class="content-section"><div class="card">Macro News.</div></div>
+    <div id="inscr" class="content-section"><div class="card">Formulaire d'inscription.</div></div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function showTab(tabId, element) {
+        function showTab(id, el) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
             tg.HapticFeedback.impactOccurred('light');
         }
 
+        function toggleFaq(el) {
+            const ans = el.nextElementSibling;
+            const isOpen = ans.style.display === "block";
+            document.querySelectorAll('.faq-ans').forEach(a => a.style.display = "none");
+            ans.style.display = isOpen ? "none" : "block";
+            tg.HapticFeedback.selectionChanged();
+        }
+
+        // LOGO 3D
         const scene = new THREE.Scene();
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(60, 60);
@@ -120,20 +134,9 @@
         scene.add(cube);
         const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
         camera.position.z = 3.5;
-        function animate() { requestAnimationFrame(animate); cube.rotation.y += 0.02; renderer.render(scene, camera); }
+        function animate() { requestAnimationFrame(animate); cube.rotation.y += 0.03; renderer.render(scene, camera); }
         animate();
-
-        function runManualScan() {
-            let sym = document.getElementById('symbolInput').value.toUpperCase();
-            if(!sym) return;
-            document.getElementById('scanResult').style.display = 'block';
-            document.getElementById('resSym').innerText = sym + "/USDT";
-            document.getElementById('resData').innerHTML = "⏳ Recherche multi-échanges...";
-            setTimeout(() => {
-                document.getElementById('resData').innerHTML = "✅ <b>Sweep PDH</b> détecté sur MEXC.";
-                tg.HapticFeedback.notificationOccurred('success');
-            }, 800);
-        }
     </script>
 </body>
-</html>
+        </html>
+    
