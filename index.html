@@ -23,7 +23,7 @@
         .kz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 12px; }
         .kz-box { border: 1px solid #222; padding: 6px; border-radius: 4px; font-size: 7px; text-align: center; opacity: 0.3; color: var(--accent); font-weight: bold; }
         .kz-box.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 10px var(--accent); animation: blink 2s infinite; }
-        .live-screen { background: rgba(0,0,0,0.8); border: 1px solid var(--green); height: 70px; padding: 8px; font-size: 9px; color: var(--green); font-family: monospace; overflow: hidden; margin-top: 10px; }
+        .live-screen { background: rgba(0,0,0,0.8); border: 1px solid var(--green); height: 80px; padding: 8px; font-size: 9px; color: var(--green); font-family: monospace; overflow: hidden; margin-top: 10px; }
         .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .member-card { background: rgba(5,5,5,0.8); padding: 10px; border-radius: 6px; text-align: center; font-size: 9px; border: 1px solid #111; }
         .member-card span { display: block; color: var(--accent); font-size: 7px; margin-top: 3px; }
@@ -54,6 +54,7 @@
                 <option value="ar">🇸🇦 AR</option>
             </select>
         </div>
+
         <div class="nav-tabs">
             <div class="nav-item active" id="t-dash" onclick="showTab('dash', this)">DASHBOARD</div>
             <div class="nav-item" id="t-scan" onclick="showTab('scan', this)">SCANNER</div>
@@ -68,30 +69,30 @@
         <div id="dash" class="content-section">
             <div class="card" style="text-align: center;">
                 <div id="txt-cap-alloc" style="font-size: 7px; color: #777;">SMC CAPITAL ALLOCATION</div>
-                <div id="bal-val" style="font-size: 32px; font-weight: bold; color: var(--gold);">$0.00</div>
+                <div id="bal-val" style="font-size: 35px; font-weight: bold; color: var(--gold);">$0.00</div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-                    <div class="stat-box"><small id="txt-pnl-live" style="font-size:7px;">PNL LIVE</small><br><b style="color:var(--green)">+$0.00</b></div>
+                    <div class="stat-box"><small id="txt-pnl-live" style="font-size:7px;">PNL LIVE</small><br><b id="pnl-display" style="color:var(--green)">+$0.00</b></div>
                     <div class="stat-box"><small id="txt-status-label" style="font-size:7px;">STATUS</small><br><b id="robot-status" style="color:var(--red)">IDLE</b></div>
                 </div>
-                <div id="ny-time" style="font-size: 9px; color: var(--accent); margin-top: 8px;">NY: 00:00:00</div>
+                <div id="ny-time" style="font-size: 10px; color: var(--accent); margin-top: 8px; font-weight: bold;">NY: 00:00:00</div>
                 <div class="kz-grid">
                     <div id="kz-asia" class="kz-box">ASIA</div><div id="kz-london" class="kz-box">LDN</div>
                     <div id="kz-ny-am" class="kz-box">NY-AM</div><div id="kz-ny-pm" class="kz-box">NY-PM</div>
                 </div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD ONLINE...</div>
+                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD SYSTÈME...</div>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <select id="market-type"><option value="PERP">MARCHÉ PERPÉTUEL</option><option value="SPOT">MARCHÉ SPOT</option></select>
+                <select id="market-type"><option value="PERP">PERPÉTUEL / FUTURES</option><option value="SPOT">SPOT</option></select>
                 <select id="ex-s">
                     <option>BINANCE</option><option>BYBIT</option><option>BITGET</option><option>GATE.IO</option>
                     <option>BINGX</option><option>KUCOIN</option><option>OKX</option><option>MEXC</option>
                 </select>
                 <input type="password" id="ak" placeholder="API KEY">
                 <input type="password" id="as" placeholder="SECRET KEY">
-                <input type="password" id="ap" placeholder="PASSPHRASE (OKX)">
+                <input type="password" id="ap" placeholder="PASSPHRASE (OKX/BITGET)">
                 <input type="number" id="tr-amount" placeholder="CAPITAL ($)">
                 <button id="txt-engine-btn" class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
             </div>
@@ -100,15 +101,15 @@
         <div id="scan" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="txt-scan-title" style="font-size:12px; color:var(--accent);">SCANNER INTERBANCAIRE</h3>
-                <input type="text" id="s-input" placeholder="SYMBOLE (ex: SOL)">
-                <button id="txt-scan-btn" class="btn-action" onclick="runFractalScan()">DÉTECTER POI/LIQUIDITÉ</button>
+                <input type="text" id="s-input" placeholder="SYMBOLE (ex: INJ, ONDO, SOL)">
+                <button id="txt-scan-btn" class="btn-action" onclick="runFractalScan()">LANCER SCAN SMC</button>
             </div>
         </div>
 
         <div id="macro" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="txt-macro-title" style="font-size:12px; color:var(--red);">🔥 ALERTE MACRO NEWS</h3>
-                <p id="txt-macro-desc" style="font-size:10px;">Récupération des news via Flux RSS.</p>
+                <h3 id="txt-macro-title" style="font-size:12px; color:var(--red);">🔥 FLUX MACRO RSS</h3>
+                <p id="txt-macro-desc" style="font-size:10px;">Synchronisation avec le calendrier institutionnel.</p>
                 <button class="btn-action" onclick="syncMacro()">CONSULTER LES NEWS</button>
             </div>
         </div>
@@ -124,16 +125,16 @@
                 </div>
             </div>
             <div class="card">
-                <h3 id="txt-faq-title" style="font-size:12px; color:var(--accent);">❓ FAQ STRATÉGIQUE</h3>
-                <div class="faq-item" onclick="toggleFaq(this)">1. Pourquoi Sweep ?<div class="faq-ans">Éliminer les retails avant l'institutionnel.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">2. PDH/PDL ?<div class="faq-ans">Liquidités majeures d'hier.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">3. Capital 25$ ?<div class="faq-ans">Le robot est calibré pour ces comptes.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">4. FVG ?<div class="faq-ans">Déséquilibre de prix à combler.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">5. Réintégration ?<div class="faq-ans">Confirmation du piège fini.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">6. Stop Loss ?<div class="faq-ans">Derrière la mèche de sweep.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">7. Sessions ?<div class="faq-ans">Londres & NY uniquement.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">8. News rouges ?<div class="faq-ans">Attendre 15min après annonce.</div></div>
-                <div class="faq-item" onclick="toggleFaq(this)">9. Sniper IFDA ?<div class="faq-ans">Algorithme de précision interbancaire.</div></div>
+                <h3 id="txt-faq-title" style="font-size:12px; color:var(--accent);">❓ FAQ STRATÉGIQUE (10 POINTS)</h3>
+                <div class="faq-item" onclick="toggleFaq(this)">1. Pourquoi Sweep ?<div class="faq-ans">Pour éliminer les retails avant le mouvement institutionnel.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">2. PDH/PDL ?<div class="faq-ans">Zones de liquidité majeure d'hier (High/Low).</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">3. Capital 25$ ?<div class="faq-ans">Le robot est calibré pour faire croître les petits comptes.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">4. FVG ?<div class="faq-ans">Déséquilibre (Gap) qui attire le prix comme un aimant.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">5. Réintégration ?<div class="faq-ans">Validation que le sweep était un piège.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">6. Stop Loss ?<div class="faq-ans">Toujours derrière la mèche qui a sweepé.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">7. Sessions ?<div class="faq-ans">Londres et NY uniquement (Fort volume).</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">8. News rouges ?<div class="faq-ans">Attendre 15min après la news pour trader.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)">9. Sniper IFDA ?<div class="faq-ans">Algorithme de livraison de prix interbancaire.</div></div>
                 <div class="faq-item" onclick="toggleFaq(this)">10. Devenir Leader ?<div class="faq-ans">Contactez @Leader_Nasser.</div></div>
             </div>
         </div>
@@ -143,108 +144,114 @@
         </div>
     </div>
 
-<script>
-    const tg = window.Telegram.WebApp; 
-    tg.expand();
+    <script>
+        const tg = window.Telegram.WebApp; tg.expand();
 
-    // 1. GESTION DE LA NAVIGATION (SANS TOUCHER AU HTML)
-    function showTab(id, el) {
-        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        if(el) el.classList.add('active');
-    }
-
-    // 2. LE CŒUR DU DASHBOARD : FONCTION D'ACTIVATION
-    function activateEngine() {
-        // Récupération des données sans rien simplifier
-        const ex = document.getElementById('ex-s').value;
-        const amt = document.getElementById('tr-amount').value;
-        const market = document.getElementById('market-type').value;
-        const ak = document.getElementById('ak').value;
-        const as = document.getElementById('as').value;
-        const ap = document.getElementById('ap').value;
-
-        // Préparation du colis pour Python
-        const payload = {
-            action: "START",
-            exchange: ex,
-            ak: ak,
-            as: as,
-            ap: ap,
-            amt: amt,
-            market: market
+        // MÉMOIRE LOCALE DU DASHBOARD
+        window.onload = function() {
+            if(localStorage.getItem('shield_active') === 'true') {
+                document.getElementById('bal-val').innerText = "$" + localStorage.getItem('shield_amt');
+                const st = document.getElementById('robot-status');
+                st.innerText = "ACTIVE (" + localStorage.getItem('shield_market') + ")";
+                st.style.color = "#00ff88";
+                document.getElementById('terminal').innerHTML = "> SESSION RESTAURÉE...<br>> SURVEILLANCE EN COURS.";
+            }
         };
 
-        // ENVOI AU BOT (TERMUX)
-        tg.sendData(JSON.stringify(payload));
-
-        // --- MISE À JOUR DE L'ÉCRAN DU DASHBOARD (ZONE DE CONTRÔLE) ---
-        
-        // Affiche le capital sur l'écran
-        document.getElementById('bal-val').innerText = "$" + parseFloat(amt || 0).toFixed(2);
-        
-        // Change le statut en vert et affiche le mode (Spot/Perp)
-        const statusEl = document.getElementById('robot-status');
-        statusEl.innerText = "ACTIVE (" + market + ")";
-        statusEl.style.color = "#00ff88"; // Ton vert brillant
-
-        // Met à jour le terminal de contrôle (l'écran noir)
-        const term = document.getElementById('terminal');
-        term.innerHTML = `
-            <span style="color:#00ff88">> SYSTÈME : CONNECTÉ À ${ex}</span><br>
-            <span style="color:#3b82f6">> CAPITAL DÉPLOYÉ : ${amt}$</span><br>
-            <span style="color:#ffd700">> MODE : ${market} ACTIVÉ</span><br>
-            <span>> SURVEILLANCE DES 30 ACTIFS EN COURS...</span>
-        `;
-
-        // BASCULE IMMÉDIATE SUR LE DASHBOARD POUR VOIR L'ÉCRAN
-        showTab('dash', document.getElementById('t-dash'));
-        
-        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-    }
-
-    // 3. FONCTION SCANNER (MAINTIENT LA LIAISON AVEC L'ÉCRAN)
-    function runFractalScan() {
-        const sym = document.getElementById('s-input').value.toUpperCase();
-        if(!sym) return alert("Entrez un symbole");
-        
-        tg.sendData(JSON.stringify({action: "SCAN_REEL", symbol: sym}));
-        
-        // Notification sur l'écran du Dashboard
-        const term = document.getElementById('terminal');
-        term.innerHTML += `<br><span style="color:#3b82f6">> SCAN MANUEL : ${sym} envoyé...</span>`;
-    }
-
-    // 4. AUTRES FONCTIONS INDISPENSABLES (CODE SECRET & HORLOGE)
-    function checkCode() {
-        const code = document.getElementById('accessCode').value.trim();
-        if(code === "197800") {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-interface').style.display = 'block';
+        function showTab(id, el) {
+            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if(el) el.classList.add('active');
         }
-    }
 
-    function toggleFaq(el) {
-        const a = el.querySelector('.faq-ans');
-        a.style.display = a.style.display === 'block' ? 'none' : 'block';
-    }
+        function activateEngine() {
+            const ex = document.getElementById('ex-s').value;
+            const amt = document.getElementById('tr-amount').value;
+            const market = document.getElementById('market-type').value;
 
-    function changeLanguage(lang) {
-        // Garde tes traductions ici si tu les as déjà
-        if(typeof translations !== 'undefined') {
-            const t = translations[lang] || translations.fr;
-            // ... (logique de traduction)
+            if(!amt) { alert("Veuillez entrer un capital."); return; }
+
+            const payload = {
+                action: "START",
+                exchange: ex,
+                ak: document.getElementById('ak').value,
+                as: document.getElementById('as').value,
+                ap: document.getElementById('ap').value,
+                amt: amt,
+                market: market
+            };
+
+            // SAUVEGARDE LOCALE
+            localStorage.setItem('shield_active', 'true');
+            localStorage.setItem('shield_amt', amt);
+            localStorage.setItem('shield_market', market);
+
+            // ENVOI AU BOT
+            tg.sendData(JSON.stringify(payload));
+
+            // MISE À JOUR ÉCRAN DASHBOARD
+            document.getElementById('bal-val').innerText = "$" + parseFloat(amt).toFixed(2);
+            const statusEl = document.getElementById('robot-status');
+            statusEl.innerText = "ACTIVE (" + market + ")";
+            statusEl.style.color = "#00ff88";
+            document.getElementById('terminal').innerHTML = `> CONNECTÉ À ${ex}<br>> CAPITAL : ${amt}$<br>> MODE : ${market}<br>> SNIPER DÉPLOYÉ.`;
+
+            showTab('dash', document.getElementById('t-dash'));
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         }
-    }
 
-    // Mise à jour de l'heure NY en temps réel
-    setInterval(() => {
-        const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
-        document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
-    }, 1000);
+        function runFractalScan() {
+            const sym = document.getElementById('s-input').value.toUpperCase();
+            if(!sym) return;
+            tg.sendData(JSON.stringify({action: "SCAN_REEL", symbol: sym}));
+            document.getElementById('terminal').innerHTML += `<br>> SCAN MANUEL : ${sym} envoyé...`;
+        }
 
-    // Animation de fond (Three.js) - Ne pas toucher
-    // (Conserve ton code Three.js ici s'il est présent)
-</script>
+        function syncMacro() {
+            tg.sendData(JSON.stringify({action: "GET_MACRO"}));
+            document.getElementById('terminal').innerHTML += `<br>> REQUÊTE RSS ENVOYÉE...`;
+        }
+
+        function checkCode() {
+            if(document.getElementById('accessCode').value.trim() === "197800") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-interface').style.display = 'block';
+            }
+        }
+
+        function toggleFaq(el) { const a = el.querySelector('.faq-ans'); a.style.display = a.style.display==='block'?'none':'block'; }
+
+        function changeLanguage(lang) {
+            // Logique de traduction simplifiée pour l'arabe
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
+
+        // HEURE NEW YORK
+        setInterval(() => {
+            const ny = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
+            document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
+            
+            // Gestion visuelle des Killzones
+            const h = ny.getHours();
+            document.querySelectorAll('.kz-box').forEach(b => b.classList.remove('active'));
+            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('active');
+            if (h >= 8 && h < 11) document.getElementById('kz-ny-am').classList.add('active');
+            if (h >= 13 && h < 16) document.getElementById('kz-ny-pm').classList.add('active');
+        }, 1000);
+
+        // FOND ANIMÉ
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const geo = new THREE.BufferGeometry(); const pts = [];
+        for(let i=0; i<2000; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
+        scene.add(mat); camera.position.z = 500;
+        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
+    </script>
 </body>
+                    </html>
+    
