@@ -40,14 +40,13 @@
 <body>
     <canvas id="algo-canvas"></canvas>
     <div id="login-screen">
-    <div class="card" style="width: 280px; text-align: center;">
-    <h2 id="txt-login-title" style="font-size: 11px; color: var(--accent);">IFDA ENGINE ACCESS</h2>
-    <input type="password" id="accessCode" placeholder="CODE SECRET" style="text-align:center;">
-    <button id="txt-login-btn" class="btn-action" onclick="let input = document.getElementById('accessCode') || document.querySelector('input[type=password]'); if(input.value.trim() === '197800'){ document.getElementById('login-screen').style.display='none'; document.getElementById('main-interface').style.display='block'; } else { alert('ERREUR : Verifiez le code saisi'); }">DÉVERROUILLER LE LABO</button>
+        <div class="card" style="width: 280px; text-align: center;">
+            <h2 id="txt-login-title" style="font-size: 11px; color: var(--accent);">IFDA ENGINE ACCESS</h2>
+            <input type="password" id="accessCode" placeholder="CODE SECRET">
+            <button id="txt-login-btn" class="btn-action" onclick="checkCode()">DÉVERROUILLER LE LABO</button>
+        </div>
     </div>
-         </div>
-    
- <div id="main-interface">
+    <div id="main-interface">
         <div class="lang-bar">
             <select onchange="changeLanguage(this.value)">
                 <option value="fr">🇫🇷 FR</option>
@@ -241,4 +240,4 @@
             document.getElementById('ny-time').innerText = "NY: " + ny.toTimeString().split(' ')[0];
             document.querySelectorAll('.kz-box').forEach(b => b.classList.remove('active'));
             if (h >= 20 || h < 0) document.getElementById('kz-asia').classList.add('active');
-            if (h >= 2 && h < 5) document.getElementB
+            if (h >= 2 && h < 5) document.getElementB                            
