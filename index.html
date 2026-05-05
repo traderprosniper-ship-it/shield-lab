@@ -44,8 +44,9 @@
     <h2 id="txt-login-title" style="font-size: 11px; color: var(--accent);">IFDA ENGINE ACCESS</h2>
     <input type="password" id="accessCode" placeholder="CODE SECRET" style="text-align:center;">
     <button id="txt-login-btn" class="btn-action" onclick="let input = document.getElementById('accessCode') || document.querySelector('input[type=password]'); if(input.value.trim() === '197800'){ document.getElementById('login-screen').style.display='none'; document.getElementById('main-interface').style.display='block'; } else { alert('ERREUR : Verifiez le code saisi'); }">DÉVERROUILLER LE LABO</button>
-            </div
-             </div>
+    </div>
+         </div>
+    
  <div id="main-interface">
         <div class="lang-bar">
             <select onchange="changeLanguage(this.value)">
