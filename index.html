@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SANGMELIMA SHIELD V45 - L'INTÉGRALE RÉPARÉE</title>
+    <title>IFDA PRO SHIELD - SANGMELIMA LAB</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; height: 100%; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100%; }
+        
+        /* IDENTITÉ VISUELLE IFDA 3D */
         #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); text-shadow: 0 0 20px rgba(59, 130, 246, 0.2); z-index: -1; pointer-events: none; letter-spacing: 20px; animation: pulseIfda 4s infinite ease-in-out; }
+        @keyframes pulseIfda { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; } 50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; } }
+
         #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-bottom: 120px; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); }
         .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
         .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
-        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; outline: none; font-size: 14px; }
+        
+        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 14px; }
         .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
         
-        .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 90px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; margin-top: 5px; text-align: left; }
-        .macro-radar { margin-top: 10px; border: 1px solid var(--gold); border-radius: 8px; padding: 8px; background: rgba(255, 215, 0, 0.05); text-align: left; }
-        #macro-feed { font-size: 9px; color: #ccc; height: 50px; overflow-y: auto; margin-top: 5px; }
-        .scan-bar { background: #050505; border: 1px solid #222; padding: 8px; border-radius: 6px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
-        #active-asset { color: var(--gold); font-family: monospace; font-weight: bold; }
-        
-        .kz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-        .kz-item { padding: 6px; background: #050505; border: 1px solid #222; border-radius: 6px; font-size: 8px; color: #444; text-align: center; }
-        .kz-active { border-color: var(--green); color: var(--green) !important; font-weight: bold; animation: pulseKz 2s infinite; }
-        @keyframes pulseKz { 0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;} }
+        /* MACRO NEWS & ROBOT ADVICE */
+        .macro-radar { margin-top: 10px; border: 1px solid var(--gold); border-radius: 8px; padding: 10px; background: rgba(255, 215, 0, 0.03); }
+        #macro-feed { font-size: 9px; color: #ccc; max-height: 60px; overflow-y: auto; margin-top: 5px; border-left: 2px solid var(--gold); padding-left: 8px; }
+        #robot-advice { font-size: 10px; font-weight: bold; color: var(--green); margin-top: 8px; text-transform: uppercase; background: rgba(0,255,136,0.1); padding: 5px; border-radius: 4px; text-align: center; }
 
-        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .member { background: #050505; padding: 12px; border-radius: 8px; border: 1px solid #222; font-size: 9px; text-align: center; color: var(--accent); }
-        .faq-item { border-bottom: 1px solid #1a1a1a; padding: 10px 0; cursor: pointer; }
-        .faq-q { font-size: 10px; font-weight: bold; color: var(--gold); }
-        .faq-a { display: none; font-size: 9px; color: #aaa; padding-top: 5px; }
-        .lang-bar { display: flex; justify-content: flex-end; padding: 10px; }
-        .lang-bar select { width: auto; background: transparent; color: var(--gold); border: none; font-size: 10px; }
+        .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; }
+        .pay-box { border: 2px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+        .kz-item { padding: 6px; background: #050505; border: 1px solid #222; border-radius: 6px; font-size: 8px; color: #444; text-align: center; }
+        .kz-active { border-color: var(--green); color: var(--green) !important; font-weight: bold; }
     </style>
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
+    <div id="ifda-bg-text">IFDA</div>
 
     <div id="main-interface">
-        <div class="lang-bar">
-            <select onchange="changeLanguage(this.value)">
+        <div style="display: flex; justify-content: flex-end; padding: 10px;">
+            <select style="width: auto; background: transparent; color: var(--gold); border: none; font-size: 10px;" onchange="changeLanguage(this.value)">
                 <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option><option value="ar">🇸🇦 AR</option>
             </select>
         </div>
@@ -55,119 +53,89 @@
         </div>
         <div class="nav-tabs" style="top:40px;">
             <div class="nav-item" onclick="showTab('inscr', this)">INSCRIPTION</div>
-            <div class="nav-item" onclick="syncMacro()">MACRO RSS</div>
+            <div class="nav-item" onclick="syncMacro()">SYNC MACRO</div>
             <div class="nav-item" onclick="showTab('prof', this)">TEAM/FAQ</div>
         </div>
 
         <div id="dash" class="content-section">
             <div class="card" style="text-align: center;">
-                <div id="txt-cap" style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
+                <div style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
                 <div id="bal-val" style="font-size: 45px; font-weight: bold; color: var(--gold); margin: 5px 0;">$0.00</div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div style="background:#050505; border-radius:10px; border:1px solid #222; padding:10px;">
-                        <small style="font-size:7px; color:#555;">PNL LIVE</small><br><b id="pnl-val" style="color:var(--green); font-size:18px;">+$0.00</b>
-                    </div>
-                    <div style="background:#050505; border-radius:10px; border:1px solid #222; padding:10px;">
-                        <small id="txt-stat" style="font-size:7px; color:#555;">STATUS</small><br><b id="robot-status" style="color:var(--red); font-size:12px;">INACTIF</b>
-                    </div>
+                    <div style="background:#050505; border-radius:10px; border:1px solid #222; padding:10px;"><small>PNL LIVE</small><br><b id="pnl-val" style="color:var(--green); font-size:20px;">+$0.00</b></div>
+                    <div style="background:#050505; border-radius:10px; border:1px solid #222; padding:10px;"><small>STATUS</small><br><b id="robot-status" style="color:var(--red); font-size:14px;">INACTIF</b></div>
                 </div>
 
-                <div style="margin-top:10px; border-top: 1px solid #111; padding-top: 10px;">
-                    <div id="ny-time" style="font-size: 14px; color: var(--accent); font-weight: bold; font-family: monospace;">NY: 00:00:00</div>
-                    <div class="kz-grid">
-                        <div class="kz-item" id="kz-asia">🌏 ASIAN</div>
-                        <div class="kz-item" id="kz-london">🇬🇧 LONDON</div>
-                        <div class="kz-item" id="kz-nyam">🇺🇸 NY AM</div>
-                        <div class="kz-item" id="kz-nypm">🇺🇸 NY PM</div>
-                    </div>
+                <div id="ny-time" style="font-size: 14px; color: var(--accent); margin-top: 15px; font-weight: bold;">NY: 00:00:00</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+                    <div class="kz-item" id="kz-asia">🌏 ASIAN</div><div class="kz-item" id="kz-london">🇬🇧 LONDON</div>
+                    <div class="kz-item" id="kz-nyam">🇺🇸 NY AM</div><div class="kz-item" id="kz-nypm">🇺🇸 NY PM</div>
                 </div>
-
-                <div class="scan-bar">
-                    <span style="font-size: 9px; color: var(--accent); font-weight: bold;">🔍 SCAN SMC :</span>
-                    <span id="active-asset">EN ATTENTE</span>
-                </div>
-
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
 
                 <div class="macro-radar">
-                    <div style="font-size: 9px; color: var(--gold); font-weight: bold;">📡 MACRO RADAR RSS</div>
-                    <div id="macro-feed">> En attente de synchronisation...</div>
+                    <div style="font-size: 9px; color: var(--gold); font-weight: bold; text-align: left;">📡 IFDA MACRO RADAR (RSS)</div>
+                    <div id="macro-feed">> En attente du flux Investing.com...</div>
+                    <div id="robot-advice">PRÊT À ANALYSER LE MARCHÉ...</div>
                 </div>
-            </div>
-        </div>
 
-        <div id="scan" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 style="font-size:12px; color:var(--accent);">SCANNER PRÉCISION 30 ACTIFS</h3>
-                <input type="text" id="s-input" placeholder="SYMBOLE (ex: SOL, BTC, XAUUSD)">
-                <button class="btn-action" onclick="runFractalScan()">DÉTECTER LIQUIDITÉ</button>
-            </div>
-        </div>
-
-        <div id="pay" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 style="font-size:12px; color:var(--gold);">MODES D'ACTIVATION</h3>
-                <div style="background:rgba(20,20,20,0.5); padding:10px; border-radius:8px; font-size:10px; margin-bottom:5px;">
-                    <b>USDT (TRC20)</b><br><code>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</code>
+                <div style="background: #050505; border: 1px solid #222; padding: 8px; border-radius: 6px; margin-top: 10px; display: flex; justify-content: space-between;">
+                    <span style="font-size: 9px; color: var(--accent); font-weight: bold;">🔍 SCAN :</span>
+                    <span id="active-asset" style="color: var(--gold); font-family: monospace;">STANDBY</span>
                 </div>
-                <div style="background:rgba(20,20,20,0.5); padding:10px; border-radius:8px; font-size:10px; margin-bottom:5px;">
-                    <b>ORANGE MONEY</b><br><code>+237 655509738</code>
-                </div>
-                <div style="background:rgba(20,20,20,0.5); padding:10px; border-radius:8px; font-size:10px;">
-                    <b>MTN MOMO</b><br><code>+237 682155479</code>
-                </div>
+                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
                 <h3 style="font-size:11px; color:var(--accent); text-align:center;">🛡️ CONFIGURATION LABO</h3>
-                <select id="market-type">
-                    <option value="SPOT">SPOT (Crypto)</option>
-                    <option value="PERP">PERPÉTUEL (Levier)</option>
-                    <option value="FOREX_INDICES">FOREX & INDICES</option>
-                </select>
-                <select id="ex-s">
-                    <option value="EXNESS">EXNESS</option><option value="OKX">OKX</option>
-                    <option value="BINGX">BINGX</option><option value="BINANCE">BINANCE</option>
-                    <option value="BYBIT">BYBIT</option><option value="KUCOIN">KUCOIN</option>
-                    <option value="MEXC">MEXC</option><option value="BITGET">BITGET</option>
-                </select>
+                <select id="market-type"><option value="SPOT">SPOT</option><option value="PERP">PERPETUAL</option><option value="FOREX">FOREX</option></select>
+                <select id="ex-s"><option value="EXNESS">EXNESS</option><option value="BINGX">BINGX</option><option value="OKX">OKX</option><option value="BINANCE">BINANCE</option></select>
                 <input type="password" id="ak" placeholder="API KEY / ID COMPTE">
                 <input type="password" id="as" placeholder="SECRET KEY / PASSWORD">
-                <input type="number" id="tr-amount" placeholder="CAPITAL ($)">
+                <input type="password" id="ap" placeholder="PASSPHRASE (OKX)">
+                <input type="number" id="tr-amount" placeholder="MONTANT PAR TRADE ($)">
                 <button class="btn-action" onclick="activateEngine()">🚀 LANCER LE BOUCLIER</button>
+            </div>
+        </div>
+
+        <div id="pay" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="font-size:12px; color:var(--gold);">MODES D'ACTIVATION</h3>
+                <div class="pay-box" style="border-color: var(--green);"><b>🟢 USDT (TRC20)</b><br><code>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</code></div>
+                <div class="pay-box" style="border-color: #ff8800;"><b>🟠 ORANGE MONEY</b><br><code>+237 655509738</code></div>
+                <div class="pay-box" style="border-color: #ffcc00;"><b>🟡 MTN MOMO</b><br><code>+237 682155479</code></div>
             </div>
         </div>
 
         <div id="prof" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="font-size:11px; color:var(--accent);">SHIELD TEAM LAB</h3>
+                <h3 style="font-size:11px; color:var(--accent);">SHIELD TEAM</h3>
                 <div class="team-grid">
                     <div class="member">LEADER NASSER</div><div class="member">ALBERT (TOGO)</div>
                     <div class="member">MARIE (GUAD)</div><div class="member">BERTRAND (DLA)</div>
-                    <div class="member">SÉBASTIEN (BENIN)</div><div class="member">FRANCO (BENIN)</div>
-                    <div class="member">EVA (ANALYSTE)</div><div class="member">JULIEN (DEV)</div>
-                    <div class="member">OMAR (SENEGAL)</div><div class="member">SOPHIE (FRANCE)</div>
+                    <div class="member">SÉBASTIEN (BENIN)</div><div class="member">EVA (ANALYSTE)</div>
                 </div>
             </div>
             <div class="card">
-                <h3 style="font-size:11px; color:var(--gold);">FAQ STRATÉGIQUE</h3>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">1. Pourquoi le Sweep PDH/PDL ?</div>
-                    <div class="faq-a">Pour capturer la liquidité institutionnelle avant le mouvement réel.</div>
-                </div>
-                <div class="faq-item" onclick="toggleFaq(this)">
-                    <div class="faq-q">2. Pourquoi 25$ de capital ?</div>
-                    <div class="faq-a">Pour prouver que la précision SMC bat le gros capital sans stratégie.</div>
-                </div>
+                <h3 style="font-size:11px; color:var(--gold);">FAQ STRATÉGIQUE (10 POINTS)</h3>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">1. Pourquoi le Sweep PDH/PDL ?</div><div class="faq-a">Éliminer les retails avant l'institutionnel.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">2. Utilité du FVG ?</div><div class="faq-a">Déséquilibre servant d'aimant au prix.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">3. L'Order Block (OB) ?</div><div class="faq-a">Zone de forte accumulation bancaire.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">4. MSS vs BOS ?</div><div class="faq-a">Retournement vs Continuation.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">5. Target Liquidity ?</div><div class="faq-a">Viser les zones opposées (BSL/SSL).</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">6. Pourquoi 25$ ?</div><div class="faq-a">Démontrer la puissance du risk management.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">7. Mode Perpétuel ?</div><div class="faq-a">Exploiter le levier sur sweep.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">8. Mode Spot ?</div><div class="faq-a">Accumulation d'actifs réels.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">9. Risk Management ?</div><div class="faq-a">Stop Loss chirurgical derrière la mèche.</div></div>
+                <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">10. Automation ?</div><div class="faq-a">Scanner 30 actifs sans émotion.</div></div>
             </div>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp; tg.expand();
-        const assets = ["NAS100", "US30", "XAUUSD", "BTCUSD", "ETHUSD", "SOLUSD", "XAGUSD", "GER40", "ONDO", "FET"];
+        const assets = ["NAS100", "US30", "XAUUSD", "BTCUSD", "ETHUSD", "SOLUSD", "XAGUSD", "GER40", "FET", "PEPE"];
         let assetIdx = 0;
 
         function showTab(id, el) {
@@ -177,26 +145,28 @@
             if(el) el.classList.add('active');
         }
 
-        function toggleFaq(el) {
-            const a = el.querySelector('.faq-a');
-            a.style.display = (a.style.display === 'block') ? 'none' : 'block';
-        }
+        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display==='block')?'none':'block'; }
 
         function syncMacro() {
-            const feed = document.getElementById('macro-feed');
-            feed.innerHTML = "<div style='color:var(--gold)'>[SYNC] Flux RSS Macro en cours...</div>";
+            const f = document.getElementById('macro-feed');
+            const a = document.getElementById('robot-advice');
+            f.innerHTML = "[SYNC] Flux Investing.com activé...";
             setTimeout(() => {
-                feed.innerHTML = "<div style='color:var(--red)'>🔴 [HIGH] USD - CPI Data Today 14:30</div>";
+                f.innerHTML = "🔴 [HIGH] USD Core CPI attendu à 14:30<br>🟠 [MED] GBP GDP News";
+                a.innerHTML = "IFDA ADVICE: ATTENDRE LE CPI AVANT TOUTE ENTRÉE";
+                a.style.color = "var(--red)";
             }, 1500);
+            tg.sendData(JSON.stringify({action: "GET_MACRO"}));
         }
 
         function activateEngine() {
             const amt = document.getElementById('tr-amount').value;
-            if(!amt) return alert("Capital requis");
+            if(!amt) return;
             localStorage.setItem('shield_active', 'true');
             document.getElementById('bal-val').innerText = "$" + amt;
             document.getElementById('robot-status').innerText = "VIGILANT";
             document.getElementById('robot-status').style.color = "var(--green)";
+            tg.sendData(JSON.stringify({ action: "START", market: document.getElementById('market-type').value, amt, exchange: document.getElementById('ex-s').value, ak: document.getElementById('ak').value, as: document.getElementById('as').value, ap: document.getElementById('ap').value }));
             showTab('dash');
         }
 
@@ -218,7 +188,6 @@
             }
         }, 1000);
 
-        // THREE.JS BACKGROUND
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
@@ -231,4 +200,5 @@
         function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
     </script>
 </body>
-</html>
+    </html>
+    
