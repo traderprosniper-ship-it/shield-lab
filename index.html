@@ -85,19 +85,37 @@
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <select id="market-type"><option value="SPOT">SPOT (Achat Réel)</option><option value="PERP">PERPÉTUEL (Levier)</option></select>
-                <select id="ex-s">
-                    <option value="BINGX">BINGX</option><option value="OKX">OKX</option>
-                    <option value="BINANCE">BINANCE</option><option value="BYBIT">BYBIT</option>
-                    <option value="BITGET">BITGET</option><option value="KUCOIN">KUCOIN</option>
-                    <option value="MEXC">MEXC</option><option value="GATE.IO">GATE.IO</option>
-                </select>
-                <input type="password" id="ak" placeholder="API KEY">
-                <input type="password" id="as" placeholder="SECRET KEY">
-                <input type="password" id="ap" placeholder="PASSPHRASE (OKX)">
-                <input type="number" id="tr-amount" placeholder="MONTANT ($)">
-                <button id="btn-launch" class="btn-action" onclick="activateEngine()">LANCER LE BOUCLIER</button>
+    <h3 style="font-size:11px; color:var(--accent); text-align:center;">🛡️ CONFIGURATION DU LABO SANGMELIMA</h3>
+    
+    <select id="market-type" style="margin-bottom: 8px;">
+        <option value="SPOT">MOTEUR SPOT (Crypto)</option>
+        <option value="PERP">MOTEUR PERPÉTUEL (Levier Crypto)</option>
+        <option value="FOREX_INDICES">MOTEUR FOREX & INDICES (Exness/Broker)</option>
+    </select>
+
+    <select id="ex-s" style="margin-bottom: 8px;">
+        <option value="OKX">OKX</option>
+        <option value="BINGX">BINGX</option>
+        <option value="EXNESS">EXNESS</option>
+        <option value="BINANCE">BINANCE</option>
+        <option value="BYBIT">BYBIT</option>
+        <option value="KUCOIN">KUCOIN</option>
+        <option value="MEXC">MEXC</option>
+        <option value="BITGET">BITGET</option>
+        <option value="GATE.IO">GATE.IO</option>
+    </select>
+
+    <input type="password" id="ak" placeholder="API KEY / ID COMPTE (Exness)">
+    <input type="password" id="as" placeholder="SECRET KEY / MOT DE PASSE (Exness)">
+    <input type="password" id="ap" placeholder="PASSPHRASE (Obligatoire pour OKX)">
+    
+    <input type="number" id="tr-amount" placeholder="MONTANT PAR TRADE ($)">
+    
+    <button id="btn-launch" class="btn-action" onclick="activateEngine()" style="margin-top: 10px;">
+        🚀 DÉPLOYER LE CERVEAU VIVANT
+    </button>
             </div>
+            
         </div>
 
         <div id="prof" class="content-section" style="display:none;">
