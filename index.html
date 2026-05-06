@@ -217,21 +217,29 @@
         }
 
         async function syncMacro() {
-            const container = document.getElementById('macro-feed-container');
-            container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Analyse du Flux Global...</span>";
-            try {
-                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.forexfactory.com/ff_calendar_thisweek.xml');
-                const data = await response.json();
-                let htmlContent = "";
-                data.items.slice(0, 10).forEach(item => {
-                    let impactColor = item.description.includes('High') ? "var(--red)" : (item.description.includes('Medium') ? "var(--gold)" : "var(--green)");
-                    htmlContent += `<div class="news-entry"><b>${item.pubDate.split(' ')[1]}</b>: ${item.title}</div>`;
-                });
-                container.innerHTML = htmlContent || "Pas de news majeures.";
-            } catch (error) {
-                container.innerHTML = "<span style='color:var(--red)'>[SYSTEM] Erreur Flux.</span>";
-            }
-        }
+    const container = document.getElementById('macro-feed-container');
+    container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Analyse via Serveur Labo...</span>";
+    
+    try {
+        // On appelle ton propre serveur Python sur la route /macro
+        const response = await fetch(`http://192.168.43.44:5000/macro`);
+        const data = await response.json();
+        
+        let htmlContent = "";
+        data.items.slice(0, 10).forEach(item => {
+            let impact = item.description.includes('High') ? "var(--red)" : "var(--gold)";
+            htmlContent += `
+                <div class="news-entry">
+                    <span style="color:${impact}">[NEWS]</span> 
+                    <b>${item.pubDate.split(' ')[1]}</b>: ${item.title}
+                </div>`;
+        });
+        container.innerHTML = htmlContent || "Pas de news majeures.";
+    } catch (error) {
+        container.innerHTML = "<span style='color:var(--red)'>[SYSTEM] Erreur de liaison Serveur.</span>";
+    }
+}
+
 
         function activateEngine() {
             const amt = document.getElementById('tr-amt').value; if(!amt) return;
@@ -269,4 +277,3 @@
     </script>
 </body>
                                                                                                                                                         </html>
-    
