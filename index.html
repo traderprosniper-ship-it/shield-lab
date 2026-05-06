@@ -207,22 +207,46 @@
             }, 1500);
         }
 
-        async function syncMacro() {
-            const container = document.getElementById('macro-feed-container');
-            container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Récupération des news...</span>";
-            try {
-                const response = await fetch('https://currency-circles-poison-pants.trycloudflare.com/get_news');
-                const newsData = await response.json();
-                let htmlContent = "";
-                newsData.forEach(item => {
-                    const color = item.impact === 'High' ? 'var(--red)' : (item.impact === 'Medium' ? 'var(--gold)' : 'var(--green)');
-                    htmlContent += `<div class="news-entry" onclick="alert('${item.event}')"><span style="color:${color}">[${item.impact}]</span> <b>${item.currency}</b>: ${item.event} (${item.time})</div>`;
-                });
-                container.innerHTML = htmlContent;
-            } catch (error) {
-                container.innerHTML = "<span style='color:var(--red)'>[ERREUR] Impossible de joindre Termux</span>";
+      async function syncMacro() {
+    const container = document.getElementById('macro-feed-container');
+    container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Analyse du Flux Global...</span>";
+    
+    try {
+        // Utilisation d'une API de news économique publique et gratuite
+        // Pour ton test, on utilise un flux RSS converti en JSON (plus stable pour le Cloud)
+        const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.forexfactory.com/ff_calendar_thisweek.xml');
+        const data = await response.json();
+        
+        let htmlContent = "";
+        
+        // On filtre et on affiche les news
+        data.items.slice(0, 10).forEach(item => {
+            // Détection simplifiée de l'impact (High/Medium/Low)
+            let impactColor = "var(--green)";
+            let impactLabel = "[Low]";
+            
+            if (item.description.includes('High')) {
+                impactColor = "var(--red)";
+                impactLabel = "[High]";
+            } else if (item.description.includes('Medium')) {
+                impactColor = "var(--gold)";
+                impactLabel = "[Medium]";
             }
+
+            htmlContent += `
+                <div class="news-entry" onclick="alert('${item.title}')">
+                    <span style="color:${impactColor}">${impactLabel}</span> 
+                    <b>${item.pubDate.split(' ')[1]}</b>: ${item.title}
+                </div>`;
+        });
+        
+        container.innerHTML = htmlContent || "Pas de news majeures pour le moment.";
+    } catch (error) {
+        // Si le cloud échoue, on affiche un message pro au lieu d'une erreur technique
+        container.innerHTML = "<span style='color:var(--red)'>[SYSTEM] Radar Macro en maintenance...</span>";
+    }
         }
+        
 
         function activateEngine() {
             const amt = document.getElementById('tr-amt').value; if(!amt) return;
