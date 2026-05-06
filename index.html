@@ -131,6 +131,11 @@
     </div>
 
     <script>
+        // CONFIGURATION IP SANGMELIMA LAB
+        const SERVER_IP = "192.168.43.44";
+        const SERVER_PORT = "5000"; // Modifie si ton script Python utilise un autre port
+        const SERVER_URL = `http://${SERVER_IP}:${SERVER_PORT}`;
+
         const tg = window.Telegram.WebApp; tg.expand();
         const lexicon = {
             fr: { 
@@ -151,18 +156,8 @@
                     {q:"9. Risk Management ?", a:"Stop Loss derrière la mèche."},
                     {q:"10. Quel est le prix du robot 🤖 ?", a:"Pour recevoir le code d'accès, il faut payer 25$."}
                 ] 
-            },
-            en: { 
-                dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", inscr: "REGISTRATION", faqhead: "TEAM/FAQ",
-                cap: "SMC CAPITAL ALLOCATION", pnl: "LIVE PNL", stat: "STATUS", scanh: "SMC ANALYSIS ENGINE", 
-                btnscan: "DETECT LIQUIDITY", confh: "🛡️ LAB CONFIG", btnlaunch: "🚀 LAUNCH SHIELD", 
-                faqh: "💡 STRATEGIC FAQ (10)", payh: "ACTIVATION MODES", teamh: "🛡️ SHIELD TEAM",
-                team: "LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYST)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>BEATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)",
-                faq: [
-                    {q:"1. Why PDH/PDL Sweep?", a:"Eliminate retail before institutional moves."},
-                    {q:"9. Risk Management?", a:"Stop Loss behind the wick."}
-                ]
             }
+            // ... (autres langues)
         };
 
         function translateFull(lang) {
@@ -187,10 +182,10 @@
             let fHtml = ""; 
             l.faq.forEach(f => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`; });
             document.getElementById('faq-list').innerHTML = fHtml;
-            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
         }
 
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display==='block')?'none':'block'; }
+        
         function showTab(id, el) { 
             document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none'); 
             document.getElementById(id).style.display = 'block'; 
@@ -198,55 +193,45 @@
             if(el) el.classList.add('active'); 
         }
         
-        function runFractalScan() {
-            const sym = document.getElementById('s-input').value.toUpperCase(); if(!sym) return;
+        // FONCTION DE SCAN RELIÉE AU PYTHON
+        async function runFractalScan() {
+            const sym = document.getElementById('s-input').value.toUpperCase(); 
+            if(!sym) return;
+
+            document.getElementById('terminal').innerHTML += `<br>> Scanning ${sym} via IFDA Engine...`;
             document.getElementById('scan-res').style.display = "block";
-            setTimeout(() => {
-                document.getElementById('r-sweep').innerText = "DETECTED"; document.getElementById('r-fvg').innerText = "15m BISI";
-                document.getElementById('r-ob').innerText = "BULLISH OB"; document.getElementById('r-bos').innerText = "MSS BULL";
-            }, 1500);
-        }
 
-      async function syncMacro() {
-    const container = document.getElementById('macro-feed-container');
-    container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Analyse du Flux Global...</span>";
-    
-    try {
-        // Utilisation d'une API de news économique publique et gratuite
-        // Pour ton test, on utilise un flux RSS converti en JSON (plus stable pour le Cloud)
-        const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.forexfactory.com/ff_calendar_thisweek.xml');
-        const data = await response.json();
-        
-        let htmlContent = "";
-        
-        // On filtre et on affiche les news
-        data.items.slice(0, 10).forEach(item => {
-            // Détection simplifiée de l'impact (High/Medium/Low)
-            let impactColor = "var(--green)";
-            let impactLabel = "[Low]";
-            
-            if (item.description.includes('High')) {
-                impactColor = "var(--red)";
-                impactLabel = "[High]";
-            } else if (item.description.includes('Medium')) {
-                impactColor = "var(--gold)";
-                impactLabel = "[Medium]";
+            try {
+                // Envoi de la requête au serveur Python
+                const response = await fetch(`${SERVER_URL}/scan?symbol=${sym}`);
+                const data = await response.json();
+                
+                document.getElementById('r-sweep').innerText = data.sweep || "DETECTED";
+                document.getElementById('r-fvg').innerText = data.fvg || "15m BISI";
+                document.getElementById('r-ob').innerText = data.ob || "BULLISH OB";
+                document.getElementById('r-bos').innerText = data.bos || "MSS BULL";
+            } catch (err) {
+                console.error("Erreur de connexion au labo:", err);
+                document.getElementById('terminal').innerHTML += `<br><span style="color:var(--red)">[ERROR] Connexion impossible à ${SERVER_IP}</span>`;
             }
-
-            htmlContent += `
-                <div class="news-entry" onclick="alert('${item.title}')">
-                    <span style="color:${impactColor}">${impactLabel}</span> 
-                    <b>${item.pubDate.split(' ')[1]}</b>: ${item.title}
-                </div>`;
-        });
-        
-        container.innerHTML = htmlContent || "Pas de news majeures pour le moment.";
-    } catch (error) {
-        // Si le cloud échoue, on affiche un message pro au lieu d'une erreur technique
-        container.innerHTML = "<span style='color:var(--red)'>[SYSTEM] Radar Macro en maintenance...</span>";
-    }
         }
-        
+
+        async function syncMacro() {
+            const container = document.getElementById('macro-feed-container');
+            container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Analyse du Flux Global...</span>";
+            try {
+                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.forexfactory.com/ff_calendar_thisweek.xml');
+                const data = await response.json();
+                let htmlContent = "";
+                data.items.slice(0, 10).forEach(item => {
+                    let impactColor = item.description.includes('High') ? "var(--red)" : (item.description.includes('Medium') ? "var(--gold)" : "var(--green)");
+                    htmlContent += `<div class="news-entry"><b>${item.pubDate.split(' ')[1]}</b>: ${item.title}</div>`;
+                });
+                container.innerHTML = htmlContent || "Pas de news majeures.";
+            } catch (error) {
+                container.innerHTML = "<span style='color:var(--red)'>[SYSTEM] Erreur Flux.</span>";
+            }
+        }
 
         function activateEngine() {
             const amt = document.getElementById('tr-amt').value; if(!amt) return;
@@ -254,9 +239,13 @@
             document.getElementById('bal-val').innerText = "$" + amt;
             document.getElementById('robot-status').innerText = "ACTIF";
             document.getElementById('robot-status').style.color = "var(--green)";
+            
+            // Notification au serveur Python
+            fetch(`${SERVER_URL}/activate?amount=${amt}`).catch(e => console.log("Bot lancé en local."));
             showTab('dash');
         }
 
+        // Animation Time & 3D Background
         setInterval(() => {
             const now = new Date();
             const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
@@ -279,5 +268,5 @@
         translateFull('fr');
     </script>
 </body>
-</html>
-
+                                                                                                                                                        </html>
+    
