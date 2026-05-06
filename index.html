@@ -20,8 +20,6 @@
         input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; outline: none; }
         .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
         .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; text-align: left; }
-        .macro-radar { margin-top: 10px; border: 1px solid var(--gold); border-radius: 8px; padding: 10px; background: rgba(255, 215, 0, 0.03); text-align: left; }
-        .res-box { background: #050505; border: 1px solid #1a1a1a; padding: 8px; border-radius: 6px; font-size: 9px; text-align: center; }
         .kz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
         .kz-unit { padding: 8px; background: #050505; border: 1px solid #222; border-radius: 6px; font-size: 8px; color: #444; text-align: center; }
         .kz-on { border-color: var(--green); color: var(--green) !important; font-weight: bold; }
@@ -65,10 +63,6 @@
                     <div class="kz-unit" id="kz-nyam">🇺🇸 NY AM</div><div class="kz-unit" id="kz-nypm">🇺🇸 NY PM</div>
                 </div>
                 <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
-                <div class="macro-radar">
-                    <div style="font-size: 9px; color: var(--gold); font-weight: bold;" id="t-macro-head">📡 MACRO RADAR</div>
-                    <div id="macro-feed" style="font-size: 8px; color: #ccc;">> En attente du flux RSS...</div>
-                </div>
             </div>
         </div>
 
@@ -101,7 +95,11 @@
             <div class="card">
                 <h3 id="t-conf-h" style="font-size:11px; color:var(--accent); text-align:center;">🛡️ CONFIG LABO</h3>
                 <select id="m-type"><option value="SPOT">SPOT</option><option value="PERP">PERPETUAL</option><option value="FOREX">FOREX</option></select>
-                <select id="e-s"><option value="EXNESS">EXNESS</option><option value="OKX">OKX</option><option value="BINGX">BINGX</option><option value="MEXC">MEXC</option><option value="BYBIT">BYBIT</option><option value="BITGET">BITGET</option><option value="KUCOIN">KUCOIN</option></select>
+                <select id="e-s">
+                    <option value="EXNESS">EXNESS</option><option value="OKX">OKX</option>
+                    <option value="BINGX">BINGX</option><option value="MEXC">MEXC</option>
+                    <option value="BYBIT">BYBIT</option><option value="BITGET">BITGET</option><option value="KUCOIN">KUCOIN</option>
+                </select>
                 <input type="password" id="ak" placeholder="API KEY">
                 <input type="password" id="as" placeholder="SECRET KEY">
                 <input type="password" id="ap" placeholder="PASSPHRASE (OKX)">
@@ -125,23 +123,59 @@
     <script>
         const tg = window.Telegram.WebApp; tg.expand();
         const lexicon = {
-            fr: { dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", inscr: "INSCRIPTION", teamh: "🛡️ SHIELD TEAM", team: "LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYSTE)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>BÉATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)", macro: "MACRO RSS", faqhead: "TEAM/FAQ", cap: "SMC CAPITAL ALLOCATION", pnl: "PNL LIVE", stat: "STATUS", scanh: "MOTEUR ANALYSE SMC", btnscan: "DÉTECTER LIQUIDITÉ", confh: "🛡️ CONFIG LABO", btnlaunch: "🚀 LANCER LE BOUCLIER", faqh: "💡 FAQ STRATÉGIQUE (10)", payh: "MODES D'ACTIVATION",
-                faq: [{q:"1. Pourquoi le Sweep PDH/PDL ?", a:"Éliminer les retails avant l'institutionnel."}, {q:"2. Utilité du FVG ?", a:"Déséquilibre servant d'aimant au prix."}, {q:"3. L'Order Block (OB) ?", a:"Zone de forte accumulation bancaire."}, {q:"9. Risk Management ?", a:"Stop Loss derrière la mèche."}] },
-            en: { dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", inscr: "REGISTRATION", teamh: "🛡️ SHIELD TEAM", team: "LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYST)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>BEATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)", macro: "MACRO RSS", faqhead: "TEAM/FAQ", cap: "SMC CAPITAL ALLOCATION", pnl: "LIVE PNL", stat: "STATUS", scanh: "SMC ANALYSIS ENGINE", btnscan: "DETECT LIQUIDITY", confh: "🛡️ LAB CONFIG", btnlaunch: "🚀 LAUNCH SHIELD", faqh: "💡 STRATEGIC FAQ (10)", payh: "ACTIVATION MODES",
-                faq: [{q:"1. Why PDH/PDL Sweep?", a:"Eliminate retail before institutional moves."}, {q:"2. FVG Utility?", a:"Imbalance acting as a price magnet."}, {q:"3. Order Block (OB)?", a:"Strong bank accumulation zone."}, {q:"9. Risk Management?", a:"Stop Loss behind the wick."}] }
+            fr: { 
+                dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", inscr: "INSCRIPTION", faqhead: "TEAM/FAQ", 
+                cap: "SMC CAPITAL ALLOCATION", pnl: "PNL LIVE", stat: "STATUS", scanh: "MOTEUR ANALYSE SMC", 
+                btnscan: "DÉTECTER LIQUIDITÉ", confh: "🛡️ CONFIG LABO", btnlaunch: "🚀 LANCER LE BOUCLIER", 
+                faqh: "💡 FAQ STRATÉGIQUE (10)", payh: "MODES D'ACTIVATION", teamh: "🛡️ SHIELD TEAM",
+                team: "LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYSTE)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>BÉATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)",
+                faq: [
+                    {q:"1. Pourquoi le Sweep PDH/PDL ?", a:"Éliminer les retails avant l'institutionnel."},
+                    {q:"2. Utilité du FVG ?", a:"Déséquilibre servant d'aimant au prix."},
+                    {q:"3. L'Order Block (OB) ?", a:"Zone de forte accumulation bancaire."},
+                    {q:"4. Pourquoi dois-je utiliser ce robot 🤖 ?", a:"Éliminer les retails, suis les traces institutionnelles pour éviter de devenir la liquidité."},
+                    {q:"5. Pourrai-je commencer avec 10$ ?", a:"C'est le minimum requis pour utiliser ce bot."},
+                    {q:"6. Que signifie IFDA ?", a:"INTERBANK FLOW DELIVERY ALGO."},
+                    {q:"7. Qui sommes-nous ?", a:"Nous sommes un groupe de jeunes traders mi-institutionnels."},
+                    {q:"8. Que fait exactement l'IFDA ?", a:"Exécute les trades à ta place grâce aux API."},
+                    {q:"9. Risk Management ?", a:"Stop Loss derrière la mèche."},
+                    {q:"10. Quel est le prix du robot 🤖 ?", a:"Pour recevoir le code d'accès, il faut payer 25$."}
+                ] 
+            },
+            en: { 
+                dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", inscr: "REGISTRATION", faqhead: "TEAM/FAQ",
+                cap: "SMC CAPITAL ALLOCATION", pnl: "LIVE PNL", stat: "STATUS", scanh: "SMC ANALYSIS ENGINE", 
+                btnscan: "DETECT LIQUIDITY", confh: "🛡️ LAB CONFIG", btnlaunch: "🚀 LAUNCH SHIELD", 
+                faqh: "💡 STRATEGIC FAQ (10)", payh: "ACTIVATION MODES", teamh: "🛡️ SHIELD TEAM",
+                team: "LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYST)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>BEATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)",
+                faq: [
+                    {q:"1. Why PDH/PDL Sweep?", a:"Eliminate retail before institutional moves."},
+                    {q:"9. Risk Management?", a:"Stop Loss behind the wick."}
+                ]
+            }
         };
 
         function translateFull(lang) {
             const l = lexicon[lang] || lexicon.fr;
-            document.getElementById('n-dash').innerText = l.dash; document.getElementById('n-scan').innerText = l.scan;
-            document.getElementById('n-pay').innerText = l.pay; document.getElementById('n-inscr').innerText = l.inscr;
-            document.getElementById('n-prof').innerText = l.faqhead; document.getElementById('t-cap').innerText = l.cap;
-            document.getElementById('t-pnl').innerText = l.pnl; document.getElementById('t-stat').innerText = l.stat;
-            document.getElementById('t-scan-h').innerText = l.scanh; document.getElementById('t-btn-scan').innerText = l.btnscan;
-            document.getElementById('t-conf-h').innerText = l.confh; document.getElementById('t-btn-launch').innerText = l.btnlaunch;
-            document.getElementById('t-faq-h').innerText = l.faqh; document.getElementById('t-pay-h').innerText = l.payh;
-            document.getElementById('t-team-h').innerText = l.teamh; document.getElementById('t-team-list').innerHTML = l.team;
-            let fHtml = ""; l.faq.forEach(f => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`; });
+            document.getElementById('n-dash').innerText = l.dash; 
+            document.getElementById('n-scan').innerText = l.scan;
+            document.getElementById('n-pay').innerText = l.pay; 
+            document.getElementById('n-inscr').innerText = l.inscr;
+            document.getElementById('n-prof').innerText = l.faqhead; 
+            document.getElementById('t-cap').innerText = l.cap;
+            document.getElementById('t-pnl').innerText = l.pnl; 
+            document.getElementById('t-stat').innerText = l.stat;
+            document.getElementById('t-scan-h').innerText = l.scanh; 
+            document.getElementById('t-btn-scan').innerText = l.btnscan;
+            document.getElementById('t-conf-h').innerText = l.confh; 
+            document.getElementById('t-btn-launch').innerText = l.btnlaunch;
+            document.getElementById('t-faq-h').innerText = l.faqh; 
+            document.getElementById('t-pay-h').innerText = l.payh;
+            document.getElementById('t-team-h').innerText = l.teamh; 
+            document.getElementById('t-team-list').innerHTML = l.team;
+            
+            let fHtml = ""; 
+            l.faq.forEach(f => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`; });
             document.getElementById('faq-list').innerHTML = fHtml;
             document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
         }
@@ -194,4 +228,5 @@
         translateFull('fr');
     </script>
 </body>
-</html>
+    </html>
+    
