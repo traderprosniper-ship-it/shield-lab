@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>IFDA PRO SHIELD V65 - FULL MULTILINGUAL</title>
+    <title>IFDA PRO SHIELD V65 - GLOBAL MASTER FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
     :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
     body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; pointer-events: none; }
+    
     .lang-selector { position: fixed; top: 8px; right: 8px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 3px 6px; font-size: 10px; cursor: pointer; }
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
     #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
+    
     .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5000; width: 100%; }
     .nav-item { padding: 15px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; text-transform: uppercase; border-bottom: 2px solid transparent; }
     .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
     input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; text-align: center; outline: none; }
     .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+    
     .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; }
     .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 9px; margin-top: 10px; }
     .member { border-left: 2px solid var(--accent); padding-left: 8px; margin-bottom: 5px; text-align: left; }
@@ -44,35 +48,7 @@
     <div id="main-interface">
         <div class="nav-tabs">
             <div id="m-dash" class="nav-item active" onclick="showTab('dash', this)">DASHBOARD</div>
-            <div id="scan" class="content-section" style="display:none;">
-    <div class="card">
-        <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
-        <div class="live-screen" style="height: 150px; border-color: var(--accent);">
-            <div id="scan-status" style="color: var(--accent); font-weight: bold; margin-bottom: 10px;">> SCANNING MARKET LIQUIDITY...</div>
-            <div id="scanner-list" style="font-size: 9px; line-height: 1.5;">
-                <div style="display:flex; justify-content:space-between;"><span>XAUUSD:</span> <span style="color:var(--gold)">SEARCHING SWEEP...</span></div>
-                <div style="display:flex; justify-content:space-between;"><span>BTCUSDT:</span> <span style="color:var(--gold)">WAITING REJECTION...</span></div>
-                <div style="display:flex; justify-content:space-between;"><span>ETHUSDT:</span> <span style="color:var(--green)">ANALYZING FVG...</span></div>
-            </div>
-        </div>
-        <p id="t-wait" style="font-size: 9px; margin-top: 10px; color: #555;">En attente de sweep institutionnel...</p>
-    </div>
-            </div>
-            <div id="scan" class="content-section" style="display:none;">
-    <div class="card">
-        <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
-        <div class="live-screen" style="height: 150px; border-color: var(--accent);">
-            <div id="scan-status" style="color: var(--accent); font-weight: bold; margin-bottom: 10px;">> SCANNING MARKET LIQUIDITY...</div>
-            <div id="scanner-list" style="font-size: 9px; line-height: 1.5;">
-                <div style="display:flex; justify-content:space-between;"><span>XAUUSD:</span> <span style="color:var(--gold)">SEARCHING SWEEP...</span></div>
-                <div style="display:flex; justify-content:space-between;"><span>BTCUSDT:</span> <span style="color:var(--gold)">WAITING REJECTION...</span></div>
-                <div style="display:flex; justify-content:space-between;"><span>ETHUSDT:</span> <span style="color:var(--green)">ANALYZING FVG...</span></div>
-            </div>
-        </div>
-        <p id="t-wait" style="font-size: 9px; margin-top: 10px; color: #555;">En attente de sweep institutionnel...</p>
-    </div>
-            </div>
-            
+            <div id="m-scan" class="nav-item" onclick="showTab('scan', this)">SCANNER</div>
             <div id="m-pay" class="nav-item" onclick="showTab('pay', this)">PAIEMENT</div>
         </div>
         <div class="nav-tabs" style="top:40px;">
@@ -84,17 +60,39 @@
         <div id="dash" class="content-section">
             <div class="card">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div><small id="t-cap">CAPITAL</small><br><b id="cap-display" style="font-size: 22px; color: var(--gold);">$0.00</b></div>
-                    <div><small id="t-prof">PROFIT</small><br><b id="profit-display" style="font-size: 22px; color: var(--green);">+$0.00</b></div>
+                    <div><small id="t-cap">CAPITAL CONFIGURÉ</small><br><b id="cap-display" style="font-size: 22px; color: var(--gold);">$0.00</b></div>
+                    <div><small id="t-prof">PROFIT CUMULÉ</small><br><b id="profit-display" style="font-size: 22px; color: var(--green);">+$0.00</b></div>
                 </div>
                 <div id="ny-time" style="font-size: 14px; color: var(--accent); font-weight: bold; margin: 15px 0;">NY: 00:00:00</div>
-                <div class="live-screen" id="terminal">> IFDA SYSTEM ONLINE...</div>
+                <div class="live-screen" id="terminal">> IFDA SYSTEM ONLINE...<br>> En attente de configuration...</div>
+            </div>
+        </div>
+
+        <div id="scan" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
+                <div class="live-screen" style="height: 120px; border-color: var(--accent);">
+                    <div id="scan-status" style="color: var(--accent); font-weight: bold; margin-bottom: 5px;">> SCANNING LIQUIDITY...</div>
+                    <div style="display:flex; justify-content:space-between;"><span>XAUUSD:</span> <span style="color:var(--gold)">SEARCHING SWEEP...</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>BTCUSDT:</span> <span style="color:var(--gold)">WAITING REJECTION...</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>ETHUSDT:</span> <span style="color:var(--green)">ANALYZING FVG...</span></div>
+                </div>
+                <p id="t-wait" style="font-size: 9px; margin-top: 10px; color: #555;">En attente de sweep institutionnel...</p>
+            </div>
+        </div>
+
+        <div id="pay" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="t-pay">💳 ACTIVATION DU BOUCLIER</h3>
+                <p style="font-size:10px;">USDT (TRC20): <b>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</b></p>
+                <p style="font-size:10px;">Orange Money: <b>+237655509738</b></p>
+                <button class="btn-action" style="background:var(--green); color:black;" id="t-bot">VALIDER AU BOT</button>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-config">📝 CONFIGURATION</h3>
+                <h3 id="t-config">📝 CONFIGURATION GLOBALE</h3>
                 <label id="l-cap-in">CAPITAL TRADING ($)</label>
                 <input type="number" id="u-capital" placeholder="Ex: 100" oninput="updateDashboardCap()">
                 <label id="l-ex">ÉCHANGEUR</label>
@@ -109,34 +107,45 @@
             </div>
         </div>
 
-        <div id="faq" class="content-section" style="display:none;">
-            <div class="card"><h3 id="t-team">🛡️ TEAM</h3><div id="team-list" class="team-grid"></div></div>
-            <div class="card"><h3 id="f-title">💡 FAQ</h3><div id="faq-container"></div></div>
+        <div id="macro" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="t-news">📢 FLUX ÉCONOMIQUE LIVE</h3>
+                <div style="height: 350px; border-radius: 8px; overflow: hidden; border: 1px solid #222;">
+                    <iframe src="https://www.tradingview-widget.com/embed-widget/events/?locale=fr#%7B%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%22%2C%22height%22%3A%22100%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22currencyFilter%22%3A%22USD%2CEUR%2CGBP%22%7D" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+            </div>
         </div>
-        
-        <div id="pay" class="content-section" style="display:none;"><div class="card"><h3 id="t-pay">💳 PAIEMENT</h3><p id="t-p-detail">USDT: TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</p><button class="btn-action" id="t-bot">VALIDER AU BOT</button></div></div>
-        <div id="macro" class="content-section" style="display:none;"><div class="card"><h3 id="t-news">📢 MACRO NEWS</h3><div style="height:250px; background:#000;">Live Stream...</div></div></div>
-        <div id="scan" class="content-section" style="display:none;"><div class="card"><h3 id="t-scan">🔍 SCANNER</h3><div id="t-wait">Recherche de signaux...</div></div></div>
+
+        <div id="faq" class="content-section" style="display:none;">
+            <div class="card"><h3 id="t-team">🛡️ TEAM (8 MEMBRES)</h3><div id="team-list" class="team-grid"></div></div>
+            <div class="card"><h3 id="f-title">💡 FAQ (10 QUESTIONS)</h3><div id="faq-container"></div></div>
+        </div>
     </div>
 
     <script>
         const translations = {
             fr: {
-                lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tScan: "🔍 SCANNER M15", tWait: "En attente de sweep...", tPay: "💳 ACTIVATION", tBot: "VALIDER AU BOT", tConfig: "📝 CONFIGURATION", lCapIn: "CAPITAL TRADING ($)", lEx: "ÉCHANGEUR", lMt: "MARCHÉ CIBLE", tStart: "LANCER IFDA", tNews: "📢 MACRO NEWS", tTeam: "🛡️ BOARD IFDA (8 MEMBRES)", fTitle: "💡 FAQ INTERACTIVE",
-                team: ["👑 NASSER (Fondateur)", "🇨🇦 BEATRICE (Marketing)", "🇬🇦 EVA (Gestionnaire)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇲 BERTRAND (Technique)", "🇧🇯 FRANCO (Analyste)", "🇧🇯 SEBASTIEN (Données)"],
-                faq: [{q: "1. Pourquoi le Sweep ?", a: "Pour capturer la liquidité retail."}, {q: "2. Utilité du FVG ?", a: "Cible de retour du prix."}]
+                lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tScan: "🔍 SCANNER M15", tWait: "En attente de sweep institutionnel...", tPay: "💳 ACTIVATION DU BOUCLIER", tBot: "VALIDER AU BOT", tConfig: "📝 CONFIGURATION GLOBALE", lCapIn: "CAPITAL TRADING ($)", lEx: "ÉCHANGEUR", lMt: "MARCHÉ CIBLE", tStart: "LANCER IFDA", tNews: "📢 FLUX ÉCONOMIQUE LIVE", tTeam: "🛡️ BOARD IFDA (8 MEMBRES)", fTitle: "💡 FAQ INTERACTIVE (10 QUESTIONS)",
+                team: ["👑 NASSER (Fondateur)", "🇨🇦 BEATRICE (Marketing)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇲 BERTRAND (Tech)", "🇧🇯 FRANCO (Analyste)", "🇧🇯 SEBASTIEN (Data)"],
+                faq: [
+                    {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité retail avant l'impulsion."},
+                    {q: "2. Utilité du FVG ?", a: "Cible de retour du prix pour combler le déséquilibre."},
+                    {q: "3. Règle du 25$ ?", a: "Gestion de risque stricte pour protéger le capital."},
+                    {q: "4. Pourquoi le M15 ?", a: "Précision Sniper pour le Day Trading intraday."},
+                    {q: "5. Biais D1/H4 ?", a: "On ne trade jamais contre la tendance de fond."},
+                    {q: "6. Rejet de mèche ?", a: "Confirmation que les banques ont rejeté le prix."},
+                    {q: "7. Zone OTE ?", a: "Entrée optimale en zone de discount ou premium."},
+                    {q: "8. Le cycle Spot ?", a: "Achat bas et vente automatique sur la liquidité."},
+                    {q: "9. Stop Loss ?", a: "Toujours placé derrière la mèche qui a sweepé."},
+                    {q: "10. Target TP ?", a: "On vise toujours la liquidité du côté opposé."}
+                ]
             },
             en: {
-                lTitle: "SECURE ACCESS", lBtn: "UNLOCK", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CONFIGURED CAPITAL", tProf: "TOTAL PROFIT", tScan: "🔍 M15 SCANNER", tWait: "Waiting for sweep...", tPay: "💳 ACTIVATION", tBot: "VALIDATE ON BOT", tConfig: "📝 CONFIGURATION", lCapIn: "TRADING CAPITAL ($)", lEx: "EXCHANGE", lMt: "TARGET MARKET", tStart: "START IFDA", tNews: "📢 MACRO NEWS", tTeam: "🛡️ IFDA BOARD (8 MEMBERS)", fTitle: "💡 INTERACTIVE FAQ",
+                lTitle: "SECURE ACCESS", lBtn: "UNLOCK", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CONFIGURED CAPITAL", tProf: "TOTAL PROFIT", tScan: "🔍 M15 SCANNER", tWait: "Waiting for institutional sweep...", tPay: "💳 SHIELD ACTIVATION", tBot: "VALIDATE ON BOT", tConfig: "📝 GLOBAL CONFIGURATION", lCapIn: "TRADING CAPITAL ($)", lEx: "EXCHANGE", lMt: "TARGET MARKET", tStart: "START IFDA", tNews: "📢 LIVE MACRO FLOW", tTeam: "🛡️ IFDA BOARD (8 MEMBERS)", fTitle: "💡 INTERACTIVE FAQ",
                 team: ["👑 NASSER (Founder)", "🇨🇦 BEATRICE (Marketing)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyst)", "🇹🇬 ALBERT (Expert)", "🇨🇲 BERTRAND (Tech)", "🇧🇯 FRANCO (Analyst)", "🇧🇯 SEBASTIEN (Data)"],
-                faq: [{q: "1. Why the Sweep?", a: "To capture retail liquidity."}, {q: "2. FVG Purpose?", a: "Price return target."}]
+                faq: [ {q: "1. Why Sweep PDH/PDL?", a: "To capture retail liquidity."}, {q: "2. FVG Use?", a: "To fill price imbalances."} ]
             },
-            ar: {
-                lTitle: "وصول آمن", lBtn: "فتح", mDash: "لوحة التحكم", mScan: "ماسح", mPay: "دفع", mInscr: "تسجيل", mMacro: "أخبار", mFaq: "الفريق", tCap: "رأس المال", tProf: "الأرباح", tScan: "🔍 ماسح M15", tWait: "في انتظار السيولة...", tPay: "💳 تفعيل", tBot: "التحقق من البوت", tConfig: "📝 إعدادات", lCapIn: "رأس مال التداول ($)", lEx: "البورصة", lMt: "السوق", tStart: "بدء IFDA", tNews: "📢 أخبار الماكرو", tTeam: "🛡️ مجلس الإدارة (8 أعضاء)", fTitle: "💡 الأسئلة الشائعة",
-                team: ["👑 ناصر (المؤسس)", "🇨🇦 بياتريس (تسويق)", "🇬🇦 إيفا (مديرة)", "🇬🇵 ماري (محللة)", "🇹🇬 ألبرت (خبير)", "🇨🇲 برتراند (تقني)", "🇧🇯 فرانكو (محلل)", "🇧🇯 سيباستيان (بيانات)"],
-                faq: [{q: "1. لماذا المسح؟", a: "لالتقاط السيولة."}, {q: "2. فائدة FVG؟", a: "هدف عودة السعر."}]
-            }
-            // DE and ES follow same pattern...
+            ar: { lTitle: "وصول آمن", lBtn: "فتح", mDash: "لوحة التحكم", mScan: "ماسح", mPay: "دفع", mInscr: "تسجيل", mMacro: "أخبار", mFaq: "الفريق", tCap: "رأس المال", tProf: "الأرباح", tScan: "🔍 ماسح M15", tWait: "في انتظار السيولة...", tPay: "💳 تفعيل الدرع", tBot: "التحقق من البوت", tConfig: "📝 إعدادات", lCapIn: "رأس المال ($)", lEx: "البورصة", lMt: "السوق", tStart: "بدء IFDA", tNews: "📢 أخبار الماكرو", tTeam: "🛡️ مجلس الإدارة (8 أعضاء)", fTitle: "💡 الأسئلة الشائعة", team: ["👑 ناصر", "🇨🇦 بياتريس", "🇬🇦 إيفا", "🇬🇵 ماري", "🇹🇬 ألبرت", "🇨🇲 برتراند", "🇧🇯 فرانكو", "🇧🇯 سيباستيان"], faq: [{q: "1. لماذا المسح؟", a: "لالتقاط السيولة."}] }
         };
 
         function translateAll(lang) {
@@ -157,8 +166,6 @@
             document.getElementById('t-bot').innerText = d.tBot;
             document.getElementById('t-config').innerText = d.tConfig;
             document.getElementById('l-cap-in').innerText = d.lCapIn;
-            document.getElementById('l-ex').innerText = d.lEx;
-            document.getElementById('l-mt').innerText = d.lMt;
             document.getElementById('t-start').innerText = d.tStart;
             document.getElementById('t-news').innerText = d.tNews;
             document.getElementById('t-team').innerText = d.tTeam;
@@ -167,16 +174,16 @@
             let tHtml = ""; d.team.forEach(m => { tHtml += `<div class="member">${m}</div>`; });
             document.getElementById('team-list').innerHTML = tHtml;
             
-            let fHtml = ""; d.faq.forEach(f => {
+            let fHtml = ""; (d.faq.length > 1 ? d.faq : translations['fr'].faq).forEach(f => {
                 fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`;
             });
             document.getElementById('faq-container').innerHTML = fHtml;
             document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
         }
 
-        function updateDashboardCap() { document.getElementById('cap-display').innerText = "$" + document.getElementById('u-capital').value; }
+        function updateDashboardCap() { document.getElementById('cap-display').innerText = "$" + (document.getElementById('u-capital').value || "0.00"); }
         function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); }
-        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); else alert("ERROR"); }
+        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); else alert("ERROR PIN"); }
         function doUnlock() { document.getElementById('lock-screen').style.display="none"; document.getElementById('main-interface').style.display="block"; translateAll('fr'); }
         function showTab(id, el) { document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); document.getElementById(id).style.display='block'; document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
@@ -197,4 +204,5 @@
         function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
     </script>
 </body>
-</html>
+                    </html>
+                        
