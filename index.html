@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>IFDA PRO SHIELD V66 - SANGMELIMA MASTER</title>
+    <title>IFDA PRO SHIELD V65 - MASTER GLOBAL</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -13,19 +13,17 @@
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; animation: rotatePulse 8s infinite linear; pointer-events: none; }
     
-    @keyframes rotatePulse { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); } }
-
-    /* LA LANGUE DÉSORMAIS DISCRÈTE DANS LE COIN */
-    .lang-selector { 
-        position: fixed; top: 10px; right: 10px; z-index: 10000; 
-        background: #000; border: 1px solid var(--gold); color: white; 
-        border-radius: 4px; padding: 2px; font-size: 10px; 
-        width: 50px !important; height: 25px; cursor: pointer;
-        appearance: none; -webkit-appearance: none; text-align: center;
+    @keyframes rotatePulse {
+        0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+        50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); }
+        100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
     }
 
+    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 2px; font-size: 10px; width: 45px !important; height: 25px; cursor: pointer; text-align: center; }
+
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 10px; display: none; }
+        
+    #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
     
     .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5000; width: 100%; }
     .nav-item { padding: 15px 2px; text-align: center; font-size: 10px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; text-transform: uppercase; }
@@ -45,6 +43,9 @@
     .faq-a { display: none; font-size: 9px; color: #aaa; padding-top: 5px; }
     .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 9px; margin-top: 10px; }
     .member { border-left: 2px solid var(--accent); padding-left: 8px; }
+    
+    .pay-box { margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px dashed #444; }
+    .copy-btn { background: var(--accent); border: none; color: white; border-radius: 5px; padding: 0 10px; cursor: pointer; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -52,12 +53,12 @@
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">🇫🇷</option><option value="en">🇺🇸</option><option value="ar">🇸🇦</option><option value="de">🇩🇪</option><option value="es">🇪🇸</option>
+        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option>
     </select>
 
     <div id="lock-screen">
         <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">ACCÈS SÉCURISÉ</h2>
-        <input type="password" id="pass-code" placeholder="PIN CODE" style="width:200px; text-align:center;">
+        <input type="password" id="pass-code" placeholder="PIN CODE OR LICENSE">
         <button id="l-btn" class="btn-action" style="width:200px;" onclick="checkLock()">DÉVERROUILLER</button>
     </div>
 
@@ -76,47 +77,40 @@
         <div id="dash" class="content-section">
             <div class="card" style="text-align: center;">
                 <div style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
-                <div id="bal-val" style="font-size: 45px; font-weight: bold; color: var(--gold); margin: 5px 0;">$10</div>
+                <div id="bal-val" style="font-size: 45px; font-weight: bold; color: var(--gold); margin: 5px 0;">$25</div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                     <div style="background:#050505; border:1px solid #222; padding:10px;"><small>PNL LIVE</small><br><b style="color:var(--green);">+$0.00</b></div>
                     <div style="background:#050505; border:1px solid #222; padding:10px;"><small>STATUS</small><br><b style="color:var(--green);">ACTIF</b></div>
                 </div>
                 <label id="lbl-amt">MONTANT DU TRADE ($)</label>
-                <input type="number" id="trade-amount" value="15">
+                <input type="number" id="trade-amount" value="25">
                 <div id="ny-time" style="font-size: 14px; color: var(--accent); margin-top: 15px; font-weight: bold;">NY: 00:00:00</div>
                 <div class="kz-grid">
                     <div class="kz-unit" id="kz-london">🇬🇧 LONDON</div><div class="kz-unit" id="kz-nyam">🇺🇸 NY AM</div>
                     <div class="kz-unit" id="kz-nypm">🇺🇸 NY PM</div><div class="kz-unit" id="kz-asia">🌏 ASIA</div>
                 </div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...<br>> Monitoring 30 Assets via IFDA...</div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:15px;">
-                    <button class="btn-action" style="background:var(--green); color:black;" onclick="alert('Buy Order Sent')">FORCE BUY</button>
-                    <button class="btn-action" style="background:var(--red); color:white;" onclick="alert('Sell Order Sent')">FORCE SELL</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="scan" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 style="color:var(--accent); font-size:12px;">MOTEUR ANALYSE SMC</h3>
-                <input type="text" id="s-input" placeholder="SYMBOLE (ex: XAUUSD)">
-                <button class="btn-action" onclick="alert('Scan en cours sur '+document.getElementById('s-input').value)">DÉTECTER LIQUIDITÉ</button>
+                <div class="live-screen" id="terminal">> IFDA SYSTEM READY...<br>> Waiting for M15 Sweep PDH/PDL...</div>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
-            <div class="card" style="text-align: center;">
-                <h3 style="color:var(--gold); font-size:12px;">MODES D'ACTIVATION</h3>
-                <div style="border:1px solid var(--green); padding:10px; margin-bottom:5px; border-radius:5px;"><b>USDT (TRC20)</b><br>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
-                <div style="border:1px solid #ff8800; padding:10px; margin-bottom:5px; border-radius:5px;"><b>ORANGE MONEY</b><br>+237 655509738</div>
-                <div style="border:1px solid #ffcc00; padding:10px; margin-bottom:5px; border-radius:5px;"><b>MTN MOMO</b><br>+237 682155479</div>
-            </div>
-        </div>
-
-        <div id="macro" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="color:var(--accent); font-size:12px;">📡 MACRO RADAR</h3>
-                <div class="live-screen">> Synchronisation avec le serveur...</div>
+                <h3 style="color:var(--gold); font-size:12px; text-align:center;">💳 ACTIVATION DU BOUCLIER (25$)</h3>
+                <div class="pay-box" style="border-color:var(--accent);">
+                    <label style="font-size:10px; color:var(--accent);">USDT (TRC20)</label>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <input type="text" id="adr-usdt" value="TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b" readonly style="font-size:10px;">
+                        <button class="copy-btn" onclick="copyToClipboard('adr-usdt')">COPY</button>
+                    </div>
+                </div>
+                <div class="pay-box" style="border-color:#ff6600;">
+                    <label style="font-size:10px; color:#ff6600;">ORANGE MONEY (OM)</label>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <input type="text" id="num-om" value="+237655509738" readonly>
+                        <button class="copy-btn" style="background:#ff6600;" onclick="copyToClipboard('num-om')">COPY</button>
+                    </div>
+                </div>
+                <button class="btn-action" style="background:var(--green); color:black;" onclick="window.open('https://t.me/Nasser_Shield_Bot')">ENVOYER LA PREUVE AU BOT</button>
             </div>
         </div>
 
@@ -124,100 +118,4 @@
             <div class="card">
                 <h3 id="i-title" style="color:var(--gold); font-size:12px; text-align:center;">📝 TERMINAL CONFIG</h3>
                 <label>🏦 ÉCHANGEUR / BROKER</label>
-                <select id="u-ex">
-                    <option value="binance">BINANCE</option><option value="bybit">BYBIT</option>
-                    <option value="okx">OKX</option><option value="bingx">BINGX</option>
-                    <option value="mexc">MEXC</option><option value="kucoin">KUCOIN</option>
-                    <option value="exness">EXNESS / MT5</option><option value="vintage">VINTAGE FX</option>
-                </select>
-                <label>📈 MARCHÉ CIBLE</label>
-                <select id="u-market">
-                    <option value="SPOT">SPOT (SMC)</option>
-                    <option value="PERP">PERPÉTUEL (FUTURES)</option>
-                    <option value="FOREX">FOREX / GOLD</option>
-                </select>
-                <input type="text" placeholder="NOM DU LEADER">
-                <input type="password" placeholder="API KEY">
-                <input type="password" placeholder="API SECRET">
-                <input type="password" placeholder="PASSPHRASE">
-                <button id="i-btn" class="btn-action" onclick="alert('Connexion établie !')">LANCER LE BOUCLIER</button>
-            </div>
-        </div>
-
-        <div id="faq" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 id="t-team-h" style="color:var(--accent); font-size:11px; text-decoration: underline;">🛡️ BOARD SANGMELIMA SHIELD</h3>
-                <div class="team-grid">
-                    <div class="member"><b>👑 NASSER (🇨🇲)</b><br><small>Founder & Dev</small></div>
-                    <div class="member"><b>🇨🇦 BEATRICE</b><br><small>Dir. Marketing</small></div>
-                    <div class="member"><b>🇹🇬 ALBERT</b><br><small>Expert Trader</small></div>
-                    <div class="member"><b>🇧🇯 FRANCO</b><br><small>Analyste Marché</small></div>
-                </div>
-            </div>
-            <div class="card">
-                <h3 id="f-title" style="color:var(--gold); font-size:11px;">💡 FAQ STRATÉGIQUE (10)</h3>
-                <div id="faq-container"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const langData = {
-            fr: {
-                lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", lblAmt: "MONTANT DU TRADE ($)",
-                faq: [ {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Éliminer les retails avant l'institutionnel."}, {q: "10. Pourquoi 15$ ?", a: "Gestion de risque Sangmélima."} ]
-            },
-            ar: { lTitle: "وصول آمن", lBtn: "فتح", mDash: "لوحة التحكم" }
-        };
-
-        function translateAll(lang) {
-            const d = langData[lang] || langData['fr'];
-            document.getElementById('l-title').innerText = d.lTitle;
-            document.getElementById('l-btn').innerText = d.lBtn;
-            let faqHtml = ""; (d.faq || langData['fr'].faq).forEach(f => {
-                faqHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`;
-            });
-            document.getElementById('faq-container').innerHTML = faqHtml;
-            document.body.style.direction = (lang === 'ar' ? 'rtl' : 'ltr');
-        }
-
-        function checkLock() {
-            if(document.getElementById('pass-code').value === "197800") {
-                document.getElementById('lock-screen').style.display = "none";
-                document.getElementById('main-interface').style.display = "block";
-                translateAll('fr');
-            } else { alert("WRONG PIN"); }
-        }
-
-        function showTab(id, el) {
-            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display==='block')?'none':'block'; }
-
-        setInterval(() => {
-            const now = new Date();
-            const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
-            const h = parseInt(ny.find(it => it.type === 'hour').value);
-            document.getElementById('ny-time').innerText = `NY: ${h}:${ny.find(it => it.type === 'minute').value}:${ny.find(it => it.type === 'second').value}`;
-            document.querySelectorAll('.kz-unit').forEach(el => el.classList.remove('kz-on'));
-            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('kz-on');
-            if (h >= 7 && h < 10) document.getElementById('kz-nyam').classList.add('kz-on');
-        }, 1000);
-
-        const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
-        scene.add(mat); camera.position.z = 500;
-        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
-        translateAll('fr');
-    </script>
-</body>
-                                                       </html>
-        
+                
