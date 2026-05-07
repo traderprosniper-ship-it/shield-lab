@@ -19,11 +19,40 @@
         100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
     }
 
-    /* MODIFICATION 1 : La langue est petite et dans le coin, elle ne barre plus rien */
-    .lang-selector { position: fixed; top: 5px; right: 5px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 2px; font-size: 10px; width: 60px !important; cursor: pointer; }
+      /* MODIFICATION 1 : La langue est minuscule dans le coin et ne barre plus rien */
+    .lang-selector { 
+        position: fixed; 
+        top: 10px; 
+        right: 10px; 
+        z-index: 10000; 
+        background: #000; 
+        border: 1px solid var(--gold); 
+        color: white; 
+        border-radius: 4px; 
+        padding: 2px; 
+        font-size: 10px; 
+        width: 45px !important; /* Réduit encore plus la largeur */
+        height: 25px;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        text-align: center;
+    }
 
-    #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    
+    #lock-screen { 
+        position: fixed; 
+        top:0; 
+        left:0; 
+        width:100%; 
+        height:100%; 
+        background:#000; 
+        z-index:9999; 
+        display:flex; 
+        flex-direction:column; 
+        align-items:center; 
+        justify-content:center; 
+    }
+        
     /* MODIFICATION 2 : On s'assure que l'interface est bien sous le menu */
     #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
     
