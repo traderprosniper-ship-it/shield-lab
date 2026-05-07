@@ -4,42 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>IFDA PRO SHIELD V65 - MASTER GLOBAL</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
     :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
     body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
-    
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
-    #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; animation: rotatePulse 8s infinite linear; pointer-events: none; }
-    
-    @keyframes rotatePulse {
-        0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-        50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); }
-        100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
-    }
-
-    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 2px; font-size: 10px; width: 45px !important; height: 25px; cursor: pointer; text-align: center; }
-
+    #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; pointer-events: none; }
+    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 5px; font-size: 10px; cursor: pointer; }
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-        
     #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
-    
     .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5000; width: 100%; }
-    .nav-item { padding: 15px 2px; text-align: center; font-size: 10px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; text-transform: uppercase; }
-    .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); }
-    input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; outline: none; text-align: center; }
+    .nav-item { padding: 15px 2px; text-align: center; font-size: 10px; font-weight: bold; cursor: pointer; color: #555; text-transform: uppercase; }
+    .nav-item.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
+    input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; text-align: center; outline: none; }
     .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
-    .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; box-shadow: inset 0 0 5px var(--green); }
-    
-    .kz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-    .kz-unit { padding: 8px; background: #050505; border: 1px solid #222; border-radius: 6px; font-size: 8px; color: #444; text-align: center; }
-    .kz-on { border-color: var(--green); color: var(--green) !important; font-weight: bold; }
-    
-    .pay-box { margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px dashed #444; }
-    .copy-btn { background: var(--accent); border: none; color: white; border-radius: 5px; padding: 0 10px; cursor: pointer; font-size: 10px; }
+    .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; }
+    .member { border-left: 2px solid var(--accent); padding-left: 8px; font-size: 9px; margin-bottom: 5px; text-align: left; }
     </style>
 </head>
 <body>
@@ -47,13 +28,17 @@
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇺🇸 EN</option>
+        <option value="ar">🇸🇦 AR</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="es">🇪🇸 ES</option>
     </select>
 
     <div id="lock-screen">
-        <h2 style="color:var(--gold); letter-spacing:5px;">ACCÈS SÉCURISÉ</h2>
-        <input type="password" id="pass-code" placeholder="PIN CODE OR LICENSE">
-        <button class="btn-action" style="width:200px;" onclick="checkLock()">DÉVERROUILLER</button>
+        <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">ACCÈS SÉCURISÉ</h2>
+        <input type="text" id="pass-code" placeholder="PIN CODE" maxlength="6" oninput="autoCheck()">
+        <button id="l-btn" class="btn-action" style="width:200px;" onclick="forceUnlock()">DÉVERROUILLER</button>
     </div>
 
     <div id="main-interface">
@@ -65,127 +50,104 @@
         <div class="nav-tabs" style="top:40px;">
             <div id="m-inscr" class="nav-item" onclick="showTab('inscr', this)">INSCRIPTION</div>
             <div id="m-macro" class="nav-item" onclick="showTab('macro', this)">MACRO NEWS</div>
-            <div id="m-faq" class="nav-item" onclick="showTab('faq', this)">TEAM/FAQ</div>
+            <div id="m-faq" class="nav-item" onclick="showTab('faq', this)">TEAM</div>
         </div>
 
         <div id="dash" class="content-section">
-            <div class="card" style="text-align: center;">
-                <div style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
-                <div id="bal-val" style="font-size: 45px; font-weight: bold; color: var(--gold); margin: 5px 0;">$25</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div style="background:#050505; border:1px solid #222; padding:10px;"><small>PNL LIVE</small><br><b style="color:var(--green);">+$0.00</b></div>
-                    <div style="background:#050505; border:1px solid #222; padding:10px;"><small>STATUS</small><br><b style="color:var(--green);">ACTIF</b></div>
-                </div>
-                <label>MONTANT DU TRADE ($)</label>
-                <input type="number" id="trade-amount" value="25">
-                <div id="ny-time" style="font-size: 14px; color: var(--accent); margin-top: 15px; font-weight: bold;">NY: 00:00:00</div>
-                <div class="kz-grid">
-                    <div class="kz-unit" id="kz-london">🇬🇧 LONDON</div><div class="kz-unit" id="kz-nyam">🇺🇸 NY AM</div>
-                    <div class="kz-unit" id="kz-nypm">🇺🇸 NY PM</div><div class="kz-unit" id="kz-asia">🌏 ASIA</div>
-                </div>
-                <div class="live-screen" id="terminal">> IFDA SYSTEM READY...<br>> Waiting for M15 Sweep PDH/PDL...</div>
+            <div class="card">
+                <small id="t-cap">SMC CAPITAL ALLOCATION</small>
+                <h1 style="font-size: 45px; color: var(--gold); margin: 5px 0;">$25</h1>
+                <div id="ny-time" style="color: var(--accent); font-weight: bold;">NY: 00:00:00</div>
+                <div class="live-screen" id="terminal">> IFDA SYSTEM READY...</div>
+            </div>
+        </div>
+
+        <div id="scan" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
+                <div style="font-size:10px; color:var(--green);">XAUUSD - MONITORING...</div>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="color:var(--gold); font-size:12px; text-align:center;">💳 ACTIVATION DU BOUCLIER (25$)</h3>
-                <div class="pay-box" style="border-color:var(--accent);">
-                    <label style="font-size:10px; color:var(--accent);">USDT (TRC20)</label>
-                    <div style="display:flex; gap:5px; margin-top:5px;">
-                        <input type="text" id="adr-usdt" value="TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b" readonly style="font-size:10px;">
-                        <button class="copy-btn" onclick="copyToClipboard('adr-usdt')">COPY</button>
-                    </div>
-                </div>
-                <div class="pay-box" style="border-color:#ff6600;">
-                    <label style="font-size:10px; color:#ff6600;">ORANGE MONEY (OM)</label>
-                    <div style="display:flex; gap:5px; margin-top:5px;">
-                        <input type="text" id="num-om" value="+237655509738" readonly>
-                        <button class="copy-btn" style="background:#ff6600;" onclick="copyToClipboard('num-om')">COPY</button>
-                    </div>
-                </div>
-                <button class="btn-action" style="background:var(--green); color:black;" onclick="window.open('https://t.me/Nasser_Shield_Bot')">ENVOYER LA PREUVE AU BOT</button>
+                <h3 id="t-pay">💳 PAIEMENT ACTIVATION</h3>
+                <p style="font-size:10px;">USDT: TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</p>
+                <p style="font-size:10px;">OM: +237655509738</p>
+                <button class="btn-action" style="background:var(--green); color:black;" id="t-bot">VALIDER AU BOT</button>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="color:var(--gold); font-size:12px; text-align:center;">📝 TERMINAL CONFIG</h3>
-                <label>🏦 ÉCHANGEUR / BROKER</label>
-                <select id="u-ex">
-                    <option value="binance">BINANCE</option><option value="bybit">BYBIT</option>
-                    <option value="okx">OKX</option>
-                </select>
-                <label>📈 MARCHÉ CIBLE</label>
-                <select id="u-market">
-                    <option value="SPOT">SPOT (IFDA)</option>
-                    <option value="PERP">PERPÉTUEL (FUTURES)</option>
-                </select>
-                <input type="text" id="u-name" placeholder="NOM DU LEADER">
-                <input type="password" id="u-key" placeholder="API KEY">
-                <input type="password" id="u-sec" placeholder="API SECRET">
-                <button id="i-btn" class="btn-action" onclick="sendToPython()">LANCER LE BOUCLIER</button>
+                <h3 id="t-config">📝 TERMINAL CONFIG</h3>
+                <select><option>BINANCE</option><option>BYBIT</option></select>
+                <input type="text" placeholder="API KEY">
+                <input type="password" placeholder="API SECRET">
+                <button class="btn-action" id="t-start">LANCER LE BOUCLIER</button>
             </div>
         </div>
 
         <div id="macro" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="color:var(--accent); font-size:11px; text-align:center;">📢 FLUX ÉCONOMIQUE & CORRÉLATION</h3>
-                <div class="tradingview-widget-container" style="height:350px;">
-                    <div class="tradingview-widget-container__widget"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-                    { "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "fr", "importanceFilter": "-1,0,1", "currencyFilter": "USD,EUR,GBP,BTC" }
-                    </script>
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
-                    <div style="background:#050505; border:1px solid #222; padding:10px; text-align:center; border-radius:8px;">
-                        <small style="font-size:8px; color:#777;">BTC DOMINANCE</small><br><b style="color:var(--accent); font-size:14px;">52.4%</b>
-                    </div>
-                    <div style="background:#050505; border:1px solid #222; padding:10px; text-align:center; border-radius:8px;">
-                        <small style="font-size:8px; color:#777;">ALTSEASON INDEX</small><br><b style="color:var(--green); font-size:14px;">35/100</b>
-                    </div>
+                <h3 id="t-news">📢 MACRO NEWS LIVE</h3>
+                <div style="height:300px; border:1px solid #222; border-radius:8px; overflow:hidden;">
+                    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div><script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>{ "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "fr", "importanceFilter": "-1,0,1", "currencyFilter": "USD,EUR,GBP,BTC" }</script></div>
                 </div>
             </div>
         </div>
 
         <div id="faq" class="content-section" style="display:none;">
             <div class="card">
-                <h3 style="color:var(--accent); font-size:11px; text-decoration: underline;">🛡️ BOARD SANGMELIMA SHIELD</h3>
-                <div class="team-grid">
-                    <div class="member"><b>👑 NASSER (🇨🇲)</b><br><small>Founder & Dev</small></div>
-                    <div class="member"><b>🇬🇵 MARIE</b><br><small>Analyste Marché</small></div>
-                    <div class="member"><b>🇹🇬 ALBERT</b><br><small>Expert Trader</small></div>
-                    <div class="member"><b>🇧🇯 FRANCO</b><br><small>Analyste</small></div>
-                </div>
+                <h3 id="t-team">🛡️ BOARD SANGMELIMA SHIELD</h3>
+                <div class="member">👑 NASSER (🇨🇲) - Founder</div>
+                <div class="member">🇬🇵 MARIE - Analyst</div>
+                <div class="member">🇹🇬 ALBERT - Expert</div>
+                <div class="member">🇧🇯 FRANCO - Analyst</div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- FONCTION DE DÉVERROUILLAGE CORRIGÉE ---
-        function checkLock() {
-            const input = document.getElementById('pass-code');
-            const pin = input.value.trim();
-            
-            console.log("Tentative avec le code :", pin); // Pour debug
-
-            if(pin === "197800") {
-                document.getElementById('lock-screen').style.display = "none";
-                document.getElementById('main-interface').style.display = "block";
-                translateAll('fr');
-            } else if(pin.length >= 6) {
-                document.getElementById('lock-screen').style.display = "none";
-                document.getElementById('main-interface').style.display = "block";
-                translateAll('fr');
-            } else {
-                alert("ACCÈS REFUSÉ : CODE PIN INCORRECT");
-                input.value = ""; // Efface le mauvais code
-            }
-        }
+        const translations = {
+            fr: { lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM", tCap: "ALLOCATION CAPITAL SMC", tScan: "🔍 SNIPER SCANNER (M15)", tPay: "💳 PAIEMENT ACTIVATION", tBot: "VALIDER AU BOT", tConfig: "📝 CONFIGURATION TERMINAL", tStart: "LANCER LE BOUCLIER", tNews: "📢 MACRO NEWS LIVE", tTeam: "🛡️ BOARD SANGMELIMA SHIELD" },
+            en: { lTitle: "SECURE ACCESS", lBtn: "UNLOCK", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM", tCap: "SMC CAPITAL ALLOCATION", tScan: "🔍 SNIPER SCANNER (M15)", tPay: "💳 ACTIVATION PAYMENT", tBot: "VALIDATE ON BOT", tConfig: "📝 TERMINAL CONFIG", tStart: "LAUNCH SHIELD", tNews: "📢 LIVE MACRO NEWS", tTeam: "🛡️ SANGMELIMA SHIELD BOARD" },
+            ar: { lTitle: "وصول آمن", lBtn: "فتح", mDash: "لوحة التحكم", mScan: "ماسح ضوئي", mPay: "دفع", mInscr: "تسجيل", mMacro: "أخبار الماكرو", mFaq: "الفريق", tCap: "تخصيص رأس مال SMC", tScan: "🔍 ماسح القناص (M15)", tPay: "💳 تفعيل الدفع", tBot: "التحقق من البوت", tConfig: "📝 تكوين الجهاز", tStart: "إطلاق الدرع", tNews: "📢 أخبار الماكرو الحية", tTeam: "🛡️ مجلس درع سانغميليما" },
+            de: { lTitle: "SICHERER ZUGRIFF", lBtn: "ENTSPERREN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "REGISTRIERUNG", mMacro: "MAKRO NEWS", mFaq: "TEAM", tCap: "SMC KAPITALALLOKATION", tScan: "🔍 SNIPER SCANNER (M15)", tPay: "💳 AKTIVIERUNGSZAHLUNG", tBot: "AM BOT VALIDIEREN", tConfig: "📝 TERMINAL-KONFIG", tStart: "SCHILD STARTEN", tNews: "📢 LIVE-MAKRO-NEWS", tTeam: "🛡️ SANGMELIMA SHIELD BOARD" },
+            es: { lTitle: "ACCESO SEGURO", lBtn: "DESBLOQUEAR", mDash: "PANEL", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS MACRO", mFaq: "EQUIPO", tCap: "ASIGNACIÓN DE CAPITAL SMC", tScan: "🔍 ESCÁNER FRANCOTIRADOR (M15)", tPay: "💳 PAGO DE ACTIVACIÓN", tBot: "VALIDAR EN BOT", tConfig: "📝 CONFIG TERMINAL", tStart: "LANZAR ESCUDO", tNews: "📢 NOTICIAS MACRO EN VIVO", tTeam: "🛡️ JUNTA SANGMELIMA SHIELD" }
+        };
 
         function translateAll(lang) {
-            // Logique de traduction simplifiée pour le debug
-            console.log("Interface traduite en :", lang);
+            const d = translations[lang];
+            document.getElementById('l-title').innerText = d.lTitle;
+            document.getElementById('l-btn').innerText = d.lBtn;
+            document.getElementById('m-dash').innerText = d.mDash;
+            document.getElementById('m-scan').innerText = d.mScan;
+            document.getElementById('m-pay').innerText = d.mPay;
+            document.getElementById('m-inscr').innerText = d.mInscr;
+            document.getElementById('m-macro').innerText = d.mMacro;
+            document.getElementById('m-faq').innerText = d.mFaq;
+            document.getElementById('t-cap').innerText = d.tCap;
+            document.getElementById('t-scan').innerText = d.tScan;
+            document.getElementById('t-pay').innerText = d.tPay;
+            document.getElementById('t-bot').innerText = d.tBot;
+            document.getElementById('t-config').innerText = d.tConfig;
+            document.getElementById('t-start').innerText = d.tStart;
+            document.getElementById('t-news').innerText = d.tNews;
+            document.getElementById('t-team').innerText = d.tTeam;
+            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
+
+        function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); }
+        function forceUnlock() { 
+            const val = document.getElementById('pass-code').value.trim();
+            if(val === "197800" || val.length >= 6) doUnlock(); 
+            else alert("CODE INCORRECT");
+        }
+        function doUnlock() { 
+            document.getElementById('lock-screen').style.display = "none";
+            document.getElementById('main-interface').style.display = "block";
+            translateAll('fr');
         }
 
         function showTab(id, el) {
@@ -195,44 +157,13 @@
             el.classList.add('active');
         }
 
-        function copyToClipboard(id) {
-            const text = document.getElementById(id);
-            text.select();
-            navigator.clipboard.writeText(text.value);
-            alert("Copié !");
-        }
-
-        function sendToPython() {
-            const payload = {
-                exchange: document.getElementById('u-ex').value,
-                market_type: document.getElementById('u-market').value,
-                ak: document.getElementById('u-key').value,
-                as: document.getElementById('u-sec').value,
-                symbol: "BTC/USDT"
-            };
-            fetch('http://localhost:5000/execute', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(r => r.json()).catch(e => console.log("Termux non connecté."));
-        }
-
         setInterval(() => {
             const now = new Date();
             const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
-            const h = parseInt(ny.find(it => it.type === 'hour').value);
-            const m = ny.find(it => it.type === 'minute').value;
-            const s = ny.find(it => it.type === 'second').value;
-            document.getElementById('ny-time').innerText = `NY: ${h}:${m}:${s}`;
-            
-            document.querySelectorAll('.kz-unit').forEach(el => el.classList.remove('kz-on'));
-            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('kz-on');
-            if (h >= 7 && h < 10) document.getElementById('kz-nyam').classList.add('kz-on');
+            document.getElementById('ny-time').innerText = `NY: ${ny.find(it => it.type === 'hour').value}:${ny.find(it => it.type === 'minute').value}:${ny.find(it => it.type === 'second').value}`;
         }, 1000);
 
-        // 3D Background
-        const scene = new THREE.Scene(); 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
@@ -242,5 +173,4 @@
         function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
     </script>
 </body>
-                    </html>
-                            
+</html>
