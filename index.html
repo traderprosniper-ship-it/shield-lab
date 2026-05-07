@@ -214,9 +214,8 @@
                 symbol: "BTC/USDT"
             };
 
-            document.getElementById('terminal').innerHTML = `<br><span style="color:var(--accent)">> ENVOI VERS TERMUX (192.168.43.44)...</span>`;
-
-            fetch('http://192.168.43.44:5000/execute', {
+            document.getElementById('terminal').innerHTML = `<br><span style="color:var(--accent)">> ENVOI VERS TERMUX (192.168.100.97)...</span>
+            fetch('http://192.168.100.97:5000/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
