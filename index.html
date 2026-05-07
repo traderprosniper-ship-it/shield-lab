@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>IFDA PRO SHIELD V65 - MASTER GLOBAL</title>
+    <title>IFDA PRO SHIELD V66 - SANGMELIMA MASTER</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -13,50 +13,20 @@
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; animation: rotatePulse 8s infinite linear; pointer-events: none; }
     
-    @keyframes rotatePulse {
-        0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-        50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); }
-        100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
-    }
+    @keyframes rotatePulse { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.2); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); } }
 
-      /* MODIFICATION 1 : La langue est minuscule dans le coin et ne barre plus rien */
+    /* LA LANGUE DÉSORMAIS DISCRÈTE DANS LE COIN */
     .lang-selector { 
-        position: fixed; 
-        top: 10px; 
-        right: 10px; 
-        z-index: 10000; 
-        background: #000; 
-        border: 1px solid var(--gold); 
-        color: white; 
-        border-radius: 4px; 
-        padding: 2px; 
-        font-size: 10px; 
-        width: 45px !important; /* Réduit encore plus la largeur */
-        height: 25px;
-        cursor: pointer;
-        appearance: none;
-        -webkit-appearance: none;
-        text-align: center;
+        position: fixed; top: 10px; right: 10px; z-index: 10000; 
+        background: #000; border: 1px solid var(--gold); color: white; 
+        border-radius: 4px; padding: 2px; font-size: 10px; 
+        width: 50px !important; height: 25px; cursor: pointer;
+        appearance: none; -webkit-appearance: none; text-align: center;
     }
 
-    #lock-screen { 
-        position: fixed; 
-        top:0; 
-        left:0; 
-        width:100%; 
-        height:100%; 
-        background:#000; 
-        z-index:9999; 
-        display:flex; 
-        flex-direction:column; 
-        align-items:center; 
-        justify-content:center; 
-    }
-        
-    /* MODIFICATION 2 : On s'assure que l'interface est bien sous le menu */
-    #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
+    #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 10px; display: none; }
     
-    /* MODIFICATION 3 : Menu cliquable et bien visible */
     .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5000; width: 100%; }
     .nav-item { padding: 15px 2px; text-align: center; font-size: 10px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; text-transform: uppercase; }
     .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -76,14 +46,13 @@
     .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 9px; margin-top: 10px; }
     .member { border-left: 2px solid var(--accent); padding-left: 8px; }
     </style>
-    
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option>
+        <option value="fr">🇫🇷</option><option value="en">🇺🇸</option><option value="ar">🇸🇦</option><option value="de">🇩🇪</option><option value="es">🇪🇸</option>
     </select>
 
     <div id="lock-screen">
@@ -127,6 +96,30 @@
             </div>
         </div>
 
+        <div id="scan" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="color:var(--accent); font-size:12px;">MOTEUR ANALYSE SMC</h3>
+                <input type="text" id="s-input" placeholder="SYMBOLE (ex: XAUUSD)">
+                <button class="btn-action" onclick="alert('Scan en cours sur '+document.getElementById('s-input').value)">DÉTECTER LIQUIDITÉ</button>
+            </div>
+        </div>
+
+        <div id="pay" class="content-section" style="display:none;">
+            <div class="card" style="text-align: center;">
+                <h3 style="color:var(--gold); font-size:12px;">MODES D'ACTIVATION</h3>
+                <div style="border:1px solid var(--green); padding:10px; margin-bottom:5px; border-radius:5px;"><b>USDT (TRC20)</b><br>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
+                <div style="border:1px solid #ff8800; padding:10px; margin-bottom:5px; border-radius:5px;"><b>ORANGE MONEY</b><br>+237 655509738</div>
+                <div style="border:1px solid #ffcc00; padding:10px; margin-bottom:5px; border-radius:5px;"><b>MTN MOMO</b><br>+237 682155479</div>
+            </div>
+        </div>
+
+        <div id="macro" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="color:var(--accent); font-size:12px;">📡 MACRO RADAR</h3>
+                <div class="live-screen">> Synchronisation avec le serveur...</div>
+            </div>
+        </div>
+
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="i-title" style="color:var(--gold); font-size:12px; text-align:center;">📝 TERMINAL CONFIG</h3>
@@ -143,11 +136,11 @@
                     <option value="PERP">PERPÉTUEL (FUTURES)</option>
                     <option value="FOREX">FOREX / GOLD</option>
                 </select>
-                <input type="text" id="u-name" placeholder="NOM DU LEADER">
-                <input type="password" id="u-key" placeholder="API KEY">
-                <input type="password" id="u-sec" placeholder="API SECRET">
-                <input type="password" id="u-pass" placeholder="PASSPHRASE">
-                <button id="i-btn" class="btn-action">LANCER LE BOUCLIER</button>
+                <input type="text" placeholder="NOM DU LEADER">
+                <input type="password" placeholder="API KEY">
+                <input type="password" placeholder="API SECRET">
+                <input type="password" placeholder="PASSPHRASE">
+                <button id="i-btn" class="btn-action" onclick="alert('Connexion établie !')">LANCER LE BOUCLIER</button>
             </div>
         </div>
 
@@ -157,12 +150,8 @@
                 <div class="team-grid">
                     <div class="member"><b>👑 NASSER (🇨🇲)</b><br><small>Founder & Dev</small></div>
                     <div class="member"><b>🇨🇦 BEATRICE</b><br><small>Dir. Marketing</small></div>
-                    <div class="member"><b>🇬🇦 EVA</b><br><small>Manager Mark.</small></div>
-                    <div class="member"><b>🇧🇯 FRANCO</b><br><small>Analyste Marché</small></div>
-                    <div class="member"><b>🇬🇵 MARIE</b><br><small>Analyste Marché</small></div>
                     <div class="member"><b>🇹🇬 ALBERT</b><br><small>Expert Trader</small></div>
-                    <div class="member"><b>🇨🇲 BERTRAND</b><br><small>Analyste Tech</small></div>
-                    <div class="member"><b>🇧🇯 SEBASTIEN</b><br><small>Analyste Data</small></div>
+                    <div class="member"><b>🇧🇯 FRANCO</b><br><small>Analyste Marché</small></div>
                 </div>
             </div>
             <div class="card">
@@ -176,31 +165,15 @@
         const langData = {
             fr: {
                 lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", lblAmt: "MONTANT DU TRADE ($)",
-                iTitle: "📝 TERMINAL CONFIG", iBtn: "LANCER LE BOUCLIER",
-                faq: [
-                    {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Éliminer les retails avant l'institutionnel."},
-                    {q: "2. Utilité du FVG ?", a: "Déséquilibre servant d'aimant au prix."},
-                    {q: "3. L'Order Block (OB) ?", a: "Zone de forte accumulation bancaire."},
-                    {q: "4. Pourquoi ce robot ?", a: "Pour suivre les traces institutionnelles."},
-                    {q: "5. Capital minimum ?", a: "10$ est le minimum requis."},
-                    {q: "6. Signification IFDA ?", a: "Interbank Flow Delivery Algo."},
-                    {q: "7. Qui sommes-nous ?", a: "Groupe de jeunes traders mi-institutionnels."},
-                    {q: "8. Rôle de l'API ?", a: "Exécute les trades à ta place."},
-                    {q: "9. Risk Management ?", a: "Stop Loss placé derrière la mèche."},
-                    {q: "10. Prix du robot ?", a: "25$ pour le code d'accès final."}
-                ]
+                faq: [ {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Éliminer les retails avant l'institutionnel."}, {q: "10. Pourquoi 15$ ?", a: "Gestion de risque Sangmélima."} ]
             },
-            ar: { lTitle: "وصول آمن", lBtn: "فتح", mDash: "لوحة التحكم", lblAmt: "مبلغ التداول ($)", iTitle: "إعدادات المنصة", iBtn: "إطلاق الدرع" }
+            ar: { lTitle: "وصول آمن", lBtn: "فتح", mDash: "لوحة التحكم" }
         };
 
         function translateAll(lang) {
             const d = langData[lang] || langData['fr'];
             document.getElementById('l-title').innerText = d.lTitle;
             document.getElementById('l-btn').innerText = d.lBtn;
-            document.getElementById('m-dash').innerText = d.mDash;
-            document.getElementById('lbl-amt').innerText = d.lblAmt;
-            document.getElementById('i-title').innerText = d.iTitle;
-            document.getElementById('i-btn').innerText = d.iBtn;
             let faqHtml = ""; (d.faq || langData['fr'].faq).forEach(f => {
                 faqHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`;
             });
@@ -246,5 +219,5 @@
         translateAll('fr');
     </script>
 </body>
-                                                                                       </html>
-                                                                                       
+                                                       </html>
+        
