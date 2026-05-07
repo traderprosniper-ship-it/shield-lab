@@ -201,8 +201,9 @@
         const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
         const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
         scene.add(mat); camera.position.z = 500;
-                  function sendToPython() {
-            // On récupère toutes les valeurs de ton formulaire
+
+        // --- FONCTION DE LANCEMENT (SANGMELIMA SHIELD) ---
+        function sendToPython() {
             const payload = {
                 exchange: document.getElementById('u-ex').value.toLowerCase(),
                 market_type: document.querySelector('#inscr select:nth-of-type(2)').value,
@@ -213,35 +214,34 @@
                 symbol: "BTC/USDT"
             };
 
-            // Changement visuel immédiat pour toi
-            document.getElementById('terminal').innerHTML = `<br><span style="color:var(--accent)">> ENVOI DES DONNÉES AU SERVEUR...</span>`;
+            document.getElementById('terminal').innerHTML = `<br><span style="color:var(--accent)">> ENVOI VERS TERMUX (192.168.43.44)...</span>`;
 
-            // CONNEXION RÉELLE À TON TERMUX (IP: 192.168.43.44)
             fetch('http://192.168.43.44:5000/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status === "success") {
-                    document.getElementById('terminal').innerHTML += `<br><span style="color:var(--green)">> CONNEXION RÉUSSIE !</span>`;
-                    document.getElementById('terminal').innerHTML += `<br>> SCAN DES 30 ACTIFS DÉMARRÉ...`;
-                    // On bascule automatiquement sur le Dashboard pour voir le capital
+            .then(r => r.json())
+            .then(d => {
+                if(d.status === "success") {
+                    document.getElementById('terminal').innerHTML += `<br><span style="color:var(--green)">> CONNEXION RÉUSSIE ! SCAN EN COURS...</span>`;
                     showTab('dash', document.getElementById('m-dash'));
                 } else {
-                    document.getElementById('terminal').innerHTML += `<br><span style="color:var(--red)">> ERREUR API: ${data.message}</span>`;
+                    document.getElementById('terminal').innerHTML += `<br><span style="color:var(--red)">> ERREUR: ${d.message}</span>`;
                 }
             })
-            .catch(error => {
-                console.error('Erreur:', error);
+            .catch(e => {
                 document.getElementById('terminal').innerHTML += `<br><span style="color:var(--red)">> ERREUR: SERVEUR TERMUX INJOIGNABLE</span>`;
-                alert("Impossible de joindre Termux. Vérifie que le serveur Flask tourne toujours et que tu es sur le même Wi-Fi.");
+                alert("Vérifie ton adresse IP et que Flask tourne sur Termux.");
             });
-                        }
-                
-        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
+        }
+
+        // --- BRANCHEMENT DU BOUTON ---
+        document.getElementById('t-start').onclick = sendToPython;
+
+        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } 
+        animate();
     </script>
 </body>
-                    </html>
-                        
+    </html>
+    
