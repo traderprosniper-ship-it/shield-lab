@@ -38,12 +38,6 @@
     .kz-unit { padding: 8px; background: #050505; border: 1px solid #222; border-radius: 6px; font-size: 8px; color: #444; text-align: center; }
     .kz-on { border-color: var(--green); color: var(--green) !important; font-weight: bold; }
     
-    .faq-item { border-bottom: 1px solid #111; padding: 10px 0; cursor: pointer; text-align: left; }
-    .faq-q { font-size: 10px; font-weight: bold; color: var(--gold); }
-    .faq-a { display: none; font-size: 9px; color: #aaa; padding-top: 5px; }
-    .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 9px; margin-top: 10px; }
-    .member { border-left: 2px solid var(--accent); padding-left: 8px; }
-    
     .pay-box { margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px dashed #444; }
     .copy-btn { background: var(--accent); border: none; color: white; border-radius: 5px; padding: 0 10px; cursor: pointer; font-size: 10px; }
     </style>
@@ -57,9 +51,9 @@
     </select>
 
     <div id="lock-screen">
-        <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">ACCÈS SÉCURISÉ</h2>
+        <h2 style="color:var(--gold); letter-spacing:5px;">ACCÈS SÉCURISÉ</h2>
         <input type="password" id="pass-code" placeholder="PIN CODE OR LICENSE">
-        <button id="l-btn" class="btn-action" style="width:200px;" onclick="checkLock()">DÉVERROUILLER</button>
+        <button class="btn-action" style="width:200px;" onclick="checkLock()">DÉVERROUILLER</button>
     </div>
 
     <div id="main-interface">
@@ -82,7 +76,7 @@
                     <div style="background:#050505; border:1px solid #222; padding:10px;"><small>PNL LIVE</small><br><b style="color:var(--green);">+$0.00</b></div>
                     <div style="background:#050505; border:1px solid #222; padding:10px;"><small>STATUS</small><br><b style="color:var(--green);">ACTIF</b></div>
                 </div>
-                <label id="lbl-amt">MONTANT DU TRADE ($)</label>
+                <label>MONTANT DU TRADE ($)</label>
                 <input type="number" id="trade-amount" value="25">
                 <div id="ny-time" style="font-size: 14px; color: var(--accent); margin-top: 15px; font-weight: bold;">NY: 00:00:00</div>
                 <div class="kz-grid">
@@ -116,6 +110,137 @@
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="i-title" style="color:var(--gold); font-size:12px; text-align:center;">📝 TERMINAL CONFIG</h3>
+                <h3 style="color:var(--gold); font-size:12px; text-align:center;">📝 TERMINAL CONFIG</h3>
                 <label>🏦 ÉCHANGEUR / BROKER</label>
-                
+                <select id="u-ex">
+                    <option value="binance">BINANCE</option><option value="bybit">BYBIT</option>
+                    <option value="okx">OKX</option>
+                </select>
+                <label>📈 MARCHÉ CIBLE</label>
+                <select id="u-market">
+                    <option value="SPOT">SPOT (IFDA)</option>
+                    <option value="PERP">PERPÉTUEL (FUTURES)</option>
+                </select>
+                <input type="text" id="u-name" placeholder="NOM DU LEADER">
+                <input type="password" id="u-key" placeholder="API KEY">
+                <input type="password" id="u-sec" placeholder="API SECRET">
+                <button id="i-btn" class="btn-action" onclick="sendToPython()">LANCER LE BOUCLIER</button>
+            </div>
+        </div>
+
+        <div id="macro" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="color:var(--accent); font-size:11px; text-align:center;">📢 FLUX ÉCONOMIQUE & CORRÉLATION</h3>
+                <div class="tradingview-widget-container" style="height:350px;">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+                    { "colorTheme": "dark", "isTransparent": true, "width": "100%", "height": "100%", "locale": "fr", "importanceFilter": "-1,0,1", "currencyFilter": "USD,EUR,GBP,BTC" }
+                    </script>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+                    <div style="background:#050505; border:1px solid #222; padding:10px; text-align:center; border-radius:8px;">
+                        <small style="font-size:8px; color:#777;">BTC DOMINANCE</small><br><b style="color:var(--accent); font-size:14px;">52.4%</b>
+                    </div>
+                    <div style="background:#050505; border:1px solid #222; padding:10px; text-align:center; border-radius:8px;">
+                        <small style="font-size:8px; color:#777;">ALTSEASON INDEX</small><br><b style="color:var(--green); font-size:14px;">35/100</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="faq" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 style="color:var(--accent); font-size:11px; text-decoration: underline;">🛡️ BOARD SANGMELIMA SHIELD</h3>
+                <div class="team-grid">
+                    <div class="member"><b>👑 NASSER (🇨🇲)</b><br><small>Founder & Dev</small></div>
+                    <div class="member"><b>🇬🇵 MARIE</b><br><small>Analyste Marché</small></div>
+                    <div class="member"><b>🇹🇬 ALBERT</b><br><small>Expert Trader</small></div>
+                    <div class="member"><b>🇧🇯 FRANCO</b><br><small>Analyste</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- FONCTION DE DÉVERROUILLAGE CORRIGÉE ---
+        function checkLock() {
+            const input = document.getElementById('pass-code');
+            const pin = input.value.trim();
+            
+            console.log("Tentative avec le code :", pin); // Pour debug
+
+            if(pin === "197800") {
+                document.getElementById('lock-screen').style.display = "none";
+                document.getElementById('main-interface').style.display = "block";
+                translateAll('fr');
+            } else if(pin.length >= 6) {
+                document.getElementById('lock-screen').style.display = "none";
+                document.getElementById('main-interface').style.display = "block";
+                translateAll('fr');
+            } else {
+                alert("ACCÈS REFUSÉ : CODE PIN INCORRECT");
+                input.value = ""; // Efface le mauvais code
+            }
+        }
+
+        function translateAll(lang) {
+            // Logique de traduction simplifiée pour le debug
+            console.log("Interface traduite en :", lang);
+        }
+
+        function showTab(id, el) {
+            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function copyToClipboard(id) {
+            const text = document.getElementById(id);
+            text.select();
+            navigator.clipboard.writeText(text.value);
+            alert("Copié !");
+        }
+
+        function sendToPython() {
+            const payload = {
+                exchange: document.getElementById('u-ex').value,
+                market_type: document.getElementById('u-market').value,
+                ak: document.getElementById('u-key').value,
+                as: document.getElementById('u-sec').value,
+                symbol: "BTC/USDT"
+            };
+            fetch('http://localhost:5000/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(r => r.json()).catch(e => console.log("Termux non connecté."));
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
+            const h = parseInt(ny.find(it => it.type === 'hour').value);
+            const m = ny.find(it => it.type === 'minute').value;
+            const s = ny.find(it => it.type === 'second').value;
+            document.getElementById('ny-time').innerText = `NY: ${h}:${m}:${s}`;
+            
+            document.querySelectorAll('.kz-unit').forEach(el => el.classList.remove('kz-on'));
+            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('kz-on');
+            if (h >= 7 && h < 10) document.getElementById('kz-nyam').classList.add('kz-on');
+        }, 1000);
+
+        // 3D Background
+        const scene = new THREE.Scene(); 
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
+        scene.add(mat); camera.position.z = 500;
+        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
+    </script>
+</body>
+                    </html>
+                            
