@@ -101,8 +101,8 @@
                     <option>MEXC</option><option>BINGX</option><option>KUCOIN</option><option>EXNESS</option>
                 </select>
                 <label id="l-mt">MARCHÉ CIBLE</label>
-                <select><option>SPOT (IFDA)</option><option>PERPETUAL</option><option>FOREX</option></select>
-                <input type="text" placeholder="API KEY"><input type="password" placeholder="API SECRET"><input type="password" placeholder="PASSPHRASE">
+                <select id="u-market-target"><option>SPOT (IFDA)</option><option>PERPETUAL</option><option>FOREX</option></select>
+                <input type="text" id="u-key" placeholder="API KEY"><input type="password" id="u-sec" placeholder="API SECRET"><input type="password" id="u-pass" placeholder="PASSPHRASE">
                 <button class="btn-action" id="t-start">LANCER IFDA</button>
             </div>
         </div>
@@ -202,19 +202,20 @@
         const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
         scene.add(mat); camera.position.z = 500;
 
-        // --- FONCTION DE LANCEMENT (SANGMELIMA SHIELD) ---
+        // --- FONCTION DE LANCEMENT (IP CORRIGÉE: 192.168.100.97) ---
         function sendToPython() {
             const payload = {
                 exchange: document.getElementById('u-ex').value.toLowerCase(),
-                market_type: document.querySelector('#inscr select:nth-of-type(2)').value,
-                ak: document.querySelector('#inscr input[type="text"]').value,
-                as: document.querySelector('#inscr input[placeholder="API SECRET"]').value,
-                passphrase: document.querySelector('#inscr input[placeholder="PASSPHRASE"]').value,
+                market_type: document.getElementById('u-market-target').value,
+                ak: document.getElementById('u-key').value,
+                as: document.getElementById('u-sec').value,
+                passphrase: document.getElementById('u-pass').value,
                 capital: document.getElementById('u-capital').value,
                 symbol: "BTC/USDT"
             };
 
-            document.getElementById('terminal').innerHTML = `<br><span style="color:var(--accent)">> ENVOI VERS TERMUX (192.168.100.97)...</span>
+            document.getElementById('terminal').innerHTML = `<br><span style="color:var(--accent)">> ENVOI VERS TERMUX (192.168.100.97)...</span>`;
+
             fetch('http://192.168.100.97:5000/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -231,11 +232,10 @@
             })
             .catch(e => {
                 document.getElementById('terminal').innerHTML += `<br><span style="color:var(--red)">> ERREUR: SERVEUR TERMUX INJOIGNABLE</span>`;
-                alert("Vérifie ton adresse IP et que Flask tourne sur Termux.");
+                alert("Vérifie ton adresse IP (192.168.100.97) et que Flask tourne sur Termux.");
             });
         }
 
-        // --- BRANCHEMENT DU BOUTON ---
         document.getElementById('t-start').onclick = sendToPython;
 
         function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } 
@@ -243,4 +243,4 @@
     </script>
 </body>
     </html>
-    
+            
