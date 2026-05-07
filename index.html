@@ -19,7 +19,7 @@
         .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
         .lang-selector { position: fixed; top: 8px; right: 8px; z-index: 1100; background: #111; border: 1px solid var(--gold); color: white; font-size: 10px; padding: 4px; border-radius: 6px; width: 50px; outline: none; }
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; outline: none; }
+        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; outline: none; box-sizing: border-box; }
         .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
         .sector-btn { background:#111; border:1px solid #222; color:white; font-size:9px; padding:10px; border-radius:5px; cursor:pointer; }
         .kz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
@@ -29,7 +29,7 @@
         .faq-q { color: var(--accent); font-weight: bold; font-size: 11px; }
         .faq-a { display: none; color: #aaa; margin-top: 5px; font-style: italic; font-size: 10px; }
         #pnl-display { font-size: 40px; font-weight: bold; color: var(--text); font-family: monospace; }
-        .status-badge { padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-top: 10px; display: inline-block; width: 100%; text-align: center; }
+        label { font-size: 10px; color: var(--gold); margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
@@ -53,12 +53,82 @@
             <div id="tab-pay" class="nav-item" onclick="showTab('pay', this)">PAIEMENT</div>
         </div>
         <div class="nav-tabs" style="top:40px;">
-            <div id="tab-inscr" class="nav-item">INSCRIPTION</div>
+            <div id="tab-inscr" class="nav-item active" onclick="showTab('inscr', this)">INSCRIPTION</div>
             <div id="tab-macro" class="nav-item" onclick="alert('Syncing Macro...')">MACRO RSS</div>
-            <div id="tab-team" class="nav-item active" onclick="showTab('prof', this)">TEAM/FAQ</div>
+            <div id="tab-team" class="nav-item" onclick="showTab('prof', this)">TEAM/FAQ</div>
         </div>
 
-        <div id="prof" class="content-section">
+        <div id="inscr" class="content-section">
+            <div class="card">
+                <h3 id="txt-inscr-title" style="color:var(--gold); font-size:12px; text-align:center;">📝 FICHE D'INSCRIPTION IFDA</h3>
+                <label id="lbl-name">NOM COMPLET</label>
+                <input type="text" id="u-name" placeholder="Ex: Nasser Sniper">
+                
+                <label id="lbl-country">PAYS / RÉSIDENCE</label>
+                <input type="text" id="u-country" placeholder="Ex: Cameroun">
+
+                <label id="lbl-type">TYPE DE TRADING</label>
+                <select id="u-trade-type">
+                    <option value="spot">💰 SPOT TRADING</option>
+                    <option value="futures">⚡ FUTURES / LEVIER</option>
+                    <option value="forex">🏛️ FOREX (INDICES/GOLD)</option>
+                </select>
+
+                <label id="lbl-api">CONFIGURATION API (MULTI-ACCOUNT)</label>
+                <input type="text" id="u-api-key" placeholder="API KEY EXCHANGE">
+                <input type="password" id="u-api-secret" placeholder="SECRET KEY EXCHANGE">
+                
+                <button id="btn-save" class="btn-action" onclick="saveUser()">ENREGISTRER AU LABO</button>
+            </div>
+        </div>
+
+        <div id="dash" class="content-section" style="display:none;">
+            <div class="card" style="text-align: center;">
+                <div id="txt-cap" style="font-size: 8px; color: #777;">IFDA LIVE PNL</div>
+                <div id="pnl-display">$0.00</div>
+                <div id="ny-time" style="font-size: 14px; color: var(--accent); font-family: monospace; margin-top: 5px;">NY: 00:00:00</div>
+                <div class="kz-grid">
+                    <div class="kz-unit" id="kz-asia">🌏 ASIAN</div><div class="kz-unit" id="kz-london">🇬🇧 LONDON</div>
+                    <div class="kz-unit" id="kz-nyam">🇺🇸 NY AM</div><div class="kz-unit" id="kz-nypm">🇺🇸 NY PM</div>
+                </div>
+                <div id="licence-status" style="margin-top:10px; font-size:9px; color:var(--red);">⚠️ LICENCE REQUISE</div>
+                <input type="number" id="trade-amount" value="10" min="10" style="width: 80px; text-align: center; margin: 10px auto; display: block; border: 1px solid var(--gold); color: var(--gold);">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                    <button id="btn-fbuy" class="sector-btn" style="color:var(--green)" onclick="executeTrade('BUY')">⚡ FORCE BUY</button>
+                    <button id="btn-fsell" class="sector-btn" style="color:var(--red)" onclick="executeTrade('SELL')">⚡ FORCE SELL</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="scan" class="content-section" style="display:none;">
+            <div class="card">
+                <input type="text" id="s-input" placeholder="SYMBOLE (ex: XAUUSD)">
+                <button id="btn-detect" class="btn-action" onclick="runIFDAAnalysis()">ANALYSE INSTITUTIONNELLE</button>
+                <div id="scan-res" style="display:none; margin-top:15px; border-top: 1px solid #222; padding-top: 10px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div style="background:#050505; border:1px solid #1a1a1a; padding:8px; border-radius:6px; font-size:9px; text-align:center;">
+                            <small>ZONE</small><br><b id="r-zone" style="color:var(--gold)">---</b>
+                        </div>
+                        <div style="background:#050505; border:1px solid #1a1a1a; padding:8px; border-radius:6px; font-size:9px; text-align:center;">
+                            <small>VOL. INST.</small><br><b id="r-vol" style="color:var(--accent)">---</b>
+                        </div>
+                    </div>
+                    <div id="r-status" style="padding:6px; border-radius:6px; font-size:10px; font-weight:bold; margin-top:10px; text-align:center; background:#222;">EN ATTENTE</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pay" class="content-section" style="display:none;">
+            <div class="card" style="text-align: center;">
+                <h3 id="txt-pay-title" style="color:var(--gold); font-size:12px;">💳 PAIEMENT & LICENCE</h3>
+                <p style="font-size: 9px; color:#aaa;">USDT TRC20: <br><b id="usdt-addr" style="color:var(--green)">TYG7x...[VOTRE_ADRESSE]</b></p>
+                <button class="sector-btn" onclick="navigator.clipboard.writeText('TYG7x...')">📋 COPIER ADRESSE</button>
+                <input type="text" id="licence-key" placeholder="CODE LICENCE">
+                <button id="btn-activate" class="btn-action" onclick="validateLicence()">ACTIVER</button>
+            </div>
+        </div>
+
+        <div id="prof" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="txt-team-title" style="color:var(--accent); font-size:11px; text-decoration: underline;">🛡️ SHIELD GLOBAL - OFFICIAL BOARD</h3>
                 <div id="t-team-list" style="display: flex; flex-direction: column; gap: 8px; font-size: 9px;">
@@ -76,53 +146,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card"><h3 id="txt-faq-title" style="color:var(--gold); font-size:11px;">💡 FAQ STRATÉGIQUE (IFDA/SMC)</h3><div id="faq-list"></div></div>
-        </div>
-
-        <div id="dash" class="content-section" style="display:none;">
-            <div class="card" style="text-align: center;">
-                <div id="txt-cap" style="font-size: 8px; color: #777;">IFDA LIVE PNL</div>
-                <div id="pnl-display">$0.00</div>
-                <div id="ny-time" style="font-size: 14px; color: var(--accent); font-family: monospace; margin-top: 5px;">NY: 00:00:00</div>
-                <div class="kz-grid">
-                    <div class="kz-unit" id="kz-asia">🌏 ASIAN</div><div class="kz-unit" id="kz-london">🇬🇧 LONDON</div>
-                    <div class="kz-unit" id="kz-nyam">🇺🇸 NY AM</div><div class="kz-unit" id="kz-nypm">🇺🇸 NY PM</div>
-                </div>
-                <div id="licence-status" style="margin-top:10px; font-size:9px; color:var(--red);">⚠️ LICENCE REQUISE</div>
-                <input type="number" id="trade-amount" value="10" min="10" style="width: 80px; text-align: center; margin: 10px auto; display: block; border: 1px solid var(--gold); color: var(--gold);">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                    <button id="btn-fbuy" class="sector-btn" onclick="executeTrade('BUY')">⚡ FORCE BUY</button>
-                    <button id="btn-fsell" class="sector-btn" onclick="executeTrade('SELL')">⚡ FORCE SELL</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="scan" class="content-section" style="display:none;">
-            <div class="card">
-                <input type="text" id="s-input" placeholder="SYMBOLE (ex: XAUUSD)">
-                <button id="btn-detect" class="btn-action" onclick="runIFDAAnalysis()">ANALYSE INSTITUTIONNELLE</button>
-                <div id="scan-res" style="display:none; margin-top:15px; border-top: 1px solid #222; padding-top: 10px;">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <div style="background:#050505; border:1px solid #1a1a1a; padding:8px; border-radius:6px; font-size:9px; text-align:center;">
-                            <small>ZONE</small><br><b id="r-zone" style="color:var(--gold)">---</b>
-                        </div>
-                        <div style="background:#050505; border:1px solid #1a1a1a; padding:8px; border-radius:6px; font-size:9px; text-align:center;">
-                            <small>VOLUME (FVG/OB)</small><br><b id="r-vol" style="color:var(--accent)">---</b>
-                        </div>
-                    </div>
-                    <div id="r-status" class="status-badge" style="background:#222; color:#555;">EN ATTENTE</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="pay" class="content-section" style="display:none;">
-            <div class="card" style="text-align: center;">
-                <h3 id="txt-pay-title" style="color:var(--gold); font-size:12px;">💳 PAIEMENT & LICENCE</h3>
-                <p style="font-size: 9px; color:#aaa;">USDT TRC20: <br><b id="usdt-addr" style="color:var(--green)">TYG7x...[VOTRE_ADRESSE]</b></p>
-                <button class="sector-btn" onclick="navigator.clipboard.writeText('TYG7x...')">📋 COPIER ADRESSE</button>
-                <input type="text" id="licence-key" placeholder="CODE LICENCE">
-                <button id="btn-activate" class="btn-action" onclick="validateLicence()">ACTIVER</button>
-            </div>
+            <div class="card"><h3 id="txt-faq-title" style="color:var(--gold); font-size:11px;">💡 FAQ STRATÉGIQUE (IFDA)</h3><div id="faq-list"></div></div>
         </div>
     </div>
 
@@ -130,76 +154,23 @@
         let licenceActive = false; let isTrading = false; let pnlValue = 0.00;
         const _v = [49, 57, 55, 56, 48, 48]; // 197800
 
-        // --- TRADUCTION TOTALE ---
         const translations = {
             fr: {
-                secured: "ACCÈS SÉCURISÉ", unlock: "DÉVERROUILLER", dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", team: "TEAM/FAQ", cap: "IFDA LIVE PNL", teamTitle: "🛡️ DIRECTION SHIELD GLOBAL", faqTitle: "💡 FAQ STRATÉGIQUE (IFDA)",
+                secured: "ACCÈS SÉCURISÉ", unlock: "DÉVERROUILLER", dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", team: "TEAM/FAQ", cap: "IFDA LIVE PNL", teamTitle: "🛡️ DIRECTION SHIELD GLOBAL", faqTitle: "💡 FAQ STRATÉGIQUE (IFDA)", inscrTitle: "📝 FICHE D'INSCRIPTION", name: "NOM COMPLET", country: "PAYS / RÉSIDENCE", type: "TYPE DE TRADING", api: "CONFIGURATION API", save: "ENREGISTRER",
                 roles: { nasser: "Fondateur & Lead Dev", mark: "Directrice Marketing", mana: "Manager Marketing", anal: "Analyste Marché", trad: "Expert Trader", tech: "Analyste Tech Senior", data: "Analyste Données" },
-                faq: [ {q: "1. Pourquoi le Sweep ?", a: "Pour capturer la liquidité retail."}, {q: "2. C'est quoi un BOS ?", a: "Cassure confirmée par le corps."}, {q: "8. C'est quoi l'IFDA ?", a: "Algorithme Interbancaire de Prix."} ]
+                faq: [ {q: "1. Pourquoi le Sweep ?", a: "Pour capturer la liquidité retail."}, {q: "2. C'est quoi un BOS ?", a: "Cassure confirmée par le corps."}, {q: "3. Rôle IDM ?", a: "Piéger avant le mouvement réel."}, {q: "4. Zone Discount ?", a: "Acheter bas après retracement."}, {q: "5. Zone Premium ?", a: "Vendre cher en tendance baissière."}, {q: "6. Capital ?", a: "Optimisé dès 10$."}, {q: "7. Stop Loss ?", a: "Derrière la mèche de sweep."}, {q: "8. IFDA ?", a: "Algorithme Interbancaire."}, {q: "9. Killzones ?", a: "Volume à Londres/NY."}, {q: "10. Risque ?", a: "Strict respect du capital."} ]
             },
             en: {
-                secured: "SECURED ACCESS", unlock: "UNLOCK", dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", team: "TEAM/FAQ", cap: "IFDA LIVE PNL", teamTitle: "🛡️ SHIELD GLOBAL BOARD", faqTitle: "💡 STRATEGIC FAQ (IFDA)",
+                secured: "SECURED ACCESS", unlock: "UNLOCK", dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", team: "TEAM/FAQ", cap: "IFDA LIVE PNL", teamTitle: "🛡️ SHIELD GLOBAL BOARD", faqTitle: "💡 STRATEGIC FAQ (IFDA)", inscrTitle: "📝 REGISTRATION FORM", name: "FULL NAME", country: "COUNTRY", type: "TRADING TYPE", api: "API CONFIG", save: "REGISTER",
                 roles: { nasser: "Founder & Lead Dev", mark: "Marketing Director", mana: "Marketing Manager", anal: "Market Analyst", trad: "Trading Expert", tech: "Senior Tech Analyst", data: "Data Analyst" },
-                faq: [ {q: "1. Why the Sweep?", a: "To capture retail liquidity."}, {q: "2. What is BOS?", a: "Break confirmed by candle body."}, {q: "8. What is IFDA?", a: "Interbank Flow Delivery Algorithm."} ]
+                faq: [ {q: "1. Why Sweep?", a: "Capture retail liquidity."}, {q: "2. What is BOS?", a: "Body close break."}, {q: "8. What is IFDA?", a: "Price Algorithm."} ]
             },
             ar: {
-                secured: "وصول آمن", unlock: "فتح", dash: "لوحة التحكم", scan: "ماسح", pay: "دفع", team: "الفريق", cap: "أرباح IFDA المباشرة", teamTitle: "🛡️ الإدارة العالمية", faqTitle: "💡 الأسئلة الشائعة",
-                roles: { nasser: "المؤسس والمطور الرئيسي", mark: "مديرة التسويق", mana: "مديرة التسويق", anal: "محلل السوق", trad: "خبير تداول", tech: "كبير المحللين التقنيين", data: "محلل بيانات" },
-                faq: [ {q: "1. لماذا المسح؟", a: "لسحب سيولة الأفراد."}, {q: "2. ما هو BOS؟", a: "كسر الهيكل بجسم الشمعة."}, {q: "8. ما هو IFDA؟", a: "خوارزمية تسليم الأسعار البنكية."} ]
+                secured: "وصول آمن", unlock: "فتح", dash: "لوحة التحكم", scan: "ماسح", pay: "دفع", team: "الفريق", cap: "أرباح IFDA المباشرة", teamTitle: "🛡️ الإدارة العالمية", faqTitle: "💡 الأسئلة الشائعة", inscrTitle: "📝 استمارة التسجيل", name: "الاسم الكامل", country: "البلد", type: "نوع التداول", api: "إعدادات API", save: "تسجيل",
+                roles: { nasser: "المؤسس والمطور", mark: "مديرة التسويق", mana: "مديرة التسويق", anal: "محلل السوق", trad: "خبير تداول", tech: "كبير المحللين", data: "محلل بيانات" },
+                faq: [ {q: "1. لماذا المسح؟", a: "سحب السيولة."}, {q: "8. ما هو IFDA؟", a: "خوارزمية بنكية."} ]
             }
         };
-
-        // --- GESTION NY TIME & KILLZONES ---
-        function updateClock() {
-            const now = new Date();
-            const nyParts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
-            const h = parseInt(nyParts.find(p => p.type === 'hour').value);
-            document.getElementById('ny-time').innerText = `NY: ${h}:${nyParts.find(p => p.type === 'minute').value}:${nyParts.find(p => p.type === 'second').value}`;
-            document.querySelectorAll('.kz-unit').forEach(el => el.classList.remove('kz-on'));
-            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('kz-on');
-            if (h >= 7 && h < 10) document.getElementById('kz-nyam').classList.add('kz-on');
-            if (h >= 13 && h < 16) document.getElementById('kz-nypm').classList.add('kz-on');
-        }
-        setInterval(updateClock, 1000);
-
-        // --- COMPTEUR PNL LIVE ---
-        setInterval(() => {
-            if(isTrading) {
-                pnlValue += (Math.random() * 0.1) - 0.045;
-                const el = document.getElementById('pnl-display');
-                el.innerText = (pnlValue >= 0 ? "+" : "") + "$" + pnlValue.toFixed(2);
-                el.style.color = pnlValue >= 0 ? "var(--green)" : "var(--red)";
-            }
-        }, 800);
-
-        // --- SCANNER INSTITUTIONNEL ---
-        function runIFDAAnalysis() {
-            const sym = document.getElementById('s-input').value; if(!sym) return alert("SYMBOLE ?");
-            document.getElementById('scan-res').style.display = "block";
-            const status = document.getElementById('r-status'); status.innerText = "IFDA SCANNING..."; status.style.color = "#aaa";
-            setTimeout(() => {
-                const vol = Math.random() > 0.4; const zone = Math.random() > 0.5;
-                document.getElementById('r-zone').innerText = zone ? "DISCOUNT (BUY)" : "PREMIUM (SELL)";
-                document.getElementById('r-vol').innerText = vol ? "INSTITUTIONAL ✅" : "RETAIL ❌";
-                if(vol) { status.innerText = "SIGNAL VALIDÉ 🛡️"; status.style.color = "var(--green)"; }
-                else { status.innerText = "HAUT RISQUE ⚠️"; status.style.color = "var(--red)"; }
-            }, 1500);
-        }
-
-        function checkLock() {
-            const val = document.getElementById('pass-code').value;
-            if(val === "197800") { document.getElementById('lock-screen').style.display="none"; document.getElementById('main-interface').style.display="block"; changeLanguage('fr'); }
-            else alert("WRONG PIN");
-        }
-
-        function validateLicence() {
-            if(document.getElementById('licence-key').value.toUpperCase() === "SHIELD-2026") {
-                licenceActive = true; document.getElementById('licence-status').innerText = "✅ IFDA ACTIVE";
-                document.getElementById('licence-status').style.color = "var(--green)"; showTab('dash');
-            } else alert("INVALID KEY");
-        }
-
-        function executeTrade(side) { if(!licenceActive) showTab('pay'); else { isTrading = true; pnlValue = 0; } }
 
         function changeLanguage(lang) {
             const t = translations[lang] || translations['fr'];
@@ -208,6 +179,10 @@
             document.getElementById('tab-pay').innerText = t.pay; document.getElementById('tab-team').innerText = t.team;
             document.getElementById('txt-cap').innerText = t.cap; document.getElementById('txt-team-title').innerText = t.teamTitle;
             document.getElementById('txt-faq-title').innerText = t.faqTitle;
+            document.getElementById('txt-inscr-title').innerText = t.inscrTitle;
+            document.getElementById('lbl-name').innerText = t.name; document.getElementById('lbl-country').innerText = t.country;
+            document.getElementById('lbl-type').innerText = t.type; document.getElementById('lbl-api').innerText = t.api;
+            document.getElementById('btn-save').innerText = t.save;
             document.getElementById('role-nasser').innerText = t.roles.nasser + " (Cameroon)";
             document.querySelectorAll('.role-mark').forEach(el => el.innerText = t.roles.mark);
             document.querySelectorAll('.role-mana').forEach(el => el.innerText = t.roles.mana);
@@ -220,21 +195,43 @@
             document.body.style.direction = (lang === 'ar' ? 'rtl' : 'ltr');
         }
 
+        function checkLock() {
+            const val = document.getElementById('pass-code').value;
+            if(val === "197800") { document.getElementById('lock-screen').style.display="none"; document.getElementById('main-interface').style.display="block"; changeLanguage('fr'); }
+            else alert("WRONG PIN");
+        }
+
+        function saveUser() { alert("DATA SAVED. API LINKED."); showTab('dash'); }
+        function validateLicence() { if(document.getElementById('licence-key').value.toUpperCase() === "SHIELD-2026") { licenceActive = true; document.getElementById('licence-status').innerText = "✅ IFDA ACTIVE"; document.getElementById('licence-status').style.color = "var(--green)"; showTab('dash'); } else alert("INVALID"); }
+        function executeTrade(side) { if(!licenceActive) showTab('pay'); else { isTrading = true; pnlValue = 0; } }
+
+        function runIFDAAnalysis() {
+            document.getElementById('scan-res').style.display = "block";
+            setTimeout(() => {
+                document.getElementById('r-zone').innerText = "DISCOUNT (BUY)";
+                document.getElementById('r-vol').innerText = "INSTITUTIONAL ✅";
+            }, 1000);
+        }
+
         function showTab(id, el) { 
             document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none'); document.getElementById(id).style.display = 'block'; 
             if(el) { document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
         }
 
-        // --- 3D ENGINE ---
+        setInterval(() => {
+            const now = new Date();
+            const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
+            const h = parseInt(ny.find(p => p.type === 'hour').value);
+            document.getElementById('ny-time').innerText = `NY: ${h}:${ny.find(p => p.type === 'minute').value}:${ny.find(p => p.type === 'second').value}`;
+            document.querySelectorAll('.kz-unit').forEach(el => el.classList.remove('kz-on'));
+            if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('kz-on');
+            if (h >= 7 && h < 10) document.getElementById('kz-nyam').classList.add('kz-on');
+        }, 1000);
+
+        setInterval(() => { if(isTrading) { pnlValue += (Math.random() * 0.1) - 0.045; document.getElementById('pnl-display').innerText = "$" + pnlValue.toFixed(2); } }, 800);
+
         const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         const pts = []; for(let i=0; i<400; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
-        scene.add(mat); camera.position.z = 500;
-        function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
-    </script>
-</body>
-                                                                                          </html>
-                    
+        const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(p
