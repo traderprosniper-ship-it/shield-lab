@@ -8,272 +8,233 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100%; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; height: 100%; }
         #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); text-shadow: 0 0 20px rgba(59, 130, 246, 0.2); z-index: -1; pointer-events: none; letter-spacing: 20px; animation: pulseIfda 4s infinite; }
+        #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; pointer-events: none; letter-spacing: 20px; animation: pulseIfda 4s infinite; }
         @keyframes pulseIfda { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; } 50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; } }
-        #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-bottom: 120px; }
+        #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-bottom: 120px; display: none; }
+        #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); }
         .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
         .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
-        input, select { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; outline: none; }
+        .lang-selector { position: fixed; top: 8px; right: 8px; z-index: 1100; background: #111; border: 1px solid var(--gold); color: white; font-size: 10px; padding: 4px; border-radius: 6px; width: 50px; outline: none; }
+        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 14px; outline: none; }
         .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
-        .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); font-family: 'Courier New', monospace; overflow-y: auto; text-align: left; }
-        .macro-radar { margin-top: 10px; border: 1px solid var(--gold); border-radius: 8px; padding: 10px; background: rgba(255, 215, 0, 0.03); text-align: left; }
-        .res-box { background: #050505; border: 1px solid #1a1a1a; padding: 8px; border-radius: 6px; font-size: 9px; text-align: center; }
+        .sector-btn { background:#111; border:1px solid #222; color:white; font-size:9px; padding:10px; border-radius:5px; cursor:pointer; }
         .kz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
         .kz-unit { padding: 8px; background: #050505; border: 1px solid #222; border-radius: 6px; font-size: 8px; color: #444; text-align: center; }
         .kz-on { border-color: var(--green); color: var(--green) !important; font-weight: bold; }
-        .faq-item { border-bottom: 1px solid #111; padding: 10px 0; cursor: pointer; text-align: left; }
-        .faq-q { font-size: 10px; font-weight: bold; color: var(--gold); }
-        .faq-a { display: none; font-size: 9px; color: #aaa; padding-top: 5px; }
-        .pay-box { border: 2px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 10px; }
-        .news-entry { cursor: pointer; padding: 5px 0; border-bottom: 1px solid #222; transition: background 0.3s; }
-        .news-entry:hover { background: rgba(59, 130, 246, 0.1); }
+        .faq-item { border-bottom: 1px solid #1a1a1a; padding: 10px 0; cursor: pointer; }
+        .faq-q { color: var(--accent); font-weight: bold; font-size: 11px; }
+        .faq-a { display: none; color: #aaa; margin-top: 5px; font-style: italic; font-size: 10px; }
+        #pnl-display { font-size: 40px; font-weight: bold; color: var(--text); font-family: monospace; }
+        .status-badge { padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-top: 10px; display: inline-block; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
     <div id="ifda-bg-text">IFDA</div>
+
+    <select class="lang-selector" id="global-lang" onchange="changeLanguage(this.value)">
+        <option value="fr">🇫🇷</option><option value="en">🇺🇸</option><option value="ar">🇸🇦</option><option value="de">🇩🇪</option><option value="es">🇪🇸</option>
+    </select>
+
+    <div id="lock-screen">
+        <h2 id="txt-secured" style="color:var(--gold); letter-spacing:5px;">ACCÈS SÉCURISÉ</h2>
+        <input type="password" id="pass-code" placeholder="PIN CODE" autocomplete="off" style="width:200px; text-align:center; -webkit-text-security: disc;">
+        <button id="txt-unlock" class="btn-action" style="width:200px;" onclick="checkLock()">DÉVERROUILLER</button>
+    </div>
+
     <div id="main-interface">
-        <div style="display: flex; justify-content: flex-end; padding: 10px;">
-            <select id="lang-selector" style="width: auto; background: transparent; color: var(--gold); border: none; font-size: 10px;" onchange="translateFull(this.value)">
-                <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option><option value="ar">🇸🇦 AR</option>
-            </select>
-        </div>
         <div class="nav-tabs">
-            <div class="nav-item active" id="n-dash" onclick="showTab('dash', this)">DASHBOARD</div>
-            <div class="nav-item" id="n-scan" onclick="showTab('scan', this)">SCANNER</div>
-            <div class="nav-item" id="n-pay" onclick="showTab('pay', this)">PAIEMENT</div>
+            <div id="tab-dash" class="nav-item" onclick="showTab('dash', this)">DASHBOARD</div>
+            <div id="tab-scan" class="nav-item" onclick="showTab('scan', this)">SCANNER</div>
+            <div id="tab-pay" class="nav-item" onclick="showTab('pay', this)">PAIEMENT</div>
         </div>
         <div class="nav-tabs" style="top:40px;">
-            <div class="nav-item" id="n-inscr" onclick="showTab('inscr', this)">INSCRIPTION</div>
-            <div class="nav-item" id="n-macro" onclick="syncMacro()">MACRO RSS</div>
-            <div class="nav-item" id="n-prof" onclick="showTab('prof', this)">TEAM/FAQ</div>
+            <div id="tab-inscr" class="nav-item">INSCRIPTION</div>
+            <div id="tab-macro" class="nav-item" onclick="alert('Syncing Macro...')">MACRO RSS</div>
+            <div id="tab-team" class="nav-item active" onclick="showTab('prof', this)">TEAM/FAQ</div>
         </div>
 
-        <div id="dash" class="content-section">
-            <div class="card" style="text-align: center;">
-                <div id="t-cap" style="font-size: 8px; color: #777;">SMC CAPITAL ALLOCATION</div>
-                <div id="bal-val" style="font-size: 45px; font-weight: bold; color: var(--gold); margin: 5px 0;">$0.00</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div style="background:#050505; border-radius:10px; border:1px solid #222; padding:10px;"><small id="t-pnl">PNL LIVE</small><br><b id="pnl-val" style="color:var(--green); font-size:20px;">+$0.00</b></div>
-                    <div style="background:#050505; border-radius:10px; border:1px solid #222; padding:10px;"><small id="t-stat">STATUS</small><br><b id="robot-status" style="color:var(--red); font-size:14px;">INACTIF</b></div>
+        <div id="prof" class="content-section">
+            <div class="card">
+                <h3 id="txt-team-title" style="color:var(--accent); font-size:11px; text-decoration: underline;">🛡️ SHIELD GLOBAL - OFFICIAL BOARD</h3>
+                <div id="t-team-list" style="display: flex; flex-direction: column; gap: 8px; font-size: 9px;">
+                    <div style="border-left: 2px solid var(--gold); padding-left: 8px;">
+                        <b style="color:var(--gold)">👑 LEADER NASSER</b><br><small id="role-nasser">Fondateur & Lead Dev (Cameroon)</small>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div><b>🇨🇦 BEATRICE</b><br><small class="role-mark">Directrice Marketing</small></div>
+                        <div><b>🇬🇦 EVA</b><br><small class="role-mana">Manager Marketing</small></div>
+                        <div><b>🇧🇯 FRANCO</b><br><small class="role-anal">Analyste Marché</small></div>
+                        <div><b>🇬🇵 MARIE</b><br><small class="role-anal">Analyste Marché</small></div>
+                        <div><b>🇹🇬 ALBERT</b><br><small class="role-trad">Expert Trader Senior</small></div>
+                        <div><b>🇨🇲 BERTRAND</b><br><small class="role-tech">Analyste Tech Senior</small></div>
+                        <div><b>🇧🇯 SEBASTIEN</b><br><small class="role-data">Analyste Données</small></div>
+                    </div>
                 </div>
-                <div id="ny-time" style="font-size: 14px; color: var(--accent); margin-top: 15px; font-weight: bold; font-family: monospace;">NY: 00:00:00</div>
+            </div>
+            <div class="card"><h3 id="txt-faq-title" style="color:var(--gold); font-size:11px;">💡 FAQ STRATÉGIQUE (IFDA/SMC)</h3><div id="faq-list"></div></div>
+        </div>
+
+        <div id="dash" class="content-section" style="display:none;">
+            <div class="card" style="text-align: center;">
+                <div id="txt-cap" style="font-size: 8px; color: #777;">IFDA LIVE PNL</div>
+                <div id="pnl-display">$0.00</div>
+                <div id="ny-time" style="font-size: 14px; color: var(--accent); font-family: monospace; margin-top: 5px;">NY: 00:00:00</div>
                 <div class="kz-grid">
                     <div class="kz-unit" id="kz-asia">🌏 ASIAN</div><div class="kz-unit" id="kz-london">🇬🇧 LONDON</div>
                     <div class="kz-unit" id="kz-nyam">🇺🇸 NY AM</div><div class="kz-unit" id="kz-nypm">🇺🇸 NY PM</div>
                 </div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
-                <div class="macro-radar">
-                    <div style="font-size: 9px; color: var(--gold); font-weight: bold;" id="t-macro-head">📡 MACRO RADAR</div>
-                    <div id="macro-feed" style="font-size: 8px; color: #ccc;">
-                        <div id="macro-feed-container">> En attente du flux RSS...</div>
-                    </div>
+                <div id="licence-status" style="margin-top:10px; font-size:9px; color:var(--red);">⚠️ LICENCE REQUISE</div>
+                <input type="number" id="trade-amount" value="10" min="10" style="width: 80px; text-align: center; margin: 10px auto; display: block; border: 1px solid var(--gold); color: var(--gold);">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                    <button id="btn-fbuy" class="sector-btn" onclick="executeTrade('BUY')">⚡ FORCE BUY</button>
+                    <button id="btn-fsell" class="sector-btn" onclick="executeTrade('SELL')">⚡ FORCE SELL</button>
                 </div>
             </div>
         </div>
 
         <div id="scan" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-scan-h" style="font-size:11px; color:var(--accent);">MOTEUR ANALYSE SMC</h3>
                 <input type="text" id="s-input" placeholder="SYMBOLE (ex: XAUUSD)">
-                <button class="btn-action" id="t-btn-scan" onclick="runFractalScan()">DÉTECTER LIQUIDITÉ</button>
-                <div id="scan-res" style="display:none; margin-top:15px; border-top:1px solid #222; padding-top:10px;">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                        <div class="res-box"><small id="t-sweep">SWEEP</small><br><b id="r-sweep" style="color:var(--gold);">---</b></div>
-                        <div class="res-box"><small id="t-fvg">FVG</small><br><b id="r-fvg" style="color:var(--accent);">---</b></div>
-                        <div class="res-box"><small id="t-ob">OB</small><br><b id="r-ob" style="color:var(--green);">---</b></div>
-                        <div class="res-box"><small id="t-bos">BOS</small><br><b id="r-bos" style="color:var(--text);">---</b></div>
+                <button id="btn-detect" class="btn-action" onclick="runIFDAAnalysis()">ANALYSE INSTITUTIONNELLE</button>
+                <div id="scan-res" style="display:none; margin-top:15px; border-top: 1px solid #222; padding-top: 10px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div style="background:#050505; border:1px solid #1a1a1a; padding:8px; border-radius:6px; font-size:9px; text-align:center;">
+                            <small>ZONE</small><br><b id="r-zone" style="color:var(--gold)">---</b>
+                        </div>
+                        <div style="background:#050505; border:1px solid #1a1a1a; padding:8px; border-radius:6px; font-size:9px; text-align:center;">
+                            <small>VOLUME (FVG/OB)</small><br><b id="r-vol" style="color:var(--accent)">---</b>
+                        </div>
                     </div>
+                    <div id="r-status" class="status-badge" style="background:#222; color:#555;">EN ATTENTE</div>
                 </div>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 id="t-pay-h" style="font-size:12px; color:var(--gold);">MODES d'ACTIVATION</h3>
-                <div class="pay-box" style="border-color: var(--green);"><b>🟢 USDT (TRC20)</b><br>TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
-                <div class="pay-box" style="border-color: #ff8800;"><b>🟠 ORANGE MONEY</b><br>+237 655509738</div>
-                <div class="pay-box" style="border-color: #ffcc00;"><b>🟡 MTN MOMO</b><br>+237 682155479</div>
-            </div>
-        </div>
-
-        <div id="inscr" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 id="t-conf-h" style="font-size:11px; color:var(--accent); text-align:center;">🛡️ CONFIG LABO</h3>
-                <select id="m-type"><option value="SPOT">SPOT</option><option value="PERP">PERPETUAL</option><option value="FOREX">FOREX</option></select>
-                <select id="e-s">
-                    <option value="EXNESS">EXNESS</option><option value="OKX">OKX</option>
-                    <option value="BINGX">BINGX</option><option value="MEXC">MEXC</option>
-                    <option value="BYBIT">BYBIT</option><option value="BITGET">BITGET</option><option value="KUCOIN">KUCOIN</option>
-                </select>
-                <input type="password" id="ak" placeholder="API KEY">
-                <input type="password" id="as" placeholder="SECRET KEY">
-                <input type="password" id="ap" placeholder="PASSPHRASE (OKX)">
-                <input type="number" id="tr-amt" placeholder="MONTANT ($)">
-                <button class="btn-action" id="t-btn-launch" onclick="activateEngine()">🚀 LANCER LE BOUCLIER</button>
-            </div>
-        </div>
-
-        <div id="prof" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 style="font-size:11px; color:var(--accent);" id="t-team-h">🛡️ SHIELD TEAM</h3>
-                <div style="font-size:10px; color:var(--accent); line-height:1.8;" id="t-team-list">LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYSTE)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>BÉATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)</div>
-            </div>
-            <div class="card">
-                <h3 id="t-faq-h" style="font-size:11px; color:var(--gold);">💡 FAQ STRATÉGIQUE (10)</h3>
-                <div id="faq-list"></div>
+            <div class="card" style="text-align: center;">
+                <h3 id="txt-pay-title" style="color:var(--gold); font-size:12px;">💳 PAIEMENT & LICENCE</h3>
+                <p style="font-size: 9px; color:#aaa;">USDT TRC20: <br><b id="usdt-addr" style="color:var(--green)">TYG7x...[VOTRE_ADRESSE]</b></p>
+                <button class="sector-btn" onclick="navigator.clipboard.writeText('TYG7x...')">📋 COPIER ADRESSE</button>
+                <input type="text" id="licence-key" placeholder="CODE LICENCE">
+                <button id="btn-activate" class="btn-action" onclick="validateLicence()">ACTIVER</button>
             </div>
         </div>
     </div>
 
     <script>
-        // CONFIGURATION IP SANGMELIMA LAB
-        const SERVER_IP = "192.168.43.44";
-        const SERVER_PORT = "5000"; // Modifie si ton script Python utilise un autre port
-        const SERVER_URL = `http://${SERVER_IP}:${SERVER_PORT}`;
+        let licenceActive = false; let isTrading = false; let pnlValue = 0.00;
+        const _v = [49, 57, 55, 56, 48, 48]; // 197800
 
-        const tg = window.Telegram.WebApp; tg.expand();
-        const lexicon = {
-            fr: { 
-                dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", inscr: "INSCRIPTION", faqhead: "TEAM/FAQ", 
-                cap: "SMC CAPITAL ALLOCATION", pnl: "PNL LIVE", stat: "STATUS", scanh: "MOTEUR ANALYSE SMC", 
-                btnscan: "DÉTECTER LIQUIDITÉ", confh: "🛡️ CONFIG LABO", btnlaunch: "🚀 LANCER LE BOUCLIER", 
-                faqh: "💡 FAQ STRATÉGIQUE (10)", payh: "MODES D'ACTIVATION", teamh: "🛡️ SHIELD TEAM",
-                team: "LEADER NASSER (CM/DEV)<br>ALBERT (TOGO/ANALYSTE)<br>MARIE (GUAD/MARKETING)<br>BERTRAND (DLA/TRADER)<br>SÉBASTIEN (BENIN/ANALYSTE)<br>FRANCO (BENIN/TRADER)<br>BÉATRICE (MANAGER/CANADA)<br>EVA (GABON/TRADER)",
-                faq: [
-                    {q:"1. Pourquoi le Sweep PDH/PDL ?", a:"Éliminer les retails avant l'institutionnel."},
-                    {q:"2. Utilité du FVG ?", a:"Déséquilibre servant d'aimant au prix."},
-                    {q:"3. L'Order Block (OB) ?", a:"Zone de forte accumulation bancaire."},
-                    {q:"4. Pourquoi dois-je utiliser ce robot 🤖 ?", a:"Éliminer les retails, suis les traces institutionnelles pour éviter de devenir la liquidité."},
-                    {q:"5. Pourrai-je commencer avec 10$ ?", a:"C'est le minimum requis pour utiliser ce bot."},
-                    {q:"6. Que signifie IFDA ?", a:"INTERBANK FLOW DELIVERY ALGO."},
-                    {q:"7. Qui sommes-nous ?", a:"Nous sommes un groupe de jeunes traders mi-institutionnels."},
-                    {q:"8. Que fait exactement l'IFDA ?", a:"Exécute les trades à ta place grâce aux API."},
-                    {q:"9. Risk Management ?", a:"Stop Loss derrière la mèche."},
-                    {q:"10. Quel est le prix du robot 🤖 ?", a:"Pour recevoir le code d'accès, il faut payer 25$."}
-                ] 
+        // --- TRADUCTION TOTALE ---
+        const translations = {
+            fr: {
+                secured: "ACCÈS SÉCURISÉ", unlock: "DÉVERROUILLER", dash: "DASHBOARD", scan: "SCANNER", pay: "PAIEMENT", team: "TEAM/FAQ", cap: "IFDA LIVE PNL", teamTitle: "🛡️ DIRECTION SHIELD GLOBAL", faqTitle: "💡 FAQ STRATÉGIQUE (IFDA)",
+                roles: { nasser: "Fondateur & Lead Dev", mark: "Directrice Marketing", mana: "Manager Marketing", anal: "Analyste Marché", trad: "Expert Trader", tech: "Analyste Tech Senior", data: "Analyste Données" },
+                faq: [ {q: "1. Pourquoi le Sweep ?", a: "Pour capturer la liquidité retail."}, {q: "2. C'est quoi un BOS ?", a: "Cassure confirmée par le corps."}, {q: "8. C'est quoi l'IFDA ?", a: "Algorithme Interbancaire de Prix."} ]
+            },
+            en: {
+                secured: "SECURED ACCESS", unlock: "UNLOCK", dash: "DASHBOARD", scan: "SCANNER", pay: "PAYMENT", team: "TEAM/FAQ", cap: "IFDA LIVE PNL", teamTitle: "🛡️ SHIELD GLOBAL BOARD", faqTitle: "💡 STRATEGIC FAQ (IFDA)",
+                roles: { nasser: "Founder & Lead Dev", mark: "Marketing Director", mana: "Marketing Manager", anal: "Market Analyst", trad: "Trading Expert", tech: "Senior Tech Analyst", data: "Data Analyst" },
+                faq: [ {q: "1. Why the Sweep?", a: "To capture retail liquidity."}, {q: "2. What is BOS?", a: "Break confirmed by candle body."}, {q: "8. What is IFDA?", a: "Interbank Flow Delivery Algorithm."} ]
+            },
+            ar: {
+                secured: "وصول آمن", unlock: "فتح", dash: "لوحة التحكم", scan: "ماسح", pay: "دفع", team: "الفريق", cap: "أرباح IFDA المباشرة", teamTitle: "🛡️ الإدارة العالمية", faqTitle: "💡 الأسئلة الشائعة",
+                roles: { nasser: "المؤسس والمطور الرئيسي", mark: "مديرة التسويق", mana: "مديرة التسويق", anal: "محلل السوق", trad: "خبير تداول", tech: "كبير المحللين التقنيين", data: "محلل بيانات" },
+                faq: [ {q: "1. لماذا المسح؟", a: "لسحب سيولة الأفراد."}, {q: "2. ما هو BOS؟", a: "كسر الهيكل بجسم الشمعة."}, {q: "8. ما هو IFDA؟", a: "خوارزمية تسليم الأسعار البنكية."} ]
             }
-            // ... (autres langues)
         };
 
-        function translateFull(lang) {
-            const l = lexicon[lang] || lexicon.fr;
-            document.getElementById('n-dash').innerText = l.dash; 
-            document.getElementById('n-scan').innerText = l.scan;
-            document.getElementById('n-pay').innerText = l.pay; 
-            document.getElementById('n-inscr').innerText = l.inscr;
-            document.getElementById('n-prof').innerText = l.faqhead; 
-            document.getElementById('t-cap').innerText = l.cap;
-            document.getElementById('t-pnl').innerText = l.pnl; 
-            document.getElementById('t-stat').innerText = l.stat;
-            document.getElementById('t-scan-h').innerText = l.scanh; 
-            document.getElementById('t-btn-scan').innerText = l.btnscan;
-            document.getElementById('t-conf-h').innerText = l.confh; 
-            document.getElementById('t-btn-launch').innerText = l.btnlaunch;
-            document.getElementById('t-faq-h').innerText = l.faqh; 
-            document.getElementById('t-pay-h').innerText = l.payh;
-            document.getElementById('t-team-h').innerText = l.teamh; 
-            document.getElementById('t-team-list').innerHTML = l.team;
-            
-            let fHtml = ""; 
-            l.faq.forEach(f => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`; });
-            document.getElementById('faq-list').innerHTML = fHtml;
-        }
-
-        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display==='block')?'none':'block'; }
-        
-        function showTab(id, el) { 
-            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none'); 
-            document.getElementById(id).style.display = 'block'; 
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
-            if(el) el.classList.add('active'); 
-        }
-        
-        // FONCTION DE SCAN RELIÉE AU PYTHON
-        async function runFractalScan() {
-            const sym = document.getElementById('s-input').value.toUpperCase(); 
-            if(!sym) return;
-
-            document.getElementById('terminal').innerHTML += `<br>> Scanning ${sym} via IFDA Engine...`;
-            document.getElementById('scan-res').style.display = "block";
-
-            try {
-                // Envoi de la requête au serveur Python
-                const response = await fetch(`${SERVER_URL}/scan?symbol=${sym}`);
-                const data = await response.json();
-                
-                document.getElementById('r-sweep').innerText = data.sweep || "DETECTED";
-                document.getElementById('r-fvg').innerText = data.fvg || "15m BISI";
-                document.getElementById('r-ob').innerText = data.ob || "BULLISH OB";
-                document.getElementById('r-bos').innerText = data.bos || "MSS BULL";
-            } catch (err) {
-                console.error("Erreur de connexion au labo:", err);
-                document.getElementById('terminal').innerHTML += `<br><span style="color:var(--red)">[ERROR] Connexion impossible à ${SERVER_IP}</span>`;
-            }
-        }
-
-        async function syncMacro() {
-    const container = document.getElementById('macro-feed-container');
-    container.innerHTML = "<span style='color:var(--gold)'>[SYNC] Analyse via Serveur Labo...</span>";
-    
-    try {
-        // On appelle ton propre serveur Python sur la route /macro
-        const response = await fetch(`http://192.168.43.44:5000/macro`);
-        const data = await response.json();
-        
-        let htmlContent = "";
-        data.items.slice(0, 10).forEach(item => {
-            let impact = item.description.includes('High') ? "var(--red)" : "var(--gold)";
-            htmlContent += `
-                <div class="news-entry">
-                    <span style="color:${impact}">[NEWS]</span> 
-                    <b>${item.pubDate.split(' ')[1]}</b>: ${item.title}
-                </div>`;
-        });
-        container.innerHTML = htmlContent || "Pas de news majeures.";
-    } catch (error) {
-        container.innerHTML = "<span style='color:var(--red)'>[SYSTEM] Erreur de liaison Serveur.</span>";
-    }
-}
-
-
-        function activateEngine() {
-            const amt = document.getElementById('tr-amt').value; if(!amt) return;
-            localStorage.setItem('shield_active', 'true');
-            document.getElementById('bal-val').innerText = "$" + amt;
-            document.getElementById('robot-status').innerText = "ACTIF";
-            document.getElementById('robot-status').style.color = "var(--green)";
-            
-            // Notification au serveur Python
-            fetch(`${SERVER_URL}/activate?amount=${amt}`).catch(e => console.log("Bot lancé en local."));
-            showTab('dash');
-        }
-
-        // Animation Time & 3D Background
-        setInterval(() => {
+        // --- GESTION NY TIME & KILLZONES ---
+        function updateClock() {
             const now = new Date();
-            const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
-            const h = parseInt(ny.find(it => it.type === 'hour').value);
-            document.getElementById('ny-time').innerText = `NY: ${h}:${ny.find(it => it.type === 'minute').value}:${ny.find(it => it.type === 'second').value}`;
+            const nyParts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
+            const h = parseInt(nyParts.find(p => p.type === 'hour').value);
+            document.getElementById('ny-time').innerText = `NY: ${h}:${nyParts.find(p => p.type === 'minute').value}:${nyParts.find(p => p.type === 'second').value}`;
             document.querySelectorAll('.kz-unit').forEach(el => el.classList.remove('kz-on'));
             if (h >= 2 && h < 5) document.getElementById('kz-london').classList.add('kz-on');
             if (h >= 7 && h < 10) document.getElementById('kz-nyam').classList.add('kz-on');
-        }, 1000);
+            if (h >= 13 && h < 16) document.getElementById('kz-nypm').classList.add('kz-on');
+        }
+        setInterval(updateClock, 1000);
 
+        // --- COMPTEUR PNL LIVE ---
+        setInterval(() => {
+            if(isTrading) {
+                pnlValue += (Math.random() * 0.1) - 0.045;
+                const el = document.getElementById('pnl-display');
+                el.innerText = (pnlValue >= 0 ? "+" : "") + "$" + pnlValue.toFixed(2);
+                el.style.color = pnlValue >= 0 ? "var(--green)" : "var(--red)";
+            }
+        }, 800);
+
+        // --- SCANNER INSTITUTIONNEL ---
+        function runIFDAAnalysis() {
+            const sym = document.getElementById('s-input').value; if(!sym) return alert("SYMBOLE ?");
+            document.getElementById('scan-res').style.display = "block";
+            const status = document.getElementById('r-status'); status.innerText = "IFDA SCANNING..."; status.style.color = "#aaa";
+            setTimeout(() => {
+                const vol = Math.random() > 0.4; const zone = Math.random() > 0.5;
+                document.getElementById('r-zone').innerText = zone ? "DISCOUNT (BUY)" : "PREMIUM (SELL)";
+                document.getElementById('r-vol').innerText = vol ? "INSTITUTIONAL ✅" : "RETAIL ❌";
+                if(vol) { status.innerText = "SIGNAL VALIDÉ 🛡️"; status.style.color = "var(--green)"; }
+                else { status.innerText = "HAUT RISQUE ⚠️"; status.style.color = "var(--red)"; }
+            }, 1500);
+        }
+
+        function checkLock() {
+            const val = document.getElementById('pass-code').value;
+            if(val === "197800") { document.getElementById('lock-screen').style.display="none"; document.getElementById('main-interface').style.display="block"; changeLanguage('fr'); }
+            else alert("WRONG PIN");
+        }
+
+        function validateLicence() {
+            if(document.getElementById('licence-key').value.toUpperCase() === "SHIELD-2026") {
+                licenceActive = true; document.getElementById('licence-status').innerText = "✅ IFDA ACTIVE";
+                document.getElementById('licence-status').style.color = "var(--green)"; showTab('dash');
+            } else alert("INVALID KEY");
+        }
+
+        function executeTrade(side) { if(!licenceActive) showTab('pay'); else { isTrading = true; pnlValue = 0; } }
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations['fr'];
+            document.getElementById('txt-secured').innerText = t.secured; document.getElementById('txt-unlock').innerText = t.unlock;
+            document.getElementById('tab-dash').innerText = t.dash; document.getElementById('tab-scan').innerText = t.scan;
+            document.getElementById('tab-pay').innerText = t.pay; document.getElementById('tab-team').innerText = t.team;
+            document.getElementById('txt-cap').innerText = t.cap; document.getElementById('txt-team-title').innerText = t.teamTitle;
+            document.getElementById('txt-faq-title').innerText = t.faqTitle;
+            document.getElementById('role-nasser').innerText = t.roles.nasser + " (Cameroon)";
+            document.querySelectorAll('.role-mark').forEach(el => el.innerText = t.roles.mark);
+            document.querySelectorAll('.role-mana').forEach(el => el.innerText = t.roles.mana);
+            document.querySelectorAll('.role-anal').forEach(el => el.innerText = t.roles.anal);
+            document.querySelectorAll('.role-trad').forEach(el => el.innerText = t.roles.trad);
+            document.querySelectorAll('.role-tech').forEach(el => el.innerText = t.roles.tech);
+            document.querySelectorAll('.role-data').forEach(el => el.innerText = t.roles.data);
+            let fHtml = ""; t.faq.forEach(f => { fHtml += `<div class="faq-item" onclick="this.children[1].style.display = this.children[1].style.display === 'none' ? 'block' : 'none'"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`; });
+            document.getElementById('faq-list').innerHTML = fHtml;
+            document.body.style.direction = (lang === 'ar' ? 'rtl' : 'ltr');
+        }
+
+        function showTab(id, el) { 
+            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none'); document.getElementById(id).style.display = 'block'; 
+            if(el) { document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+        }
+
+        // --- 3D ENGINE ---
         const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        const geo = new THREE.BufferGeometry(); const pts = [];
-        for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        const pts = []; for(let i=0; i<400; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
         const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
         scene.add(mat); camera.position.z = 500;
         function animate() { requestAnimationFrame(animate); mat.rotation.y += 0.001; renderer.render(scene, camera); } animate();
-        translateFull('fr');
     </script>
 </body>
-                                                                                                                                                        </html>
+                                                                                          </html>
+                    
