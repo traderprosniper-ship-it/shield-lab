@@ -44,7 +44,35 @@
     <div id="main-interface">
         <div class="nav-tabs">
             <div id="m-dash" class="nav-item active" onclick="showTab('dash', this)">DASHBOARD</div>
-            <div id="m-scan" class="nav-item" onclick="showTab('scan', this)">SCANNER</div>
+            <div id="scan" class="content-section" style="display:none;">
+    <div class="card">
+        <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
+        <div class="live-screen" style="height: 150px; border-color: var(--accent);">
+            <div id="scan-status" style="color: var(--accent); font-weight: bold; margin-bottom: 10px;">> SCANNING MARKET LIQUIDITY...</div>
+            <div id="scanner-list" style="font-size: 9px; line-height: 1.5;">
+                <div style="display:flex; justify-content:space-between;"><span>XAUUSD:</span> <span style="color:var(--gold)">SEARCHING SWEEP...</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>BTCUSDT:</span> <span style="color:var(--gold)">WAITING REJECTION...</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>ETHUSDT:</span> <span style="color:var(--green)">ANALYZING FVG...</span></div>
+            </div>
+        </div>
+        <p id="t-wait" style="font-size: 9px; margin-top: 10px; color: #555;">En attente de sweep institutionnel...</p>
+    </div>
+            </div>
+            <div id="scan" class="content-section" style="display:none;">
+    <div class="card">
+        <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
+        <div class="live-screen" style="height: 150px; border-color: var(--accent);">
+            <div id="scan-status" style="color: var(--accent); font-weight: bold; margin-bottom: 10px;">> SCANNING MARKET LIQUIDITY...</div>
+            <div id="scanner-list" style="font-size: 9px; line-height: 1.5;">
+                <div style="display:flex; justify-content:space-between;"><span>XAUUSD:</span> <span style="color:var(--gold)">SEARCHING SWEEP...</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>BTCUSDT:</span> <span style="color:var(--gold)">WAITING REJECTION...</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>ETHUSDT:</span> <span style="color:var(--green)">ANALYZING FVG...</span></div>
+            </div>
+        </div>
+        <p id="t-wait" style="font-size: 9px; margin-top: 10px; color: #555;">En attente de sweep institutionnel...</p>
+    </div>
+            </div>
+            
             <div id="m-pay" class="nav-item" onclick="showTab('pay', this)">PAIEMENT</div>
         </div>
         <div class="nav-tabs" style="top:40px;">
