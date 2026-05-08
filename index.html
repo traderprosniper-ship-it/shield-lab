@@ -147,7 +147,6 @@
         const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
         const WATCHLIST = { "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"], "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] };
 
-        // DÉFINITION COMPLÈTE DES LANGUES
         const translations = {
             fr: {
                 lTitle: "ACCÈS SÉCURISÉ", mDash: "TABLEAU DE BORD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
@@ -203,33 +202,29 @@
             document.getElementById('faq-container').innerHTML = fHtml;
         }
 
-        
+        // --- CORRECTION OUVERTURE AUTOMATIQUE ---
         function autoCheck() {
-    let inputField = document.getElementById('pass-code');
-    let inputVal = inputField.value;
-    
-    // Debug pour voir si le script tourne à chaque touche
-    console.log("Saisie en cours : " + inputVal.length + "/6");
-
-    if (inputVal.length === 6) {
-        if (inputVal === "197800") {
-            console.log("CODE CORRECT - ACCÈS ACCORDÉ");
-            doUnlock(); 
-        } else {
-            console.log("CODE ERRONÉ - RÉINITIALISATION");
-            inputField.value = "";
+            let inputField = document.getElementById('pass-code');
+            let inputVal = inputField.value;
+            
+            if (inputVal.length === 6) {
+                if (inputVal === "197800") {
+                    doUnlock(); 
+                } else {
+                    inputField.value = ""; // Efface si incorrect
+                }
+            }
         }
-    }
-}
 
-function forceUnlock() {
-    let inputVal = document.getElementById('pass-code').value;
-    if(inputVal === "197800") doUnlock();
-    else { 
-        alert("🔒 PIN INCORRECT"); 
-        document.getElementById('pass-code').value = ""; 
-    }
+        function forceUnlock() {
+            let inputVal = document.getElementById('pass-code').value;
+            if(inputVal === "197800") doUnlock();
+            else { 
+                alert("🔒 PIN INCORRECT"); 
+                document.getElementById('pass-code').value = ""; 
+            }
         }
+        // ------------------------------------------
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
@@ -283,7 +278,4 @@ function forceUnlock() {
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ capital: cap, exchange: ex, market_type: mkt, ak: ak, as: as, passphrase: ps })
                 });
-                const res = await response.json();
-                document.getElementById('cap-display').innerText = "$" + cap;
-                document.getElementById('ex-display').innerText = ex;
-                document.getElementById('s
+   
