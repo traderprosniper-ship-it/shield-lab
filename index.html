@@ -55,7 +55,7 @@
 
     <div id="lock-screen">
         <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">IFDA ACCESS</h2>
-        <input type="password" id="pass-code" placeholder="PIN" maxlength="6" oninput="autoCheck()" onkeyup="autoCheck()" inputmode="numeric" style="width:180px;" autocomplete="off">
+        <input type="password" id="pass-code" placeholder="PIN" maxlength="6" inputmode="numeric" style="width:180px;" autocomplete="off">
         <button class="btn-action" style="width:180px;" onclick="forceUnlock()">LOGIN</button>
     </div>
 
@@ -153,39 +153,30 @@
                 tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SCANNER SNIPER (M15)", tConfig: "📝 CONFIGURATION API", btnLaunch: "🚀 LANCER LE BOUCLIER",
                 team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
                 faq: [{q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "10. SANGMELIMA ?", a: "Ton bouclier ICT."}]
-            },
-            en: {
-                lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER (M15)", tConfig: "📝 API CONFIGURATION", btnLaunch: "🚀 LAUNCH SHIELD",
-                team: [{n: "👑 NASSER", r: "Founder"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyst"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
-                faq: [{q: "1. Why Sweep?", a: "To take bank liquidity."}, {q: "2. What is FVG?", a: "Price imbalance."}, {q: "3. PD Array?", a: "SMC Compass."}, {q: "10. SANGMELIMA?", a: "Your ICT shield."}]
             }
         };
 
-        function autoCheck() {
-            let inputField = document.getElementById('pass-code');
-            let inputVal = inputField.value;
-            if (inputVal.length === 6) {
-                if (inputVal === "197800") { doUnlock(); }
-                else { inputField.value = ""; }
-            }
-        }
-
         function forceUnlock() {
             let val = document.getElementById('pass-code').value;
-            if(val === "197800") doUnlock();
-            else { alert("🔒 PIN INCORRECT"); document.getElementById('pass-code').value = ""; }
+            if(val === "197800") {
+                doUnlock();
+            } else { 
+                alert("🔒 PIN INCORRECT"); 
+                document.getElementById('pass-code').value = ""; 
+            }
         }
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
             document.getElementById('main-interface').style.display = "block"; 
-            initScanner(); translateAll('fr'); updateTime(); create3DLogo();
+            initScanner(); 
+            translateAll('fr'); 
+            updateTime(); 
+            create3DLogo();
         }
 
         function translateAll(lang) {
-            const d = translations[lang] || translations['fr'];
-            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+            const d = translations['fr'];
             document.getElementById('l-title').innerText = d.lTitle;
             document.getElementById('m-dash').innerText = d.mDash;
             document.getElementById('m-scan').innerText = d.mScan;
@@ -197,8 +188,6 @@
             if(document.getElementById('t-ex-dash')) document.getElementById('t-ex-dash').innerText = d.tEx;
             if(document.getElementById('t-scan')) document.getElementById('t-scan').innerText = d.tScan;
             if(document.getElementById('t-config-title')) document.getElementById('t-config-title').innerText = d.tConfig;
-            const btnLaunch = document.querySelector('.btn-action[onclick*="lancerRobot"]');
-            if(btnLaunch) btnLaunch.innerText = d.btnLaunch;
             let tHtml = ""; d.team.forEach(m => { tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`; });
             document.getElementById('team-list').innerHTML = tHtml;
             let fHtml = ""; d.faq.forEach(fi => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fi.q}</b><div class="faq-a">${fi.a}</div></div>`; });
@@ -235,42 +224,17 @@
         async function lancerRobot() {
             const cap = document.getElementById('u-capital').value;
             const ex = document.getElementById('u-ex').value;
-            const mkt = document.getElementById('u-market').value;
-            const ak = document.getElementById('u-key').value;
-            const as = document.getElementById('u-sec').value;
-            const ps = document.getElementById('u-pass').value;
-            if(!cap || !ak || !as) return alert("Saisir Capital et Clés API");
-            try {
-                const response = await fetch(`${CLOUDFLARE_URL}/start`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ capital: cap, exchange: ex, market_type: mkt, ak: ak, as: as, passphrase: ps })
-                });
-                const res = await response.json();
-                document.getElementById('cap-display').innerText = "$" + cap;
-                document.getElementById('ex-display').innerText = ex;
-                document.getElementById('status-light').classList.add('status-active');
-                document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
-                document.getElementById('status-text').style.color = "var(--green)";
-                document.getElementById('terminal').innerHTML = `> CONNECTÉ À ${ex}<br>> MODE : ${mkt}<br>> RÉPONSE : ${res.message}`;
-            } catch(e) { document.getElementById('terminal').innerHTML = "> ❌ ERREUR SERVEUR."; }
+            if(!cap) return alert("Saisir Capital");
+            document.getElementById('cap-display').innerText = "$" + cap;
+            document.getElementById('ex-display').innerText = ex;
+            document.getElementById('status-light').classList.add('status-active');
+            document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
+            document.getElementById('status-text').style.color = "var(--green)";
+            document.getElementById('terminal').innerHTML = `> CONNECTÉ À ${ex}<br>> BOUCLIER SANGMELIMA SHIELD DÉPLOYÉ.`;
         }
 
         async function scanAll() {
             document.getElementById('terminal').innerHTML += "<br>> SCAN GLOBAL LANCÉ...";
-            for (let cat in WATCHLIST) {
-                for (let coin of WATCHLIST[cat]) {
-                    try {
-                        const res = await fetch(`${CLOUDFLARE_URL}/scan`, {
-                            method: 'POST', headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ symbol: `${coin}/USDT` })
-                        });
-                        const data = await res.json();
-                        const el = document.getElementById(`status-${coin}`);
-                        if(data.status === "signal_found") el.innerHTML = `<b style="color:var(--green)">🔥 SWEEP!</b>`;
-                        else el.innerText = "NO SIGNAL";
-                    } catch(e) {}
-                }
-            }
         }
 
         function initScanner() {
@@ -283,4 +247,14 @@
 
         function showTab(id, el) { 
             document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
-            document.getElementById(id).style.displa
+            document.getElementById(id).style.display='block'; 
+            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
+        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
+        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+</body>
+                        </html>
+                    
