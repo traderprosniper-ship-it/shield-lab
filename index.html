@@ -8,8 +8,8 @@
     <style>
     :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
     body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
-    #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
-    #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; pointer-events: none; }
+    #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.8; }
+    #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.03); z-index: -1; letter-spacing: 20px; pointer-events: none; }
     
     .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; width: auto; cursor: pointer; }
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
@@ -74,14 +74,14 @@
         <div id="dash" class="content-section">
             <div class="card">
                 <div style="text-align: left; margin-bottom: 10px;">
-                    <span id="status-light" class="status-dot"></span> <small id="status-text" style="color:#555">OFFLINE</small>
+                    <span id="status-light" class="status-dot"></span> <small id="status-text" style="color:#555">DÉCONNECTÉ</small>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="font-size: 20px; color: var(--gold);">$0.00</b></div>
                     <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="font-size: 16px; color: var(--accent);">WAITING</b></div>
                 </div>
                 <div id="ny-time" style="font-size: 14px; color: var(--text); margin: 15px 0;">NY: --:--:--</div>
-                <div class="live-screen" id="terminal">> SYSTEM STANDBY. CONFIGURE API...</div>
+                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD ONLINE...</div>
             </div>
         </div>
 
@@ -96,9 +96,15 @@
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-config-title">📝 CONFIGURATION API</h3>
-                <input type="number" id="u-capital" placeholder="Capital $ (ex: 500)">
+                <label>CAPITAL TRADING ($)</label>
+                <input type="number" id="u-capital" placeholder="Entrez montant">
+                <label>ÉCHANGEUR</label>
                 <select id="u-ex">
-                    <option value="OKX">OKX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option>
+                    <option value="OKX">OKX</option><option value="MEXC">MEXC</option><option value="BINGX">BINGX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="GATE IO">GATE IO</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option><option value="VANTAGE FX">VANTAGE FX</option>
+                </select>
+                <label>MARCHÉ CIBLE</label>
+                <select id="u-market">
+                    <option value="FOREX">FOREX (CURRENCIES)</option><option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option>
                 </select>
                 <input type="text" id="u-key" placeholder="API KEY">
                 <input type="password" id="u-sec" placeholder="API SECRET">
@@ -107,23 +113,27 @@
             </div>
         </div>
 
-        <div id="macro" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 id="t-macro-title">📢 MACRO NEWS</h3>
-                <iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe>
-            </div>
-        </div>
-
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-pay-title">💳 ACTIVATION</h3>
+                <h3 id="t-pay-title">💳 ACTIVATION SÉCURISÉE</h3>
                 <div class="pay-box">
                     <div class="pay-method">
                         <div class="pay-icon">U</div>
                         <div><b style="color:white;">USDT (TRC20)</b><div class="wallet-addr">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div>
                     </div>
+                    <div class="pay-method" style="border:none;">
+                        <div class="pay-icon" style="background:var(--accent);">M</div>
+                        <div><b style="color:white;">MOBILE MONEY</b><div style="color:var(--accent);">+237 655 50 97 38</div></div>
+                    </div>
                 </div>
                 <button class="btn-action" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
+            </div>
+        </div>
+
+        <div id="macro" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="t-macro-title">📢 MACRO NEWS PRO</h3>
+                <iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe>
             </div>
         </div>
 
@@ -135,70 +145,46 @@
 
     <script>
         const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
-        const WATCHLIST = { "AI": ["FET", "TAO"], "RWA": ["ONDO", "OM"], "DEPIN": ["FIL", "AR"] };
+        const WATCHLIST = { "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"], "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] };
 
-        function autoCheck() { 
-            let pin = document.getElementById('pass-code').value.trim();
-            if(pin.length === 6 && pin === "197800") doUnlock(); 
-        }
-
-        function forceUnlock() { 
-            if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); 
-            else alert("PIN ERROR"); 
-        }
+        function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); }
+        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); else alert("PIN ERROR"); }
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
             document.getElementById('main-interface').style.display = "block"; 
-            initScanner(); translateAll('fr'); updateTime();
-            create3DIFDALogo(); // LANCEMENT DU LOGO 3D ICI
+            initScanner(); translateAll('fr'); updateTime(); create3DLogo();
         }
 
-        // --- LOGO 3D IFDA ---
+        // --- MOTEUR 3D LOGO IFDA ---
         let logo3D;
-        const scene = new THREE.Scene(); 
+        const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        function create3DIFDALogo() {
+        function create3DLogo() {
             if(logo3D) return;
             logo3D = new THREE.Group();
-            const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.8 });
-            
-            // Core
-            const core = new THREE.Mesh(new THREE.BoxGeometry(50, 150, 50), mat);
-            logo3D.add(core);
-            
-            // Ring
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(120, 5, 16, 100), mat);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.5 });
+            const core = new THREE.Mesh(new THREE.IcosahedronGeometry(100, 1), mat);
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(180, 3, 16, 100), mat);
             ring.rotation.x = Math.PI/2;
-            logo3D.add(ring);
-
-            // Helix
-            const curve = new THREE.CatmullRomCurve3([
-                new THREE.Vector3(-80, -200, 0), new THREE.Vector3(0, -100, 80),
-                new THREE.Vector3(80, 0, 0), new THREE.Vector3(0, 100, -80),
-                new THREE.Vector3(-80, 200, 0)
-            ]);
-            const helix = new THREE.Mesh(new THREE.TubeGeometry(curve, 100, 4, 8, true), mat);
-            logo3D.add(helix);
-
-            logo3D.position.set(0, 0, -300);
+            logo3D.add(core, ring);
+            logo3D.position.set(0, 0, -400);
             scene.add(logo3D);
         }
 
-        // Stars Background
-        const pts = []; for(let i=0; i<400; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.PointsMaterial({ color: 0x3b82f6, size: 2 }));
-        scene.add(stars);
-        camera.position.z = 500;
+        // Stars
+        const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500));
+        const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.PointsMaterial({ color: 0x3b82f6, size: 1.5 }));
+        scene.add(stars); camera.position.z = 500;
 
-        function animate() { 
-            requestAnimationFrame(animate); 
-            stars.rotation.y += 0.0005; 
-            if(logo3D) { logo3D.rotation.y += 0.015; logo3D.rotation.z += 0.005; }
-            renderer.render(scene, camera); 
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0003;
+            if(logo3D) { logo3D.rotation.y += 0.01; logo3D.rotation.x += 0.005; }
+            renderer.render(scene, camera);
         }
         animate();
 
@@ -209,25 +195,39 @@
             document.getElementById('cap-display').innerText = "$" + cap;
             document.getElementById('ex-display').innerText = ex;
             document.getElementById('status-light').classList.add('status-active');
-            document.getElementById('status-text').innerText = "LIVE";
+            document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
             document.getElementById('status-text').style.color = "var(--green)";
-            document.getElementById('terminal').innerHTML = "> INITIALISATION...<br>> API CONNECTION OK<br>> BOUCLIER ACTIF";
+            document.getElementById('terminal').innerHTML = "> INITIALISATION...<br>> API CONNECTION OK<br>> IPDA SCANNING PDH/PDL...";
             showTab('dash', document.getElementById('m-dash'));
         }
 
+        const translations = {
+            fr: {
+                lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                team: [{n: "👑 NASSER", r: "Founder"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
+                faq: [
+                    {q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "4. Interne vs Externe ?", a: "Cible vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."},
+                    {q: "6. Pourquoi 25$ ?", a: "Discipline."}, {q: "7. Breaker Block ?", a: "OB cassé."}, {q: "8. NY Open ?", a: "Killzone volatile."}, {q: "9. Stop Loss ?", a: "Derrière le sweep."}, {q: "10. SANGMELIMA ?", a: "Ton bouclier ICT."}
+                ]
+            },
+            en: { lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ" },
+            ar: { lTitle: "وصول آمن", mDash: "لوحة التحكم" }, de: { lTitle: "ZUGRIFF", mDash: "ÜBERSICHT" }, es: { lTitle: "ACCESO", mDash: "PANEL" }
+        };
+
         function translateAll(lang) {
-            const d = { 
-                fr: {
-                    lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                    team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
-                    faq: [{q: "1. Sweep PDH/PDL ?", a: "Liquidité institutionnelle."}, {q: "2. FVG ?", a: "Déséquilibre de prix."}, {q: "3. Daily PD Array ?", a: "Boussole directionnelle."}, {q: "4. Interne vs Externe ?", a: "Sweep externe vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."}, {q: "6. Pourquoi 25$ ?", a: "Discipline."}, {q: "7. Breaker Block ?", a: "OB cassé."}, {q: "8. NY Open ?", a: "Killzone."}, {q: "9. Stop Loss ?", a: "Derrière le sweep."}, {q: "10. SANGMELIMA SHIELD ?", a: "Ton robot ICT."}]
-                }
-            };
-            const f = d['fr'];
-            document.getElementById('l-title').innerText = d[lang]?.lTitle || f.lTitle;
-            let tHtml = ""; (d[lang]?.team || f.team).forEach(m => tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`);
+            const d = translations[lang] || translations['fr'];
+            const f = translations['fr'];
+            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+            document.getElementById('l-title').innerText = d.lTitle || f.lTitle;
+            document.getElementById('m-dash').innerText = d.mDash || f.mDash;
+            document.getElementById('m-scan').innerText = d.mScan || f.mScan;
+            document.getElementById('m-pay').innerText = d.mPay || f.mPay;
+            document.getElementById('m-inscr').innerText = d.mInscr || f.mInscr;
+            document.getElementById('m-macro').innerText = d.mMacro || f.mMacro;
+            document.getElementById('m-faq').innerText = d.mFaq || f.mFaq;
+            let tHtml = ""; (d.team || f.team).forEach(m => tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`);
             document.getElementById('team-list').innerHTML = tHtml;
-            let fHtml = ""; (d[lang]?.faq || f.faq).forEach(fItem => fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fItem.q}</b><div class="faq-a">${fItem.a}</div></div>`);
+            let fHtml = ""; (d.faq || f.faq).forEach(fi => fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fi.q}</b><div class="faq-a">${fi.a}</div></div>`);
             document.getElementById('faq-container').innerHTML = fHtml;
         }
 
@@ -245,11 +245,10 @@
             document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
             el.classList.add('active'); 
         }
-
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
         function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
 </body>
-    </html>
-    
+                                                                                                               </html>
+                                                                                    
