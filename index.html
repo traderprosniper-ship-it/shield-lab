@@ -147,8 +147,28 @@
         const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
         const WATCHLIST = { "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"], "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] };
 
-        function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); }
-        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); else alert("PIN ERROR"); }
+        function autoCheck() {
+    let input = document.getElementById('pass-code').value;
+    // On vérifie si on a bien 6 chiffres et si c'est le bon code
+    if(input.length === 6) {
+        if(input === "197800") {
+            doUnlock();
+        } else {
+            // Optionnel : vide le champ si le code est faux après 6 chiffres
+            document.getElementById('pass-code').value = "";
+        }
+    }
+     
+        function forceUnlock() {
+    let input = document.getElementById('pass-code').value;
+    if(input === "197800") {
+        doUnlock();
+    } else {
+        alert("🔒 ACCÈS REFUSÉ - PIN INCORRECT");
+        document.getElementById('pass-code').value = "";
+    }
+        }
+        
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
