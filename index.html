@@ -100,11 +100,11 @@
                 <input type="number" id="u-capital" placeholder="Entrez montant">
                 <label>ÉCHANGEUR</label>
                 <select id="u-ex">
-                    <option value="OKX">OKX</option><option value="MEXC">MEXC</option><option value="BINGX">BINGX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="GATE IO">GATE IO</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option><option value="VANTAGE FX">VANTAGE FX</option>
+                    <option value="MEXC">MEXC</option><option value="OKX">OKX</option><option value="BINGX">BINGX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="GATE IO">GATE IO</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option><option value="VANTAGE FX">VANTAGE FX</option>
                 </select>
                 <label>MARCHÉ CIBLE</label>
                 <select id="u-market">
-                    <option value="FOREX">FOREX (CURRENCIES)</option><option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option>
+                    <option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option><option value="FOREX">FOREX (CURRENCIES)</option>
                 </select>
                 <input type="text" id="u-key" placeholder="API KEY">
                 <input type="password" id="u-sec" placeholder="API SECRET">
@@ -156,7 +156,6 @@
             initScanner(); translateAll('fr'); updateTime(); create3DLogo();
         }
 
-        // --- MOTEUR 3D LOGO IFDA ---
         let logo3D;
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -166,16 +165,17 @@
         function create3DLogo() {
             if(logo3D) return;
             logo3D = new THREE.Group();
-            const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.5 });
-            const core = new THREE.Mesh(new THREE.IcosahedronGeometry(100, 1), mat);
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(180, 3, 16, 100), mat);
+            // CORRECTION COULEUR ET VISIBILITÉ : Vert néon brillant, pas de wireframe transparent
+            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: false, transparent: true, opacity: 0.9 });
+            const core = new THREE.Mesh(new THREE.IcosahedronGeometry(120, 1), mat);
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(190, 5, 16, 100), mat);
             ring.rotation.x = Math.PI/2;
             logo3D.add(core, ring);
-            logo3D.position.set(0, 0, -400);
+            // CORRECTION POSITION : Placé au centre immédiat de la vue
+            logo3D.position.set(0, 0, 0);
             scene.add(logo3D);
         }
 
-        // Stars
         const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500));
         const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.PointsMaterial({ color: 0x3b82f6, size: 1.5 }));
         scene.add(stars); camera.position.z = 500;
@@ -188,17 +188,59 @@
         }
         animate();
 
-        function lancerRobot() {
+        // --- FONCTION LANCER SYNCHRONISÉE AVEC PYTHON ---
+        async function lancerRobot() {
             const cap = document.getElementById('u-capital').value;
             const ex = document.getElementById('u-ex').value;
-            if(!cap) return alert("Saisir Capital");
-            document.getElementById('cap-display').innerText = "$" + cap;
-            document.getElementById('ex-display').innerText = ex;
-            document.getElementById('status-light').classList.add('status-active');
-            document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
-            document.getElementById('status-text').style.color = "var(--green)";
-            document.getElementById('terminal').innerHTML = "> INITIALISATION...<br>> API CONNECTION OK<br>> IPDA SCANNING PDH/PDL...";
-            showTab('dash', document.getElementById('m-dash'));
+            const mkt = document.getElementById('u-market').value;
+            const ak = document.getElementById('u-key').value;
+            const as = document.getElementById('u-sec').value;
+            const ps = document.getElementById('u-pass').value;
+
+            if(!cap || !ak || !as) return alert("Saisir Capital et Clés API");
+
+            try {
+                const response = await fetch(`${CLOUDFLARE_URL}/start`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        capital: cap, exchange: ex, market_type: mkt,
+                        ak: ak, as: as, passphrase: ps
+                    })
+                });
+                const res = await response.json();
+                
+                document.getElementById('cap-display').innerText = "$" + cap;
+                document.getElementById('ex-display').innerText = ex;
+                document.getElementById('status-light').classList.add('status-active');
+                document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
+                document.getElementById('status-text').style.color = "var(--green)";
+                document.getElementById('terminal').innerHTML = `> SYSTÈME CONNECTÉ À ${ex}<br>> MODE : ${mkt}<br>> RÉPONSE : ${res.message}`;
+                showTab('dash', document.getElementById('m-dash'));
+            } catch(e) {
+                document.getElementById('terminal').innerHTML = "> ❌ ERREUR : Serveur Python injoignable.";
+            }
+        }
+
+        // --- SCAN ALL SYNCHRONISÉ AVEC PYTHON ---
+        async function scanAll() {
+            document.getElementById('terminal').innerHTML += "<br>> SCAN GLOBAL LANCÉ...";
+            for (let cat in WATCHLIST) {
+                for (let coin of WATCHLIST[cat]) {
+                    try {
+                        const sym = `${coin}/USDT`;
+                        const res = await fetch(`${CLOUDFLARE_URL}/scan`, {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ symbol: sym })
+                        });
+                        const data = await res.json();
+                        const el = document.getElementById(`status-${coin}`);
+                        if(data.status === "signal_found") el.innerHTML = `<b style="color:var(--green)">🔥 SWEEP!</b>`;
+                        else el.innerText = "NO SIGNAL";
+                    } catch(e) {}
+                }
+            }
         }
 
         const translations = {
@@ -246,9 +288,4 @@
             el.classList.add('active'); 
         }
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
-        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
-        window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
-    </script>
-</body>
-                                                                                                               </html>
-                                                                                    
+        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updat
