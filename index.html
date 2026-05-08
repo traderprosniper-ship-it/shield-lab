@@ -148,27 +148,18 @@
         const WATCHLIST = { "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"], "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] };
 
         function autoCheck() {
-    let input = document.getElementById('pass-code').value;
-    // On vérifie si on a bien 6 chiffres et si c'est le bon code
-    if(input.length === 6) {
-        if(input === "197800") {
-            doUnlock();
-        } else {
-            // Optionnel : vide le champ si le code est faux après 6 chiffres
-            document.getElementById('pass-code').value = "";
+            let input = document.getElementById('pass-code').value;
+            if(input.length === 6) {
+                if(input === "197800") doUnlock();
+                else document.getElementById('pass-code').value = "";
+            }
         }
-    }
      
         function forceUnlock() {
-    let input = document.getElementById('pass-code').value;
-    if(input === "197800") {
-        doUnlock();
-    } else {
-        alert("🔒 ACCÈS REFUSÉ - PIN INCORRECT");
-        document.getElementById('pass-code').value = "";
-    }
+            let input = document.getElementById('pass-code').value;
+            if(input === "197800") doUnlock();
+            else { alert("🔒 PIN INCORRECT"); document.getElementById('pass-code').value = ""; }
         }
-        
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
@@ -185,13 +176,11 @@
         function create3DLogo() {
             if(logo3D) return;
             logo3D = new THREE.Group();
-            // CORRECTION COULEUR ET VISIBILITÉ : Vert néon brillant, pas de wireframe transparent
             const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: false, transparent: true, opacity: 0.9 });
             const core = new THREE.Mesh(new THREE.IcosahedronGeometry(120, 1), mat);
             const ring = new THREE.Mesh(new THREE.TorusGeometry(190, 5, 16, 100), mat);
             ring.rotation.x = Math.PI/2;
             logo3D.add(core, ring);
-            // CORRECTION POSITION : Placé au centre immédiat de la vue
             logo3D.position.set(0, 0, 0);
             scene.add(logo3D);
         }
@@ -208,7 +197,6 @@
         }
         animate();
 
-        // --- FONCTION LANCER SYNCHRONISÉE AVEC PYTHON ---
         async function lancerRobot() {
             const cap = document.getElementById('u-capital').value;
             const ex = document.getElementById('u-ex').value;
@@ -223,36 +211,28 @@
                 const response = await fetch(`${CLOUDFLARE_URL}/start`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        capital: cap, exchange: ex, market_type: mkt,
-                        ak: ak, as: as, passphrase: ps
-                    })
+                    body: JSON.stringify({ capital: cap, exchange: ex, market_type: mkt, ak: ak, as: as, passphrase: ps })
                 });
                 const res = await response.json();
-                
                 document.getElementById('cap-display').innerText = "$" + cap;
                 document.getElementById('ex-display').innerText = ex;
                 document.getElementById('status-light').classList.add('status-active');
                 document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
                 document.getElementById('status-text').style.color = "var(--green)";
-                document.getElementById('terminal').innerHTML = `> SYSTÈME CONNECTÉ À ${ex}<br>> MODE : ${mkt}<br>> RÉPONSE : ${res.message}`;
+                document.getElementById('terminal').innerHTML = `> CONNECTÉ À ${ex}<br>> MODE : ${mkt}<br>> RÉPONSE : ${res.message}`;
                 showTab('dash', document.getElementById('m-dash'));
-            } catch(e) {
-                document.getElementById('terminal').innerHTML = "> ❌ ERREUR : Serveur Python injoignable.";
-            }
+            } catch(e) { document.getElementById('terminal').innerHTML = "> ❌ ERREUR SERVEUR."; }
         }
 
-        // --- SCAN ALL SYNCHRONISÉ AVEC PYTHON ---
         async function scanAll() {
             document.getElementById('terminal').innerHTML += "<br>> SCAN GLOBAL LANCÉ...";
             for (let cat in WATCHLIST) {
                 for (let coin of WATCHLIST[cat]) {
                     try {
-                        const sym = `${coin}/USDT`;
                         const res = await fetch(`${CLOUDFLARE_URL}/scan`, {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ symbol: sym })
+                            body: JSON.stringify({ symbol: `${coin}/USDT` })
                         });
                         const data = await res.json();
                         const el = document.getElementById(`status-${coin}`);
@@ -271,25 +251,21 @@
                     {q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "4. Interne vs Externe ?", a: "Cible vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."},
                     {q: "6. Pourquoi 25$ ?", a: "Discipline."}, {q: "7. Breaker Block ?", a: "OB cassé."}, {q: "8. NY Open ?", a: "Killzone volatile."}, {q: "9. Stop Loss ?", a: "Derrière le sweep."}, {q: "10. SANGMELIMA ?", a: "Ton bouclier ICT."}
                 ]
-            },
-            en: { lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ" },
-            ar: { lTitle: "وصول آمن", mDash: "لوحة التحكم" }, de: { lTitle: "ZUGRIFF", mDash: "ÜBERSICHT" }, es: { lTitle: "ACCESO", mDash: "PANEL" }
+            }
         };
 
         function translateAll(lang) {
-            const d = translations[lang] || translations['fr'];
-            const f = translations['fr'];
-            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
-            document.getElementById('l-title').innerText = d.lTitle || f.lTitle;
-            document.getElementById('m-dash').innerText = d.mDash || f.mDash;
-            document.getElementById('m-scan').innerText = d.mScan || f.mScan;
-            document.getElementById('m-pay').innerText = d.mPay || f.mPay;
-            document.getElementById('m-inscr').innerText = d.mInscr || f.mInscr;
-            document.getElementById('m-macro').innerText = d.mMacro || f.mMacro;
-            document.getElementById('m-faq').innerText = d.mFaq || f.mFaq;
-            let tHtml = ""; (d.team || f.team).forEach(m => tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`);
+            const d = translations['fr'];
+            document.getElementById('l-title').innerText = d.lTitle;
+            document.getElementById('m-dash').innerText = d.mDash;
+            document.getElementById('m-scan').innerText = d.mScan;
+            document.getElementById('m-pay').innerText = d.mPay;
+            document.getElementById('m-inscr').innerText = d.mInscr;
+            document.getElementById('m-macro').innerText = d.mMacro;
+            document.getElementById('m-faq').innerText = d.mFaq;
+            let tHtml = ""; d.team.forEach(m => tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`);
             document.getElementById('team-list').innerHTML = tHtml;
-            let fHtml = ""; (d.faq || f.faq).forEach(fi => fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fi.q}</b><div class="faq-a">${fi.a}</div></div>`);
+            let fHtml = ""; d.faq.forEach(fi => fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fi.q}</b><div class="faq-a">${fi.a}</div></div>`);
             document.getElementById('faq-container').innerHTML = fHtml;
         }
 
@@ -308,4 +284,9 @@
             el.classList.add('active'); 
         }
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
-        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updat
+        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+</body>
+    </html>
+                    
