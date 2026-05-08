@@ -88,9 +88,7 @@
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-pay" style="color:var(--gold); border-bottom:1px solid #222; padding-bottom:10px;">💳 ACTIVATION DU BOUCLIER</h3>
-                <p style="font-size:12px; margin:15px 0; line-height:1.4;">
-                    Effectuez votre transfert ci-dessous. Une fois terminé, cliquez sur le bouton pour valider auprès du Bot et recevoir votre <b>PIN d'accès unique</b>.
-                </p>
+                <p style="font-size:12px; margin:15px 0; line-height:1.4;">Effectuez votre transfert. Recevez votre <b>PIN d'accès unique</b>.</p>
                 <div style="text-align:left; background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; border:1px solid var(--border); margin-bottom:20px;">
                     <div style="margin-bottom:15px;">
                         <span style="font-size:10px; color:var(--accent);">NETWORK: USDT (TRC20)</span><br>
@@ -102,7 +100,6 @@
                     </div>
                 </div>
                 <button class="btn-action" style="background:linear-gradient(45deg, #00ff88, #0088ff); color:black; font-weight:900;" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">🚀 VALIDER AU BOT (CODE AUTO)</button>
-                <p style="font-size:9px; color:#555; margin-top:12px;">Le système vérifie la transaction et génère votre clé instantanément.</p>
             </div>
         </div>
 
@@ -185,7 +182,7 @@
             fr: {
                 lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tConfig: "📝 CONFIGURATION GLOBALE", lCapIn: "CAPITAL TRADING ($)", lEx: "ÉCHANGEUR", lMt: "MARCHÉ CIBLE", tStart: "LANCER IFDA", tTeam: "🛡️ TEAM (8 MEMBRES)", fTitle: "💡 FAQ (10 QUESTIONS)", tNews: "📢 CALENDRIER ÉCONOMIQUE PRO",
                 team: ["👑 NASSER (Fondateur)", "🇨🇦 BEATRICE (Marketing)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇲 BERTRAND (Tech)", "🇧🇯 FRANCO (Analyste)", "🇧🇯 SEBASTIEN (Data)"],
-                faq: [ {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité retail avant l'impulsion."}, {q: "2. Utilité du FVG ?", a: "Cible de retour du prix."} ]
+                faq: [ {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité retail."}, {q: "2. Utilité du FVG ?", a: "Cible de retour du prix."} ]
             },
             en: { lTitle: "SECURE ACCESS", lBtn: "UNLOCK", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CONFIGURED CAPITAL", tProf: "TOTAL PROFIT", tConfig: "📝 GLOBAL CONFIGURATION", lCapIn: "TRADING CAPITAL ($)", lEx: "EXCHANGE", lMt: "TARGET MARKET", tStart: "START IFDA", tTeam: "🛡️ TEAM (8 MEMBERS)", fTitle: "💡 FAQ (10 QUESTIONS)", tNews: "📢 PRO ECONOMIC CALENDAR" },
             de: { lTitle: "SICHERER ZUGRIFF", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "REGISTRIERUNG", mMacro: "MAKRO NEWS", mFaq: "TEAM/FAQ", tNews: "WIRTSCHAFTSKALENDER" },
@@ -235,10 +232,36 @@
             document.getElementById('faq-container').innerHTML = fHtml;
         }
 
-        function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") { doUnlock(); initScanner(); } }
-        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") { doUnlock(); initScanner(); } else alert("ERR PIN"); }
-        function doUnlock() { document.getElementById('lock-screen').style.display="none"; document.getElementById('main-interface').style.display="block"; translateAll('fr'); }
-        function showTab(id, el) { document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); document.getElementById(id).style.display='block'; document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+        // --- CORRECTIF CRITIQUE DU PIN 197800 ---
+        function autoCheck() {
+            const pin = document.getElementById('pass-code').value.trim();
+            if(pin === "197800") {
+                doUnlock();
+                initScanner();
+            }
+        }
+        function forceUnlock() {
+            const pin = document.getElementById('pass-code').value.trim();
+            if(pin === "197800") {
+                doUnlock();
+                initScanner();
+            } else {
+                alert("ERR PIN");
+            }
+        }
+        function doUnlock() {
+            document.getElementById('lock-screen').style.display = "none";
+            document.getElementById('main-interface').style.display = "block";
+            translateAll('fr');
+        }
+        // ----------------------------------------
+
+        function showTab(id, el) { 
+            document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
+            document.getElementById(id).style.display='block'; 
+            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
         
         const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -271,5 +294,4 @@
         async function sendToPython() {
             const payload = { exchange: document.getElementById('u-ex').value, market_type: document.getElementById('u-market-target').value, ak: document.getElementById('u-key').value, as: document.getElementById('u-sec').value, capital: document.getElementById('u-capital').value, symbol: "BTC/USDT" };
             const term = document.getElementById('terminal'); term.innerText = "> SENDING VIA CLOUDFLARE...";
-            try {
-                const r = await fetch(`${CLOUDFLARE_URL}/execute`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body:
+        
