@@ -30,7 +30,6 @@
     .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; }
     .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 
-    /* Scanner Watchlist Design */
     .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
     .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
     .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
@@ -66,7 +65,7 @@
         <div id="dash" class="content-section">
             <div class="card">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div><small id="t-cap">CAPITAL CONFIGURÉ</small><br><b id="cap-display" style="font-size: 22px; color: var(--gold);">$25</b></div>
+                    <div><small id="t-cap">CAPITAL CONFIGURÉ</small><br><b id="cap-display" style="font-size: 22px; color: var(--gold);">$10</b></div>
                     <div><small id="t-prof">PROFIT CUMULÉ</small><br><b id="profit-display" style="font-size: 22px; color: var(--green);">+$0.00</b></div>
                 </div>
                 <div id="ny-time" style="font-size: 14px; color: var(--accent); font-weight: bold; margin: 15px 0;">NY: 00:00:00</div>
@@ -81,14 +80,14 @@
                     <div id="scan-status" style="color: var(--accent); font-weight: bold;">> MONITORING LIQUIDITY POOLS...</div>
                     <div class="scan-list" id="full-scan-list"></div>
                 </div>
-                <button class="btn-action" style="background:var(--gold); color:black;" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
+                <button id="btn-scan-refresh" class="btn-action" style="background:var(--gold); color:black;" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-pay" style="color:var(--gold); border-bottom:1px solid #222; padding-bottom:10px;">💳 ACTIVATION DU BOUCLIER</h3>
-                <p style="font-size:12px; margin:15px 0; line-height:1.4;">Effectuez votre transfert. Recevez votre <b>PIN d'accès unique</b>.</p>
+                <h3 id="t-pay-title" style="color:var(--gold); border-bottom:1px solid #222; padding-bottom:10px;">💳 ACTIVATION DU BOUCLIER</h3>
+                <p id="p-pay-desc" style="font-size:12px; margin:15px 0; line-height:1.4;">Effectuez votre transfert. Recevez votre <b>PIN d'accès unique</b>.</p>
                 <div style="text-align:left; background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; border:1px solid var(--border); margin-bottom:20px;">
                     <div style="margin-bottom:15px;">
                         <span style="font-size:10px; color:var(--accent);">NETWORK: USDT (TRC20)</span><br>
@@ -99,41 +98,32 @@
                         <b style="font-size:13px; color:#fff;">Orange Money: +237 655 50 97 38</b>
                     </div>
                 </div>
-                <button class="btn-action" style="background:linear-gradient(45deg, #00ff88, #0088ff); color:black; font-weight:900;" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">🚀 VALIDER AU BOT (CODE AUTO)</button>
+                <button id="btn-pay-val" class="btn-action" style="background:linear-gradient(45deg, #00ff88, #0088ff); color:black; font-weight:900;" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">🚀 VALIDER AU BOT (CODE AUTO)</button>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-config">📝 CONFIGURATION GLOBALE</h3>
+                <h3 id="t-config-title">📝 CONFIGURATION GLOBALE</h3>
                 <label id="l-cap-in">CAPITAL TRADING ($)</label>
-                <input type="number" id="u-capital" value="25" oninput="updateDashboardCap()">
-                <label id="l-ex">ÉCHANGEUR / BROKER</label>
+                <input type="number" id="u-capital" value="10" oninput="updateDashboardCap()">
+                <label id="l-ex-label">ÉCHANGEUR / BROKER</label>
                 <select id="u-ex">
-                    <option value="exness">EXNESS</option>
-                    <option value="vantage">VANTAGE FX</option>
-                    <option value="binance">BINANCE</option>
-                    <option value="bybit">BYBIT</option>
-                    <option value="mexc">MEXC</option>
-                    <option value="bingx">BINGX</option>
-                    <option value="deriv">DERIV</option>
-                    <option value="okx">OKX</option>
+                    <option value="exness">EXNESS</option><option value="vantage">VANTAGE FX</option><option value="binance">BINANCE</option><option value="bybit">BYBIT</option><option value="mexc">MEXC</option><option value="bingx">BINGX</option><option value="deriv">DERIV</option><option value="okx">OKX</option>
                 </select>
-                <label id="l-mt">MARCHÉ CIBLE</label>
+                <label id="l-mt-label">MARCHÉ CIBLE</label>
                 <select id="u-market-target">
-                    <option value="FOREX">FOREX (CURRENCIES)</option>
-                    <option value="PERP">CRYPTO PERPETUAL</option>
-                    <option value="SPOT">CRYPTO SPOT</option>
+                    <option value="FOREX">FOREX (CURRENCIES)</option><option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option>
                 </select>
                 <input type="text" id="u-key" placeholder="API KEY / ACCOUNT ID">
                 <input type="password" id="u-sec" placeholder="API SECRET / PASSWORD">
-                <button class="btn-action" id="t-start" onclick="sendToPython()">LANCER IFDA</button>
+                <button id="btn-start-ifda" class="btn-action" onclick="sendToPython()">LANCER IFDA</button>
             </div>
         </div>
 
         <div id="macro" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-news">📢 CALENDRIER ÉCONOMIQUE PRO</h3>
+                <h3 id="t-macro-title">📢 CALENDRIER ÉCONOMIQUE PRO</h3>
                 <div style="height: 450px; border-radius: 8px; overflow: hidden; border: 1px solid #1a1a1a;">
                     <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&category=_main,central_banks,inflation,employment,economic_activity&importance=2,3&features=datepicker,timezone&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="100%" frameborder="0"></iframe>
                 </div>
@@ -141,8 +131,8 @@
         </div>
 
         <div id="faq" class="content-section" style="display:none;">
-            <div class="card"><h3 id="t-team">🛡️ TEAM (8 MEMBRES)</h3><div id="team-list" class="team-grid"></div></div>
-            <div class="card"><h3 id="f-title">💡 FAQ (10 QUESTIONS)</h3><div id="faq-container"></div></div>
+            <div class="card"><h3 id="t-team-title">🛡️ TEAM (8 MEMBRES)</h3><div id="team-list" class="team-grid"></div></div>
+            <div class="card"><h3 id="f-faq-title">💡 FAQ (10 QUESTIONS)</h3><div id="faq-container"></div></div>
         </div>
     </div>
 
@@ -153,6 +143,14 @@
             "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"],
             "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"]
         };
+
+        function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); }
+        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); else alert("ERR PIN"); }
+        function doUnlock() {
+            document.getElementById('lock-screen').style.display="none"; 
+            document.getElementById('main-interface').style.display="block"; 
+            initScanner(); translateAll('fr'); if(typeof create3DIFDALogo === 'function') create3DIFDALogo();
+        }
 
         let logo3D; 
         function create3DIFDALogo() {
@@ -180,81 +178,75 @@
 
         const translations = {
             fr: {
-                lTitle: "ACCÈS SÉCURISÉ", lBtn: "DÉVERROUILLER", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tConfig: "📝 CONFIGURATION GLOBALE", lCapIn: "CAPITAL TRADING ($)", lEx: "ÉCHANGEUR", lMt: "MARCHÉ CIBLE", tStart: "LANCER IFDA", tTeam: "🛡️ TEAM (8 MEMBRES)", fTitle: "💡 FAQ (10 QUESTIONS)", tNews: "📢 CALENDRIER ÉCONOMIQUE PRO",
+                lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "RAFRAÎCHIR LE SCAN", tPayT: "💳 ACTIVATION DU BOUCLIER", pPayD: "Effectuez votre transfert. Recevez votre PIN d'accès unique.", btnPayV: "🚀 VALIDER AU BOT",
+                tConfigT: "📝 CONFIGURATION GLOBALE", lCapI: "CAPITAL TRADING ($)", lExL: "ÉCHANGEUR / BROKER", lMtL: "MARCHÉ CIBLE", btnStart: "LANCER IFDA", tMacroT: "📢 CALENDRIER ÉCONOMIQUE PRO", tTeamT: "🛡️ TEAM (8 MEMBRES)", fFaqT: "💡 FAQ (10 QUESTIONS)",
                 team: ["👑 NASSER (Fondateur)", "🇨🇦 BEATRICE (Marketing)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇲 BERTRAND (Tech)", "🇧🇯 FRANCO (Analyste)", "🇧🇯 SEBASTIEN (Data)"],
                 faq: [ {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité retail."}, {q: "2. Utilité du FVG ?", a: "Cible de retour du prix."} ]
             },
-            en: { lTitle: "SECURE ACCESS", lBtn: "UNLOCK", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", tCap: "CONFIGURED CAPITAL", tProf: "TOTAL PROFIT", tConfig: "📝 GLOBAL CONFIGURATION", lCapIn: "TRADING CAPITAL ($)", lEx: "EXCHANGE", lMt: "TARGET MARKET", tStart: "START IFDA", tTeam: "🛡️ TEAM (8 MEMBERS)", fTitle: "💡 FAQ (10 QUESTIONS)", tNews: "📢 PRO ECONOMIC CALENDAR" },
-            de: { lTitle: "SICHERER ZUGRIFF", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "REGISTRIERUNG", mMacro: "MAKRO NEWS", mFaq: "TEAM/FAQ", tNews: "WIRTSCHAFTSKALENDER" },
-            es: { lTitle: "ACCESO SEGURO", mDash: "PANEL", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO", tNews: "CALENDARIO ECONÓMICO" },
-            ar: { lTitle: "وصول آمن", mDash: "لوحة التحكم", mScan: "ماسح", mPay: "دفع", mInscr: "تسجيل", mMacro: "أخبار", mFaq: "الفريق", tNews: "التقويم الاقتصادي" }
+            en: {
+                lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "CONFIGURED CAPITAL", tProf: "TOTAL PROFIT", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "REFRESH GLOBAL SCAN", tPayT: "💳 SHIELD ACTIVATION", pPayD: "Complete your transfer. Receive your unique access PIN.", btnPayV: "🚀 VALIDATE AT BOT",
+                tConfigT: "📝 GLOBAL CONFIGURATION", lCapI: "TRADING CAPITAL ($)", lExL: "EXCHANGE / BROKER", lMtL: "TARGET MARKET", btnStart: "START IFDA", tMacroT: "📢 PRO ECONOMIC CALENDAR", tTeamT: "🛡️ TEAM (8 MEMBERS)", fFaqT: "💡 FAQ (10 QUESTIONS)"
+            },
+            ar: {
+                lTitle: "وصول آمن", mDash: "لوحة التحكم", mScan: "ماسح", mPay: "دفع", mInscr: "تسجيل", mMacro: "أخبار", mFaq: "الفريق",
+                tCap: "رأس المال المكوّن", tProf: "الربح التراكمي", tScan: "🔍 ماسح القناص", btnScan: "تحديث المسح", tPayT: "💳 تفعيل الدرع", pPayD: "أكمل تحويلك. احصل على رمز الوصول الخاص بك.", btnPayV: "🚀 التحقق في البوت",
+                tConfigT: "📝 الإعدادات العالمية", btnStart: "بدء IFDA"
+            },
+            es: {
+                lTitle: "ACCESO SEGURO", mDash: "PANEL", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO",
+                tCap: "CAPITAL CONFIGURADO", tProf: "BENEFICIO TOTAL", tScan: "🔍 ESCÁNER SNIPER", btnScan: "ACTUALIZAR ESCANEO", tPayT: "💳 ACTIVACIÓN DEL ESCUDO", pPayD: "Realice su transferencia. Reciba su PIN de acceso.", btnPayV: "🚀 VALIDAR EN BOT",
+                tConfigT: "📝 CONFIGURACIÓN GLOBAL", btnStart: "INICIAR IFDA"
+            },
+            de: {
+                lTitle: "SICHERER ZUGRIFF", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "REGISTRIERUNG", mMacro: "MAKRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "KONFIGURIERTES KAPITAL", tProf: "GESAMTGEWINN", tScan: "🔍 SNIPER SCANNER", btnScan: "SCAN AKTUALISIEREN", tPayT: "💳 SCHILD AKTIVIERUNG", pPayD: "Führen Sie Ihre Überweisung aus. Erhalten Sie Ihre PIN.", btnPayV: "🚀 IM BOT VALIDIEREN",
+                tConfigT: "📝 GLOBALE KONFIGURATION", btnStart: "IFDA STARTEN"
+            }
         };
+
+        function translateAll(lang) {
+            const d = translations[lang] || translations['fr'];
+            const f = translations['fr']; // Source de secours
+            document.getElementById('l-title').innerText = d.lTitle;
+            document.getElementById('m-dash').innerText = d.mDash;
+            document.getElementById('m-scan').innerText = d.mScan;
+            document.getElementById('m-pay').innerText = d.mPay;
+            document.getElementById('m-inscr').innerText = d.mInscr;
+            document.getElementById('m-macro').innerText = d.mMacro;
+            document.getElementById('m-faq').innerText = d.mFaq;
+            document.getElementById('t-cap').innerText = d.tCap || f.tCap;
+            document.getElementById('t-prof').innerText = d.tProf || f.tProf;
+            document.getElementById('t-scan').innerText = d.tScan || f.tScan;
+            document.getElementById('btn-scan-refresh').innerText = d.btnScan || f.btnScan;
+            document.getElementById('t-pay-title').innerText = d.tPayT || f.tPayT;
+            document.getElementById('p-pay-desc').innerText = d.pPayD || f.pPayD;
+            document.getElementById('btn-pay-val').innerText = d.btnPayV || f.btnPayV;
+            document.getElementById('t-config-title').innerText = d.tConfigT || f.tConfigT;
+            document.getElementById('l-cap-in').innerText = d.lCapI || f.lCapI;
+            document.getElementById('l-ex-label').innerText = d.lExL || f.lExL;
+            document.getElementById('l-mt-label').innerText = d.lMtL || f.lMtL;
+            document.getElementById('btn-start-ifda').innerText = d.btnStart || f.btnStart;
+            document.getElementById('t-macro-title').innerText = d.tMacroT || f.tMacroT;
+            document.getElementById('t-team-title').innerText = d.tTeamT || f.tTeamT;
+            document.getElementById('f-faq-title').innerText = d.fFaqT || f.fFaqT;
+
+            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+            let tHtml = ""; (d.team || f.team).forEach(m => { tHtml += `<div class="member">${m}</div>`; });
+            document.getElementById('team-list').innerHTML = tHtml;
+            let fHtml = ""; (d.faq || f.faq).forEach(fItem => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${fItem.q}</div><div class="faq-a">${fItem.a}</div></div>`; });
+            document.getElementById('faq-container').innerHTML = fHtml;
+        }
 
         function initScanner() {
             let html = "";
             for (let cat in WATCHLIST) {
                 html += `<div class="scan-category">${cat}</div>`;
-                WATCHLIST[cat].forEach(coin => {
-                    html += `<div class="scan-row"><span>${coin}/USDT</span> <span class="status-wait" id="status-${coin}">WAITING SWEEP...</span></div>`;
-                });
+                WATCHLIST[cat].forEach(coin => { html += `<div class="scan-row"><span>${coin}/USDT</span> <span class="status-wait" id="status-${coin}">WAITING...</span></div>`; });
             }
             document.getElementById('full-scan-list').innerHTML = html;
         }
-
-        async function scanAll() {
-            const statusBox = document.getElementById('scan-status');
-            statusBox.innerText = "> SCANNING CROSS-MARKET LIQUIDITY...";
-            try {
-                const r = await fetch(`${CLOUDFLARE_URL}/scan_all`);
-                const d = await r.json();
-                d.signals.forEach(sig => {
-                    const coinId = sig.symbol.split('/')[0];
-                    const el = document.getElementById(`status-${coinId}`);
-                    if(el) { el.innerText = `${sig.side.toUpperCase()} DETECTED`; el.style.color = "#00ff88"; }
-                });
-                statusBox.innerText = `> SCAN COMPLETE: ${d.count} SIGNALS`;
-            } catch (e) { statusBox.innerText = "> SCAN ERROR: TUNNEL OFFLINE"; }
-        }
-
-        function translateAll(lang) {
-            const d = translations[lang] || translations['fr'];
-            document.getElementById('l-title').innerText = d.lTitle || d.mDash;
-            document.getElementById('m-dash').innerText = d.mDash;
-            document.getElementById('m-scan').innerText = d.mScan;
-            document.getElementById('m-inscr').innerText = d.mInscr;
-            document.getElementById('m-macro').innerText = d.mMacro;
-            document.getElementById('m-faq').innerText = d.mFaq;
-            document.getElementById('t-news').innerText = d.tNews || "📢 NEWS";
-            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
-            let tHtml = ""; (d.team || translations['fr'].team).forEach(m => { tHtml += `<div class="member">${m}</div>`; });
-            document.getElementById('team-list').innerHTML = tHtml;
-            let fHtml = ""; (d.faq || translations['fr'].faq).forEach(f => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`; });
-            document.getElementById('faq-container').innerHTML = fHtml;
-        }
-
-        // --- CORRECTIF CRITIQUE DU PIN 197800 ---
-        function autoCheck() {
-            const pin = document.getElementById('pass-code').value.trim();
-            if(pin === "197800") {
-                doUnlock();
-                initScanner();
-            }
-        }
-        function forceUnlock() {
-            const pin = document.getElementById('pass-code').value.trim();
-            if(pin === "197800") {
-                doUnlock();
-                initScanner();
-            } else {
-                alert("ERR PIN");
-            }
-        }
-        function doUnlock() {
-            document.getElementById('lock-screen').style.display = "none";
-            document.getElementById('main-interface').style.display = "block";
-            translateAll('fr');
-        }
-        // ----------------------------------------
 
         function showTab(id, el) { 
             document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
@@ -263,35 +255,9 @@
             el.classList.add('active'); 
         }
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
-        
+        function updateDashboardCap() { document.getElementById('cap-display').innerText = '$' + document.getElementById('u-capital').value; }
+
         const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        const pts = []; for(let i=0; i<300; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-        const mat = new THREE.Points(geo, new THREE.PointsMaterial({color: 0x3b82f6, size: 2}));
-        scene.add(mat); camera.position.z = 500;
-
-        create3DIFDALogo(); 
-
-        function animate() { 
-            requestAnimationFrame(animate); 
-            mat.rotation.y += 0.001; 
-            if (logo3D) {
-                logo3D.rotation.y += 0.005; 
-                logo3D.children[1].rotation.z += 0.01; 
-                logo3D.children[2].rotation.x += 0.01; 
-            }
-            renderer.render(scene, camera); 
-        } animate();
-        
-        setInterval(() => {
-            const now = new Date();
-            const ny = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }).formatToParts(now);
-            document.getElementById('ny-time').innerText = `NY: ${ny.find(it => it.type === 'hour').value}:${ny.find(it => it.type === 'minute').value}:${ny.find(it => it.type === 'second').value}`;
-        }, 1000);
-
-        async function sendToPython() {
-            const payload = { exchange: document.getElementById('u-ex').value, market_type: document.getElementById('u-market-target').value, ak: document.getElementById('u-key').value, as: document.getElementById('u-sec').value, capital: document.getElementById('u-capital').value, symbol: "BTC/USDT" };
-            const term = document.getElementById('terminal'); term.innerText = "> SENDING VIA CLOUDFLARE...";
-        
+        const pts = []; for(let i=0; i<300; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSp
