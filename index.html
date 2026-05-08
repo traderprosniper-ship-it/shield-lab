@@ -50,13 +50,17 @@
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇺🇸 EN</option>
+        <option value="ar">🇸🇦 AR</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="es">🇪🇸 ES</option>
     </select>
 
     <div id="lock-screen">
         <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">IFDA ACCESS</h2>
         <input type="password" id="pass-code" placeholder="PIN" maxlength="6" oninput="autoCheck()" style="width:180px;">
-        <button class="btn-action" style="width:180px;" onclick="forceUnlock()">LOGIN</button>
+        <button class="btn-action" id="btn-login" style="width:180px;" onclick="forceUnlock()">LOGIN</button>
     </div>
 
     <div id="main-interface">
@@ -96,20 +100,20 @@
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-config-title">📝 CONFIGURATION API</h3>
-                <label>CAPITAL TRADING ($)</label>
-                <input type="number" id="u-capital" placeholder="Entrez montant">
-                <label>ÉCHANGEUR</label>
+                <label id="l-cap">CAPITAL TRADING ($)</label>
+                <input type="number" id="u-capital" placeholder="...">
+                <label id="l-ex">ÉCHANGEUR</label>
                 <select id="u-ex">
                     <option value="MEXC">MEXC</option><option value="OKX">OKX</option><option value="BINGX">BINGX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="GATE IO">GATE IO</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option><option value="VANTAGE FX">VANTAGE FX</option>
                 </select>
-                <label>MARCHÉ CIBLE</label>
+                <label id="l-mkt">MARCHÉ CIBLE</label>
                 <select id="u-market">
                     <option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option><option value="FOREX">FOREX (CURRENCIES)</option>
                 </select>
                 <input type="text" id="u-key" placeholder="API KEY">
                 <input type="password" id="u-sec" placeholder="API SECRET">
                 <input type="password" id="u-pass" placeholder="API PASSPHRASE">
-                <button class="btn-action" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
+                <button class="btn-action" id="btn-launch" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
             </div>
         </div>
 
@@ -126,7 +130,7 @@
                         <div><b style="color:white;">MOBILE MONEY</b><div style="color:var(--accent);">+237 655 50 97 38</div></div>
                     </div>
                 </div>
-                <button class="btn-action" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
+                <button class="btn-action" id="btn-pay-bot" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
             </div>
         </div>
 
@@ -164,7 +168,7 @@
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
             document.getElementById('main-interface').style.display = "block"; 
-            initScanner(); translateAll('fr'); updateTime(); create3DLogo();
+            initScanner(); translateAll(document.getElementById('lang-switch').value); updateTime(); create3DLogo();
         }
 
         let logo3D;
@@ -245,48 +249,23 @@
 
         const translations = {
             fr: {
-                lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                team: [{n: "👑 NASSER", r: "Founder"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
-                faq: [
-                    {q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "4. Interne vs Externe ?", a: "Cible vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."},
-                    {q: "6. Pourquoi 25$ ?", a: "Discipline."}, {q: "7. Breaker Block ?", a: "OB cassé."}, {q: "8. NY Open ?", a: "Killzone volatile."}, {q: "9. Stop Loss ?", a: "Derrière le sweep."}, {q: "10. SANGMELIMA ?", a: "Ton bouclier ICT."}
-                ]
-            }
-        };
-
-        function translateAll(lang) {
-            const d = translations['fr'];
-            document.getElementById('l-title').innerText = d.lTitle;
-            document.getElementById('m-dash').innerText = d.mDash;
-            document.getElementById('m-scan').innerText = d.mScan;
-            document.getElementById('m-pay').innerText = d.mPay;
-            document.getElementById('m-inscr').innerText = d.mInscr;
-            document.getElementById('m-macro').innerText = d.mMacro;
-            document.getElementById('m-faq').innerText = d.mFaq;
-            let tHtml = ""; d.team.forEach(m => tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`);
-            document.getElementById('team-list').innerHTML = tHtml;
-            let fHtml = ""; d.faq.forEach(fi => fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fi.q}</b><div class="faq-a">${fi.a}</div></div>`);
-            document.getElementById('faq-container').innerHTML = fHtml;
-        }
-
-        function initScanner() {
-            let h = ""; for(let c in WATCHLIST) {
-                h += `<div class="scan-category">${c}</div>`;
-                WATCHLIST[c].forEach(coin => { h += `<div class="scan-row"><span>${coin}</span> <span id="status-${coin}">WAIT...</span></div>`; });
-            }
-            document.getElementById('full-scan-list').innerHTML = h;
-        }
-
-        function showTab(id, el) { 
-            document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
-            document.getElementById(id).style.display='block'; 
-            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
-            el.classList.add('active'); 
-        }
-        function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
-        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
-        window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
-    </script>
-</body>
-    </html>
-                    
+                lTitle: "ACCÈS SÉCURISÉ", btnLogin: "CONNEXION", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "RAFRAÎCHIR LE SCAN", tConfig: "📝 CONFIGURATION API", lCap: "CAPITAL TRADING ($)", lEx: "ÉCHANGEUR", lMkt: "MARCHÉ CIBLE", btnLaunch: "🚀 LANCER LE BOUCLIER", tPay: "💳 ACTIVATION SÉCURISÉE", btnPay: "VALIDER AU BOT", tMacro: "📢 MACRO NEWS PRO",
+                team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risque"}],
+                faq: [{q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "4. Interne vs Externe ?", a: "Cible vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."}]
+            },
+            en: {
+                lTitle: "SECURE ACCESS", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "REFRESH SCAN", tConfig: "📝 API CONFIGURATION", lCap: "TRADING CAPITAL ($)", lEx: "EXCHANGE", lMkt: "TARGET MARKET", btnLaunch: "🚀 LAUNCH SHIELD", tPay: "💳 SECURE ACTIVATION", btnPay: "VALIDATE ON BOT", tMacro: "📢 MACRO NEWS PRO",
+                team: [{n: "👑 NASSER", r: "Founder"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyst"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
+                faq: [{q: "1. Why the Sweep ?", a: "To take bank liquidity."}, {q: "2. What is an FVG ?", a: "Price imbalance."}, {q: "3. PD Array ?", a: "SMC Compass."}, {q: "4. Internal vs External ?", a: "Target towards FVG."}, {q: "5. Inducement ?", a: "Retail trap."}]
+            },
+            es: {
+                lTitle: "ACCESO SEGURO", btnLogin: "ACCEDER", mDash: "TABLERO", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO/FAQ",
+                tCap: "CAPITAL ACTIVO", tEx: "EXCHANGE", tScan: "🔍 ESCANER SNIPER (M15)", btnScan: "REFRESCAR ESCANEO", tConfig: "📝 CONFIGURACIÓN API", lCap: "CAPITAL TRADING ($)", lEx: "EXCHANGE", lMkt: "MERCADO OBJETIVO", btnLaunch: "🚀 LANZAR ESCUDO", tPay: "💳 ACTIVACIÓN SEGURA", btnPay: "VALIDAR EN BOT", tMacro: "📢 MACRO NOTICIAS PRO",
+                team: [{n: "👑 NASSER", r: "Fundador"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Gerente"}, {n: "🇬🇵 MARIE", r: "Analista"}, {n: "🇹🇬 ALBERT", r: "Experto"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Datos"}, {n: "🇧🇯 SEBASTIEN", r: "Riesgo"}],
+                faq: [{q: "1. ¿Por qué el Sweep?", a: "Para tomar liquidez bancaria."}, {q: "2. ¿Qué es un FVG?", a: "Desequilibrio de precios."}, {q: "3. ¿PD Array?", a: "Brújula SMC."}, {q: "4. ¿Interno vs Externo?", a: "Objetivo hacia FVG."}, {q: "5. ¿Inducement?", a: "Trampa retail."}]
+            },
+            ar: {
+                lTitle: "دخول آمن", btnLogin: "دخول", mDash: "لوحة التحكم", mScan: "الفاحص", mPay: "الدفع", mInscr: "التسجيل", mMacro: "الأخبار", mFaq: "الفريق",
+                tCap: "رأس المال النشط", tEx: "المنصة", tScan: "🔍 فاحص القناص (M15)", btnScan: "تحديث الفحص", tConfig: "📝 إعدادات 
