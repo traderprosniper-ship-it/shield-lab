@@ -144,8 +144,19 @@
             "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"]
         };
 
-        function autoCheck() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); }
-        function forceUnlock() { if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); else alert("ERR PIN"); }
+        // Fonction de vérification automatique lors de la saisie
+        function autoCheck() { 
+            const val = document.getElementById('pass-code').value.trim();
+            if(val === "197800") doUnlock(); 
+        }
+
+        // Fonction de déverrouillage forcé via le bouton
+        function forceUnlock() { 
+            const val = document.getElementById('pass-code').value.trim();
+            if(val === "197800") doUnlock(); 
+            else alert("ERR PIN"); 
+        }
+
         function doUnlock() {
             document.getElementById('lock-screen').style.display="none"; 
             document.getElementById('main-interface').style.display="block"; 
@@ -208,7 +219,7 @@
 
         function translateAll(lang) {
             const d = translations[lang] || translations['fr'];
-            const f = translations['fr']; // Source de secours
+            const f = translations['fr']; 
             document.getElementById('l-title').innerText = d.lTitle;
             document.getElementById('m-dash').innerText = d.mDash;
             document.getElementById('m-scan').innerText = d.mScan;
@@ -259,5 +270,4 @@
 
         const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        const pts = []; for(let i=0; i<300; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSp
+       
