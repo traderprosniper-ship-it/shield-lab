@@ -5,36 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>IFDA PRO SHIELD V65 - GLOBAL MASTER FINAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-    :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
-    body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
-    #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
-    #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; pointer-events: none; }
-    
-    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; width: auto; cursor: pointer; }
-    #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
-    
-    .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5000; width: 100%; }
-    .nav-item { padding: 15px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; text-transform: uppercase; border-bottom: 2px solid transparent; }
-    .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+  <script>
+    const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
+    const WATCHLIST = {
+        "AI_AGENTS": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"],
+        "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"],
+        "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"]
+    };
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
-    input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; text-align: center; outline: none; }
-    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
-    
-    .member { border-left: 3px solid var(--accent); padding-left: 10px; margin-bottom: 10px; text-align: left; font-size: 16px; font-weight: bold; }
-    .faq-item { border-bottom: 1px solid #111; padding: 12px 0; cursor: pointer; text-align: left; }
-    .faq-q { font-size: 15px; font-weight: bold; color: var(--gold); }
-    .faq-a { display: none; font-size: 14px; color: #aaa; padding-top: 8px; line-height: 1.5; }
-    .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; }
-    .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    // --- DEBUT DU BLOC CORRIGÉ ---
+    function autoCheck() { 
+        const val = document.getElementById('pass-code').value.trim();
+        if(val === "197800") {
+            doUnlock(); 
+        }
+    }
 
-    .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
-    .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
-    .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
-    .status-wait { color: #555; font-style: italic; }
-    </style>
+    function forceUnlock() { 
+        const val = document.getElementById('pass-code').value.trim();
+        if(val === "197800") {
+            doUnlock(); 
+        } else { 
+            alert("ACCÈS REFUSÉ : PIN INCORRECT"); 
+        } 
+    }
+
+    function doUnlock() {
+        document.getElementById('lock-screen').style.display = "none"; 
+        document.getElementById('main-interface').style.display = "block"; 
+        initScanner(); 
+        translateAll('fr'); 
+        if(typeof create3DIFDALogo === 'function') create3DIFDALogo();
+    }
+    // --- FIN DU BLOC CORRIGÉ ---
+
+    let logo3D; 
+    function create3DIFDALogo() {
+        logo3D = new THREE.Group();
+        const algoMaterial = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.8 });
+        const coreGeometry = new THREE.BoxGeometry(50, 150, 50);
+        const coreMesh = new THREE.Mesh(coreGeometry, algoMaterial);
+        logo3D.add(coreMesh);
+        const ringGeometry = new THREE.TorusGeometry(120, 10, 16, 100);
+        const ringMesh = new THREE.Mesh(ringGeometry, algoMaterial);
+        ringMesh.rotation.x = Math.PI / 2;
+        logo3D.add(ringMesh);
+        const curve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-80, -200, 0), new THREE.Vector3(0, -100, 80),
+            new THREE.Vector3(80, 0, 0), new THREE.Vector3(0, 100, -80),
+            new THREE.Vector3(-80, 200, 0)
+        ]);
+        curve.curveType = 'centripetal'; curve.closed = true;
+        const helixGeometry = new THREE.TubeGeometry(curve, 100, 5, 8, true);
+        const helixMesh = new THREE.Mesh(helixGeometry, algoMaterial);
+        logo3D.add(helixMesh);
+        logo3D.position.set(0, 0, -300);
+        scene.add(logo3D);
+    }
+
+    const translations = {
+        fr: {
+            lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+            tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "RAFRAÎCHIR LE SCAN", tPayT: "💳 ACTIVATION DU BOUCLIER", pPayD: "Effectuez votre transfert. Recevez votre PIN d'accès unique.", btnPayV: "🚀 VALIDER AU BOT",
+            tConfigT: "📝 CONFIGURATION GLOBALE", lCapI: "CAPITAL TRADING ($)", lExL: "ÉCHANGEUR / BROKER", lMtL: "MARCHÉ CIBLE", btnStart: "LANCER IFDA", tMacroT: "📢 CALENDRIER ÉCONOMIQUE PRO", tTeamT: "🛡️ TEAM (8 MEMBRES)", fFaqT: "💡 FAQ (10 QUESTIONS)",
+            team: ["👑 NASSER (Fondateur)", "🇨🇦 BEATRICE (Marketing)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇲 BERTRAND (Tech)", "🇧🇯 FRANCO (Analyste)", "🇧🇯 SEBASTIEN (Data)"],
+            faq: [ {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité retail."}, {q: "2. Utilité du FVG ?", a: "Cible de retour du prix."} ]
+        },
+        en: {
+            lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+            tCap: "CONFIGURED CAPITAL", tProf: "TOTAL PROFIT", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "REFRESH GLOBAL SCAN", tPayT: "💳 SHIELD ACTIVATION", pPayD: "Complete your transfer. Receive your unique access PIN.", btnPayV: "🚀 VALIDATE AT BOT",
+            tConfigT: "📝 GLOBAL CONFIGURATION", lCapI: "TRADING CAPITAL ($)", lExL: "EXCHANGE / BROKER", lMtL: "TARGET MARKET", btnStart: "START IFDA", tMacroT: "📢 PRO ECONOMIC CALENDAR", tTeamT: "🛡️ TEAM (8 MEMBERS)", fFaqT: "💡 FAQ (10 QUESTIONS)"
+        }
+    };
+
+    function translateAll(lang) {
+        const d = translations[lang] || translations['fr'];
+        const f = translations['fr']; 
+        document.getElementById('l-title').innerText = d.lTitle;
+        document.getElementById('m-dash').innerText = d.mDash;
+        document.getElementById('m-scan').innerText = d.mScan;
+        document.getElementById('m-pay').innerText = d.mPay;
+        document.getElementById('m-inscr').innerText = d.mInscr;
+        document.getElementById('m-macro').innerText = d.mMacro;
+        document.getElementById('m-faq').innerText = d.mFaq;
+        document.getElementById('t-cap').innerText = d.tCap || f.tCap;
+        document.getElementById('t-prof').innerText = d.tProf || f.tProf;
+        document.getElementById('t-scan').innerText = d.tScan || f.tScan;
+        document.getElementById('btn-scan-refresh').innerText = d.btnScan || f.btnScan;
+        document.getElementById('t-pay-title').innerText = d.tPayT || f.tPayT;
+        document.getElementById('p-pay-desc').innerText = d.pPayD || f.pPayD;
+        document.getElementById('btn-pay-val').innerText = d.btnPayV || f.btnPayV;
+        document.getElementById('t-config-title').innerText = d.tConfigT || f.tConfigT;
+        document.getElementById('l-cap-in').innerText = d.lCapI || f.lCapI;
+        document.getElementById('l-ex-label').innerText = d.lExL || f.lExL;
+        document.getElementById('l-mt-label').innerText = d.lMtL || f.lMtL;
+        document.getElementById('btn-start-ifda').innerText = d.btnStart || f.btnStart;
+        document.getElementById('t-macro-title').innerText = d.tMacroT || f.tMacroT;
+        document.getElementById('t-team-title').innerText = d.tTeamT || f.tTeamT;
+        document.getElementById('f-faq-title').innerText = d.fFaqT || f.fFaqT;
+
+        document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+        let tHtml = ""; (d.team || f.team).forEach(m => { tHtml += `<div class="member">${m}</div>`; });
+        document.getElementById('team-list').innerHTML = tHtml;
+        let fHtml = ""; (d.faq || f.faq).forEach(fItem => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">${fItem.q}</div><div class="faq-a">${fItem.a}</div></div>`; });
+        document.getElementById('faq-container').innerHTML = fHtml;
+    }
+
+    function initScanner() {
+        let html = "";
+        for (let cat in WATCHLIST) {
+            html += `<div class="scan-category">${cat}</div>`;
+            WATCHLIST[cat].forEach(coin => { html += `<div class="scan-row"><span>${coin}/USDT</span> <span class="status-wait" id="status-${coin}">WAITING...</span></div>`; });
+        }
+        document.getElementById('full-scan-list').innerHTML = html;
+    }
+
+    function showTab(id, el) { 
+        document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
+        document.getElementById(id).style.display='block'; 
+        document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
+        el.classList.add('active'); 
+    }
+    function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
+    function updateDashboardCap() { document.getElementById('cap-display').innerText = '$' + document.getElementById('u-capital').value; }
+
+    const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const pts = []; for(let i=0; i<300; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+    const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x3b82f6, size: 2 })); scene.add(stars);
+    camera.position.z = 500;
+    function animate() { requestAnimationFrame(animate); stars.rotation.y += 0.001; if(logo3D) logo3D.rotation.y += 0.01; renderer.render(scene, camera); }
+    animate();
+    window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+    
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
