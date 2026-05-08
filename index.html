@@ -204,17 +204,31 @@
         }
 
         function autoCheck() {
-            let input = document.getElementById('pass-code').value;
-            if(input.length === 6) {
-                if(input === "197800") doUnlock();
-                else document.getElementById('pass-code').value = "";
-            }
+        function autoCheck() {
+    let inputField = document.getElementById('pass-code');
+    let inputVal = inputField.value;
+    
+    // Debug pour voir si le script tourne à chaque touche
+    console.log("Saisie en cours : " + inputVal.length + "/6");
+
+    if (inputVal.length === 6) {
+        if (inputVal === "197800") {
+            console.log("CODE CORRECT - ACCÈS ACCORDÉ");
+            doUnlock(); 
+        } else {
+            console.log("CODE ERRONÉ - RÉINITIALISATION");
+            inputField.value = "";
         }
-     
-        function forceUnlock() {
-            let input = document.getElementById('pass-code').value;
-            if(input === "197800") doUnlock();
-            else { alert("🔒 PIN INCORRECT"); document.getElementById('pass-code').value = ""; }
+    }
+}
+
+function forceUnlock() {
+    let inputVal = document.getElementById('pass-code').value;
+    if(inputVal === "197800") doUnlock();
+    else { 
+        alert("🔒 PIN INCORRECT"); 
+        document.getElementById('pass-code').value = ""; 
+    }
         }
 
         function doUnlock() {
