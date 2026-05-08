@@ -6,27 +6,55 @@
     <title>BLACKSNIPER SMC - GLOBAL LAB</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
+        <style>
         :root { --bg: #010101; --card: rgba(12, 12, 12, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
         #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
-        .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: rgba(0,0,0,0.9); border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer; outline: none; }
+        
+        /* SÉLECTEUR DE LANGUE ULTRA-FIN ET DÉCALÉ */
+        .lang-selector { 
+            position: fixed; 
+            top: 5px; 
+            right: 5px; 
+            z-index: 10000; 
+            background: rgba(0, 0, 0, 0.9); 
+            border: 1px solid var(--gold); 
+            color: white; 
+            border-radius: 4px; 
+            padding: 2px; 
+            font-size: 10px; /* Très petit pour ne pas étouffer */
+            cursor: pointer; 
+            outline: none;
+            width: 50px; /* Largeur fixe réduite */
+        }
+        
         #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-        #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 95px; display: none; }
-        .nav-tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: fixed; top: 0; left: 0; z-index: 5000; width: 100%; padding-right: 60px; box-sizing: border-box; }
+        
+        /* ON DESCEND L'INTERFACE POUR LAISSER RESPIRER LE HAUT */
+        #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 100px; display: none; }
+        
+        /* BARRE DE NAVIGATION AVEC MARGE DE SÉCURITÉ À DROITE */
+        .nav-tabs { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            background: rgba(0,0,0,0.95); 
+            border-bottom: 1px solid var(--border); 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            z-index: 5000; 
+            width: 100%; 
+            padding-right: 55px; /* CRÉATION DU COULOIR POUR LE BOUTON LANGUE */
+            box-sizing: border-box; 
+        }
+        
         .nav-item { padding: 12px 2px; text-align: center; font-size: 9px; font-weight: bold; cursor: pointer; color: #555; border-bottom: 2px solid transparent; text-transform: uppercase; }
         .nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+        
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(15px); }
         input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 12px; text-align: center; outline: none; }
-        label { display: block; font-size: 9px; color: var(--accent); margin-top: 10px; text-align: left; text-transform: uppercase; }
-        .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
-        .live-screen { background: rgba(0,0,0,0.98); border: 1px solid var(--green); height: 110px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
-        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .member { border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 8px; text-align: left; font-size: 9px; background: rgba(255,255,255,0.02); }
-        .wallet-box { display: flex; align-items: center; justify-content: space-between; background: #000; padding: 8px; border: 1px dashed var(--green); border-radius: 5px; margin-top: 5px; cursor: pointer; }
-        .wallet-addr { font-size: 9px; color: var(--green); word-break: break-all; width: 85%; }
-        .copy-btn { font-size: 12px; color: var(--gold); }
-    </style>
+            </style>
+    
 </head>
 <body>
     <canvas id="algo-canvas"></canvas>
