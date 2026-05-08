@@ -8,7 +8,7 @@
     <style>
     :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
     body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
-    #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+    #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.05); z-index: -1; letter-spacing: 20px; pointer-events: none; }
     
     .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; width: auto; cursor: pointer; }
@@ -22,9 +22,13 @@
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
     input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; text-align: center; outline: none; }
     label { display: block; font-size: 10px; color: var(--accent); margin-top: 10px; text-align: left; text-transform: uppercase; }
-    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; transition: 0.3s; }
     
-    .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
+    .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
+    .status-dot { display: inline-block; width: 8px; height: 8px; background: #555; border-radius: 50%; margin-right: 5px; }
+    .status-active { background: var(--green); box-shadow: 0 0 10px var(--green); animation: blink 1.5s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
     .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
     .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
     .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
@@ -69,164 +73,168 @@
 
         <div id="dash" class="content-section">
             <div class="card">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div><small id="t-cap">CAPITAL CONFIGURÉ</small><br><b id="cap-display" style="font-size: 22px; color: var(--gold);">$10</b></div>
-                    <div><small id="t-prof">PROFIT CUMULÉ</small><br><b id="profit-display" style="font-size: 22px; color: var(--green);">+$0.00</b></div>
+                <div style="text-align: left; margin-bottom: 10px;">
+                    <span id="status-light" class="status-dot"></span> <small id="status-text" style="color:#555">OFFLINE</small>
                 </div>
-                <div id="ny-time" style="font-size: 14px; color: var(--accent); margin: 15px 0;">NY: --:--:--</div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD ONLINE...</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="font-size: 20px; color: var(--gold);">$0.00</b></div>
+                    <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="font-size: 16px; color: var(--accent);">WAITING</b></div>
+                </div>
+                <div id="ny-time" style="font-size: 14px; color: var(--text); margin: 15px 0;">NY: --:--:--</div>
+                <div class="live-screen" id="terminal">> SYSTEM STANDBY. CONFIGURE API...</div>
             </div>
         </div>
 
         <div id="scan" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
-                <div class="live-screen" style="height: 300px; border-color: var(--accent);">
-                    <div id="scan-status" style="color: var(--accent); font-weight: bold;">> MONITORING LIQUIDITY...</div>
-                    <div class="scan-list" id="full-scan-list"></div>
-                </div>
+                <div class="live-screen" style="height: 300px; border-color: var(--accent);"><div class="scan-list" id="full-scan-list"></div></div>
                 <button id="btn-scan-refresh" class="btn-action" style="background:var(--gold); color:black;" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-config-title">📝 CONFIGURATION GLOBALE</h3>
-                <label id="l-cap-in">CAPITAL TRADING ($)</label>
-                <input type="number" id="u-capital" value="10" oninput="updateDashboardCap()">
-                <label id="l-ex-label">ÉCHANGEUR / BROKER</label>
+                <h3 id="t-config-title">📝 CONFIGURATION API</h3>
+                <input type="number" id="u-capital" placeholder="Capital $ (ex: 500)">
                 <select id="u-ex">
-                    <option value="okx">OKX</option>
-                    <option value="mexc">MEXC</option>
-                    <option value="bingx">BINGX</option>
-                    <option value="kucoin">KUCOIN</option>
-                    <option value="bybit">BYBIT</option>
-                    <option value="gate">GATE IO</option>
-                    <option value="binance">BINANCE</option>
-                    <option value="exness">EXNESS</option>
-                    <option value="vantage">VANTAGE FX</option>
-                </select>
-                <label id="l-mt-label">MARCHÉ CIBLE</label>
-                <select id="u-market-target">
-                    <option value="FOREX">FOREX (CURRENCIES)</option><option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option>
+                    <option value="OKX">OKX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option>
                 </select>
                 <input type="text" id="u-key" placeholder="API KEY">
                 <input type="password" id="u-sec" placeholder="API SECRET">
-                <input type="password" id="u-pass" placeholder="API PASSPHRASE (OKX/BYBIT)">
-                <button id="btn-start-ifda" class="btn-action" onclick="sendToPython()">LANCER IFDA</button>
+                <input type="password" id="u-pass" placeholder="API PASSPHRASE">
+                <button class="btn-action" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
+            </div>
+        </div>
+
+        <div id="macro" class="content-section" style="display:none;">
+            <div class="card">
+                <h3 id="t-macro-title">📢 MACRO NEWS</h3>
+                <iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-pay-title" style="color:var(--gold);">💳 ACTIVATION SÉCURISÉE</h3>
+                <h3 id="t-pay-title">💳 ACTIVATION</h3>
                 <div class="pay-box">
                     <div class="pay-method">
                         <div class="pay-icon">U</div>
                         <div><b style="color:white;">USDT (TRC20)</b><div class="wallet-addr">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div>
                     </div>
-                    <div class="pay-method" style="border:none;">
-                        <div class="pay-icon" style="background:var(--accent);">M</div>
-                        <div><b style="color:white;">MOBILE MONEY</b><div style="color:var(--accent);">+237 655 50 97 38</div></div>
-                    </div>
                 </div>
-                <button class="btn-action" style="background:var(--green); color:black;" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
+                <button class="btn-action" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
             </div>
         </div>
 
         <div id="faq" class="content-section" style="display:none;">
-            <div class="card"><h3 id="t-team-title">🛡️ TEAM (8 MEMBRES)</h3><div id="team-list" class="team-grid"></div></div>
+            <div class="card"><h3 id="t-team-title">🛡️ TEAM</h3><div id="team-list" class="team-grid"></div></div>
             <div class="card"><h3 id="f-faq-title">💡 FAQ (10 QUESTIONS SMC)</h3><div id="faq-container"></div></div>
         </div>
     </div>
 
     <script>
         const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
-        const WATCHLIST = {
-            "AI_AGENTS": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"],
-            "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"],
-            "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"]
-        };
+        const WATCHLIST = { "AI": ["FET", "TAO"], "RWA": ["ONDO", "OM"], "DEPIN": ["FIL", "AR"] };
 
-        const translations = {
-            fr: {
-                lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
-                faq: [
-                    {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité institutionnelle."},
-                    {q: "2. C'est quoi un FVG ?", a: "Un déséquilibre de prix agissant comme un aimant."},
-                    {q: "3. Pourquoi le Daily PD Array ?", a: "C'est notre boussole directionnelle SMC."},
-                    {q: "4. Interne vs Externe ?", a: "On entre sur le sweep externe pour viser le FVG interne."},
-                    {q: "5. Qu'est-ce que l'Inducement ?", a: "Un piège retail avant le vrai mouvement ICT."},
-                    {q: "6. Pourquoi 25$ de capital ?", a: "Pour forger la discipline de sniper."},
-                    {q: "7. Breaker Block ?", a: "OB cassé qui change de polarité."},
-                    {q: "8. Pourquoi NY Open ?", a: "Killzone volatile pour les algorithmes IPDA."},
-                    {q: "9. Placement du Stop Loss ?", a: "Derrière la mèche (wick) du sweep."},
-                    {q: "10. SANGMELIMA SHIELD ?", a: "Ton robot de précision ICT/SMC."}
-                ]
-            },
-            en: { lTitle: "SECURE ACCESS", mDash: "DASHBOARD", team: [{n: "NASSER", r: "Founder"}] },
-            ar: { lTitle: "وصول آمن", mDash: "لوحة التحكم" },
-            de: { lTitle: "ZUGRIFF", mDash: "ÜBERSICHT" },
-            es: { lTitle: "ACCESO", mDash: "PANEL" }
-        };
-
-        // --- OUVERTURE AUTOMATIQUE AU 6ÈME CHIFFRE ---
         function autoCheck() { 
             let pin = document.getElementById('pass-code').value.trim();
-            if(pin.length === 6 && pin === "197800") {
-                doUnlock(); 
-            }
+            if(pin.length === 6 && pin === "197800") doUnlock(); 
         }
 
         function forceUnlock() { 
             if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); 
-            else alert("PIN INCORRECT"); 
+            else alert("PIN ERROR"); 
         }
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
             document.getElementById('main-interface').style.display = "block"; 
             initScanner(); translateAll('fr'); updateTime();
+            create3DIFDALogo(); // LANCEMENT DU LOGO 3D ICI
         }
 
-        async function scanAll() {
-            const statusDiv = document.getElementById('scan-status');
-            statusDiv.innerHTML = "> SCANNING...";
-            try {
-                const res = await fetch(`${CLOUDFLARE_URL}/scan`, { method: 'POST' });
-                const data = await res.json();
-                for(let coin in data.results) {
-                    const el = document.getElementById(`status-${coin}`);
-                    if(el) { el.innerText = data.results[coin]; el.style.color = "var(--green)"; }
-                }
-                statusDiv.innerHTML = "> COMPLETE";
-            } catch(e) { statusDiv.innerHTML = "> ERROR: SERVER OFFLINE"; }
+        // --- LOGO 3D IFDA ---
+        let logo3D;
+        const scene = new THREE.Scene(); 
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        function create3DIFDALogo() {
+            if(logo3D) return;
+            logo3D = new THREE.Group();
+            const mat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, wireframe: true, transparent: true, opacity: 0.8 });
+            
+            // Core
+            const core = new THREE.Mesh(new THREE.BoxGeometry(50, 150, 50), mat);
+            logo3D.add(core);
+            
+            // Ring
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(120, 5, 16, 100), mat);
+            ring.rotation.x = Math.PI/2;
+            logo3D.add(ring);
+
+            // Helix
+            const curve = new THREE.CatmullRomCurve3([
+                new THREE.Vector3(-80, -200, 0), new THREE.Vector3(0, -100, 80),
+                new THREE.Vector3(80, 0, 0), new THREE.Vector3(0, 100, -80),
+                new THREE.Vector3(-80, 200, 0)
+            ]);
+            const helix = new THREE.Mesh(new THREE.TubeGeometry(curve, 100, 4, 8, true), mat);
+            logo3D.add(helix);
+
+            logo3D.position.set(0, 0, -300);
+            scene.add(logo3D);
         }
 
-        function sendToPython() {
-            const cfg = { cap: document.getElementById('u-capital').value, ex: document.getElementById('u-ex').value, pass: document.getElementById('u-pass').value };
-            fetch(`${CLOUDFLARE_URL}/start`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(cfg) })
-            .then(() => alert("Bouclier Activé !"));
+        // Stars Background
+        const pts = []; for(let i=0; i<400; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.PointsMaterial({ color: 0x3b82f6, size: 2 }));
+        scene.add(stars);
+        camera.position.z = 500;
+
+        function animate() { 
+            requestAnimationFrame(animate); 
+            stars.rotation.y += 0.0005; 
+            if(logo3D) { logo3D.rotation.y += 0.015; logo3D.rotation.z += 0.005; }
+            renderer.render(scene, camera); 
+        }
+        animate();
+
+        function lancerRobot() {
+            const cap = document.getElementById('u-capital').value;
+            const ex = document.getElementById('u-ex').value;
+            if(!cap) return alert("Saisir Capital");
+            document.getElementById('cap-display').innerText = "$" + cap;
+            document.getElementById('ex-display').innerText = ex;
+            document.getElementById('status-light').classList.add('status-active');
+            document.getElementById('status-text').innerText = "LIVE";
+            document.getElementById('status-text').style.color = "var(--green)";
+            document.getElementById('terminal').innerHTML = "> INITIALISATION...<br>> API CONNECTION OK<br>> BOUCLIER ACTIF";
+            showTab('dash', document.getElementById('m-dash'));
         }
 
         function translateAll(lang) {
-            const d = translations[lang] || translations['fr'];
-            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
-            let tHtml = ""; (d.team || translations.fr.team).forEach(m => {
-                tHtml += `<div class="member" onclick="alert('${m.n} Online')"><b>${m.n}</b><br><small>${m.r}</small></div>`;
-            });
+            const d = { 
+                fr: {
+                    lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                    team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
+                    faq: [{q: "1. Sweep PDH/PDL ?", a: "Liquidité institutionnelle."}, {q: "2. FVG ?", a: "Déséquilibre de prix."}, {q: "3. Daily PD Array ?", a: "Boussole directionnelle."}, {q: "4. Interne vs Externe ?", a: "Sweep externe vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."}, {q: "6. Pourquoi 25$ ?", a: "Discipline."}, {q: "7. Breaker Block ?", a: "OB cassé."}, {q: "8. NY Open ?", a: "Killzone."}, {q: "9. Stop Loss ?", a: "Derrière le sweep."}, {q: "10. SANGMELIMA SHIELD ?", a: "Ton robot ICT."}]
+                }
+            };
+            const f = d['fr'];
+            document.getElementById('l-title').innerText = d[lang]?.lTitle || f.lTitle;
+            let tHtml = ""; (d[lang]?.team || f.team).forEach(m => tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`);
             document.getElementById('team-list').innerHTML = tHtml;
-            let fHtml = ""; (d.faq || translations.fr.faq).forEach(f => {
-                fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${f.q}</b><div class="faq-a">${f.a}</div></div>`;
-            });
+            let fHtml = ""; (d[lang]?.faq || f.faq).forEach(fItem => fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fItem.q}</b><div class="faq-a">${fItem.a}</div></div>`);
             document.getElementById('faq-container').innerHTML = fHtml;
         }
 
         function initScanner() {
             let h = ""; for(let c in WATCHLIST) {
                 h += `<div class="scan-category">${c}</div>`;
-                WATCHLIST[c].forEach(coin => { h += `<div class="scan-row"><span>${coin}</span> <span class="status-wait" id="status-${coin}">WAIT...</span></div>`; });
+                WATCHLIST[c].forEach(coin => { h += `<div class="scan-row"><span>${coin}</span> <span id="status-${coin}">WAIT...</span></div>`; });
             }
             document.getElementById('full-scan-list').innerHTML = h;
         }
@@ -239,21 +247,8 @@
         }
 
         function toggleFaq(el) { const a = el.querySelector('.faq-a'); a.style.display = (a.style.display === 'block') ? 'none' : 'block'; }
-        function updateDashboardCap() { document.getElementById('cap-display').innerText = '$' + document.getElementById('u-capital').value; }
-        function updateTime() { 
-            document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); 
-            setTimeout(updateTime, 1000); 
-        }
-
-        const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        const pts = []; for(let i=0; i<300; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x3b82f6, size: 2 })); scene.add(stars);
-        camera.position.z = 500;
-        function animate() { requestAnimationFrame(animate); stars.rotation.y += 0.001; renderer.render(scene, camera); }
-        animate();
+        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
 </body>
     </html>
