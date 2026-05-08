@@ -144,25 +144,40 @@
             "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"]
         };
 
-        // Fonction de vérification automatique lors de la saisie
-        function autoCheck() { 
-            const val = document.getElementById('pass-code').value.trim();
-            if(val === "197800") doUnlock(); 
-        }
+        // --- BLOC DE DÉVERROUILLAGE SANGMELIMA SHIELD ---
+function autoCheck() { 
+    // On récupère la valeur, on retire les espaces et on compare proprement
+    const val = document.getElementById('pass-code').value.trim();
+    if(val === "197800") {
+        doUnlock(); 
+    }
+}
 
-        // Fonction de déverrouillage forcé via le bouton
-        function forceUnlock() { 
-            const val = document.getElementById('pass-code').value.trim();
-            if(val === "197800") doUnlock(); 
-            else alert("ERR PIN"); 
-        }
+function forceUnlock() { 
+    const val = document.getElementById('pass-code').value.trim();
+    if(val === "197800") {
+        doUnlock(); 
+    } else { 
+        alert("ACCÈS REFUSÉ : PIN INCORRECT"); 
+    } 
+}
 
-        function doUnlock() {
-            document.getElementById('lock-screen').style.display="none"; 
-            document.getElementById('main-interface').style.display="block"; 
-            initScanner(); translateAll('fr'); if(typeof create3DIFDALogo === 'function') create3DIFDALogo();
-        }
-
+function doUnlock() {
+    // Masquage de l'écran de verrouillage et affichage de l'interface IFDA
+    document.getElementById('lock-screen').style.display = "none"; 
+    document.getElementById('main-interface').style.display = "block"; 
+    
+    // Initialisation des modules de trading
+    initScanner(); 
+    translateAll('fr'); 
+    
+    // Lancement du logo 3D si la fonction est présente
+    if(typeof create3DIFDALogo === 'function') {
+        create3DIFDALogo();
+    }
+}
+// --- FIN DU BLOC ---
+        
         let logo3D; 
         function create3DIFDALogo() {
             logo3D = new THREE.Group();
