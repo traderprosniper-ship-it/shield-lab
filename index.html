@@ -22,15 +22,13 @@
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
     input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; text-align: center; outline: none; }
     label { display: block; font-size: 10px; color: var(--accent); margin-top: 10px; text-align: left; text-transform: uppercase; }
-    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; transition: 0.3s; }
-    .btn-action:hover { background: #2563eb; transform: scale(1.02); }
+    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
     
     .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 80px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
     .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
     .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
     .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
 
-    /* PAIEMENT STYLE */
     .pay-box { background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
     .pay-method { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #111; padding-bottom: 10px; }
     .pay-icon { width: 30px; height: 30px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black; }
@@ -53,7 +51,7 @@
 
     <div id="lock-screen">
         <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">IFDA ACCESS</h2>
-        <input type="text" id="pass-code" placeholder="PIN" maxlength="6" oninput="autoCheck()" style="width:180px;">
+        <input type="password" id="pass-code" placeholder="PIN" maxlength="6" oninput="autoCheck()" style="width:180px;">
         <button class="btn-action" style="width:180px;" onclick="forceUnlock()">LOGIN</button>
     </div>
 
@@ -114,7 +112,7 @@
                 </select>
                 <input type="text" id="u-key" placeholder="API KEY">
                 <input type="password" id="u-sec" placeholder="API SECRET">
-                <input type="password" id="u-passphrase" placeholder="API PASSPHRASE (OKX/BYBIT)">
+                <input type="password" id="u-pass" placeholder="API PASSPHRASE (OKX/BYBIT)">
                 <button id="btn-start-ifda" class="btn-action" onclick="sendToPython()">LANCER IFDA</button>
             </div>
         </div>
@@ -122,37 +120,17 @@
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-pay-title" style="color:var(--gold);">💳 ACTIVATION SÉCURISÉE</h3>
-                <p style="font-size:11px; margin-bottom:15px;">Choisissez votre mode de paiement pour recevoir votre PIN.</p>
-                
                 <div class="pay-box">
                     <div class="pay-method">
                         <div class="pay-icon">U</div>
-                        <div>
-                            <b style="font-size:12px; color:white;">USDT (NETWORK: TRC20)</b><br>
-                            <span style="font-size:9px; color:#666;">Frais minimes - Rapide</span>
-                            <div class="wallet-addr">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
-                        </div>
+                        <div><b style="color:white;">USDT (TRC20)</b><div class="wallet-addr">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div>
                     </div>
-
                     <div class="pay-method" style="border:none;">
                         <div class="pay-icon" style="background:var(--accent);">M</div>
-                        <div>
-                            <b style="font-size:12px; color:white;">MOBILE MONEY (CAMEROUN)</b><br>
-                            <span style="font-size:9px; color:#666;">Orange Money / MTN</span>
-                            <div style="font-size:11px; color:var(--accent); margin-top:5px;">+237 655 50 97 38</div>
-                        </div>
+                        <div><b style="color:white;">MOBILE MONEY</b><div style="color:var(--accent);">+237 655 50 97 38</div></div>
                     </div>
                 </div>
-
-                <button class="btn-action" style="background:linear-gradient(45deg, #00ff88, #3b82f6); color:black; font-weight:900;" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">🚀 VALIDER LE TRANSFERT AU BOT</button>
-                <small style="display:block; margin-top:10px; font-size:9px; color:#444;">Système crypté - SANGMELIMA SHIELD Protection</small>
-            </div>
-        </div>
-
-        <div id="macro" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 id="t-macro-title">📢 CALENDRIER ÉCONOMIQUE</h3>
-                <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe>
+                <button class="btn-action" style="background:var(--green); color:black;" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
             </div>
         </div>
 
@@ -173,34 +151,38 @@
         const translations = {
             fr: {
                 lTitle: "ACCÈS SÉCURISÉ", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                tCap: "CAPITAL CONFIGURÉ", tProf: "PROFIT CUMULÉ", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "RAFRAÎCHIR", tConfigT: "📝 CONFIGURATION GLOBALE", btnStart: "LANCER LE BOUCLIER",
-                team: [
-                    {n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Lead Tech"}, 
-                    {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, 
-                    {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, 
-                    {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}
-                ],
+                team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
                 faq: [
-                    {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité institutionnelle cachée derrière les hauts et bas de la veille."},
-                    {q: "2. C'est quoi un FVG ?", a: "Un Fair Value Gap est un déséquilibre entre l'offre et la demande agissant comme un aimant pour le prix."},
-                    {q: "3. Pourquoi le Daily PD Array ?", a: "C'est notre boussole directionnelle pour éviter de trader contre le Smart Money."},
-                    {q: "4. Liquidité Interne vs Externe ?", a: "On entre sur une chasse de liquidité externe pour viser un objectif de liquidité interne (FVG)."},
-                    {q: "5. Qu'est-ce que l'Inducement ?", a: "Un piège créé pour inciter les traders retail à entrer trop tôt dans le marché."},
-                    {q: "6. Pourquoi 25$ de capital ?", a: "Pour prouver la discipline et la maîtrise de la stratégie avant de gérer de plus gros fonds."},
-                    {q: "7. Rôle du Breaker Block ?", a: "Un Order Block qui a échoué et qui change de polarité pour devenir une zone de support/résistance ICT."},
-                    {q: "8. Pourquoi NY Open ?", a: "C'est la 'Killzone' où la volatilité et les algorithmes interbancaires (IPDA) s'activent."},
-                    {q: "9. Placement du Stop Loss ?", a: "Toujours juste derrière la mèche qui a effectué le sweep de liquidité pour une sécurité maximale."},
-                    {q: "10. SANGMELIMA SHIELD ?", a: "C'est ton robot de précision conçu pour filtrer le bruit et ne garder que les signaux Sniper."}
+                    {q: "1. Pourquoi le Sweep PDH/PDL ?", a: "Pour capturer la liquidité institutionnelle."},
+                    {q: "2. C'est quoi un FVG ?", a: "Un déséquilibre de prix agissant comme un aimant."},
+                    {q: "3. Pourquoi le Daily PD Array ?", a: "C'est notre boussole directionnelle SMC."},
+                    {q: "4. Interne vs Externe ?", a: "On entre sur le sweep externe pour viser le FVG interne."},
+                    {q: "5. Qu'est-ce que l'Inducement ?", a: "Un piège retail avant le vrai mouvement ICT."},
+                    {q: "6. Pourquoi 25$ de capital ?", a: "Pour forger la discipline de sniper."},
+                    {q: "7. Breaker Block ?", a: "OB cassé qui change de polarité."},
+                    {q: "8. Pourquoi NY Open ?", a: "Killzone volatile pour les algorithmes IPDA."},
+                    {q: "9. Placement du Stop Loss ?", a: "Derrière la mèche (wick) du sweep."},
+                    {q: "10. SANGMELIMA SHIELD ?", a: "Ton robot de précision ICT/SMC."}
                 ]
             },
-            en: { lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ", btnStart: "START IFDA" },
-            ar: { lTitle: "وصول آمن", mDash: "لوحة التحكم", mScan: "ماسح", mPay: "دفع", mInscr: "تسجيل", mMacro: "أخبار", mFaq: "الفريق", btnStart: "بدء IFDA" },
-            de: { lTitle: "ZUGRIFF", mDash: "ÜBERSICHT", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "REGSITRIERUNG", mMacro: "MAKRO", mFaq: "TEAM", btnStart: "IFDA STARTEN" },
-            es: { lTitle: "ACCESO", mDash: "PANEL", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO", btnStart: "INICIAR IFDA" }
+            en: { lTitle: "SECURE ACCESS", mDash: "DASHBOARD", team: [{n: "NASSER", r: "Founder"}] },
+            ar: { lTitle: "وصول آمن", mDash: "لوحة التحكم" },
+            de: { lTitle: "ZUGRIFF", mDash: "ÜBERSICHT" },
+            es: { lTitle: "ACCESO", mDash: "PANEL" }
         };
 
-        function autoCheck() { if(document.getElementById('pass-code').value === "197800") doUnlock(); }
-        function forceUnlock() { if(document.getElementById('pass-code').value === "197800") doUnlock(); else alert("PIN ERROR"); }
+        // --- OUVERTURE AUTOMATIQUE AU 6ÈME CHIFFRE ---
+        function autoCheck() { 
+            let pin = document.getElementById('pass-code').value.trim();
+            if(pin.length === 6 && pin === "197800") {
+                doUnlock(); 
+            }
+        }
+
+        function forceUnlock() { 
+            if(document.getElementById('pass-code').value.trim() === "197800") doUnlock(); 
+            else alert("PIN INCORRECT"); 
+        }
 
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
@@ -210,9 +192,7 @@
 
         async function scanAll() {
             const statusDiv = document.getElementById('scan-status');
-            const terminal = document.getElementById('terminal');
-            statusDiv.innerHTML = "<span style='color:var(--gold)'>[ SYSTEM ] SCANNING...</span>";
-            terminal.innerHTML += "<br>> Scanning Liquidity sweeps...";
+            statusDiv.innerHTML = "> SCANNING...";
             try {
                 const res = await fetch(`${CLOUDFLARE_URL}/scan`, { method: 'POST' });
                 const data = await res.json();
@@ -220,39 +200,25 @@
                     const el = document.getElementById(`status-${coin}`);
                     if(el) { el.innerText = data.results[coin]; el.style.color = "var(--green)"; }
                 }
-                statusDiv.innerHTML = "<span style='color:var(--green)'>[ SYSTEM ] COMPLETE</span>";
-            } catch(e) { statusDiv.innerHTML = "<span style='color:var(--red)'>[ ERROR ] SERVER OFFLINE</span>"; }
+                statusDiv.innerHTML = "> COMPLETE";
+            } catch(e) { statusDiv.innerHTML = "> ERROR: SERVER OFFLINE"; }
         }
 
         function sendToPython() {
-            const cfg = { 
-                cap: document.getElementById('u-capital').value, 
-                ex: document.getElementById('u-ex').value,
-                key: document.getElementById('u-key').value,
-                sec: document.getElementById('u-sec').value,
-                pass: document.getElementById('u-passphrase').value,
-                mkt: document.getElementById('u-market-target').value
-            };
-            document.getElementById('terminal').innerHTML += `<br>> Lancement IFDA sur ${cfg.ex}...`;
+            const cfg = { cap: document.getElementById('u-capital').value, ex: document.getElementById('u-ex').value, pass: document.getElementById('u-pass').value };
             fetch(`${CLOUDFLARE_URL}/start`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(cfg) })
-            .then(() => alert("Bouclier SANGMELIMA SHIELD Activé !"));
+            .then(() => alert("Bouclier Activé !"));
         }
 
         function translateAll(lang) {
             const d = translations[lang] || translations['fr'];
-            const f = translations['fr'];
             document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
-            document.getElementById('l-title').innerText = d.lTitle || "ACCESS";
-            document.getElementById('m-dash').innerText = d.mDash || "DASHBOARD";
-            document.getElementById('btn-start-ifda').innerText = d.btnStart || "START";
-            
-            let tHtml = ""; (d.team || f.team).forEach(m => {
-                tHtml += `<div class="member" onclick="alert('${m.n} est opérationnel')"><span style="font-size:11px; font-weight:bold;">${m.n}</span><br><span style="font-size:8px; color:#555">${m.r}</span><br><span style="color:var(--green); font-size:8px;">● ONLINE</span></div>`;
+            let tHtml = ""; (d.team || translations.fr.team).forEach(m => {
+                tHtml += `<div class="member" onclick="alert('${m.n} Online')"><b>${m.n}</b><br><small>${m.r}</small></div>`;
             });
             document.getElementById('team-list').innerHTML = tHtml;
-            
-            let fHtml = ""; (d.faq || f.faq).forEach(fItem => {
-                fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fItem.q}</b><div class="faq-a">${fItem.a}</div></div>`;
+            let fHtml = ""; (d.faq || translations.fr.faq).forEach(f => {
+                fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${f.q}</b><div class="faq-a">${f.a}</div></div>`;
             });
             document.getElementById('faq-container').innerHTML = fHtml;
         }
@@ -260,7 +226,7 @@
         function initScanner() {
             let h = ""; for(let c in WATCHLIST) {
                 h += `<div class="scan-category">${c}</div>`;
-                WATCHLIST[c].forEach(coin => { h += `<div class="scan-row"><span>${coin}/USDT</span> <span class="status-wait" id="status-${coin}">WAIT...</span></div>`; });
+                WATCHLIST[c].forEach(coin => { h += `<div class="scan-row"><span>${coin}</span> <span class="status-wait" id="status-${coin}">WAIT...</span></div>`; });
             }
             document.getElementById('full-scan-list').innerHTML = h;
         }
@@ -277,4 +243,18 @@
         function updateTime() { 
             document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); 
             setTimeout(updateTime, 1000); 
-       
+        }
+
+        const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const pts = []; for(let i=0; i<300; i++) pts.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x3b82f6, size: 2 })); scene.add(stars);
+        camera.position.z = 500;
+        function animate() { requestAnimationFrame(animate); stars.rotation.y += 0.001; renderer.render(scene, camera); }
+        animate();
+    </script>
+</body>
+    </html>
+    
