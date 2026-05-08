@@ -11,7 +11,7 @@
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.8; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.03); z-index: -1; letter-spacing: 20px; pointer-events: none; }
     
-    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; width: auto; cursor: pointer; }
+    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; cursor: pointer; }
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
     #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
     
@@ -22,27 +22,12 @@
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
     input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; text-align: center; outline: none; }
     label { display: block; font-size: 10px; color: var(--accent); margin-top: 10px; text-align: left; text-transform: uppercase; }
-    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; transition: 0.3s; }
+    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
     
     .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
     .status-dot { display: inline-block; width: 8px; height: 8px; background: #555; border-radius: 50%; margin-right: 5px; }
     .status-active { background: var(--green); box-shadow: 0 0 10px var(--green); animation: blink 1.5s infinite; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-    .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
-    .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
-    .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
-
-    .pay-box { background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
-    .pay-method { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #111; padding-bottom: 10px; }
-    .pay-icon { width: 30px; height: 30px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black; }
-    .wallet-addr { font-size: 10px; color: var(--green); word-break: break-all; background: #000; padding: 8px; border-radius: 5px; margin-top: 5px; border: 1px dashed var(--green); }
-
-    .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .member { border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 10px; text-align: left; background: rgba(255,255,255,0.02); border-radius: 5px; cursor: pointer; }
-    .faq-item { border-bottom: 1px solid #111; padding: 12px 0; cursor: pointer; text-align: left; }
-    .faq-q { font-size: 13px; font-weight: bold; color: var(--gold); }
-    .faq-a { display: none; font-size: 12px; color: #aaa; padding-top: 8px; line-height: 1.4; }
+    .member { border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 10px; text-align: left; background: rgba(255,255,255,0.02); border-radius: 5px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -50,17 +35,13 @@
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">🇫🇷 FR</option>
-        <option value="en">🇺🇸 EN</option>
-        <option value="ar">🇸🇦 AR</option>
-        <option value="de">🇩🇪 DE</option>
-        <option value="es">🇪🇸 ES</option>
+        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option>
     </select>
 
     <div id="lock-screen">
-        <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">IFDA ACCESS</h2>
+        <h2 id="l-title">ACCÈS SÉCURISÉ</h2>
         <input type="password" id="pass-code" placeholder="PIN" maxlength="6" oninput="autoCheck()" style="width:180px;">
-        <button class="btn-action" id="btn-login" style="width:180px;" onclick="forceUnlock()">LOGIN</button>
+        <button class="btn-action" id="btn-login" style="width:180px;" onclick="forceUnlock()">CONNEXION</button>
     </div>
 
     <div id="main-interface">
@@ -72,7 +53,7 @@
         <div class="nav-tabs" style="top:40px;">
             <div id="m-inscr" class="nav-item" onclick="showTab('inscr', this)">INSCRIPTION</div>
             <div id="m-macro" class="nav-item" onclick="showTab('macro', this)">MACRO NEWS</div>
-            <div id="m-faq" class="nav-item" onclick="showTab('faq', this)">TEAM/FAQ</div>
+            <div id="m-faq" class="nav-item" onclick="showTab('faq', this)">TEAM</div>
         </div>
 
         <div id="dash" class="content-section">
@@ -84,16 +65,16 @@
                     <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="font-size: 20px; color: var(--gold);">$0.00</b></div>
                     <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="font-size: 16px; color: var(--accent);">WAITING</b></div>
                 </div>
-                <div id="ny-time" style="font-size: 14px; color: var(--text); margin: 15px 0;">NY: --:--:--</div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD ONLINE...</div>
+                <div id="ny-time" style="font-size: 14px; margin: 15px 0;">NY: --:--:--</div>
+                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
             </div>
         </div>
 
         <div id="scan" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
-                <div class="live-screen" style="height: 300px; border-color: var(--accent);"><div class="scan-list" id="full-scan-list"></div></div>
-                <button id="btn-scan-refresh" class="btn-action" style="background:var(--gold); color:black;" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
+                <h3 id="t-scan">🔍 SNIPER SCANNER</h3>
+                <div class="live-screen" style="height: 250px;" id="full-scan-list"></div>
+                <button id="btn-scan-refresh" class="btn-action">RAFRAÎCHIR</button>
             </div>
         </div>
 
@@ -108,164 +89,133 @@
                 </select>
                 <label id="l-mkt">MARCHÉ CIBLE</label>
                 <select id="u-market">
-                    <option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option><option value="FOREX">FOREX (CURRENCIES)</option>
+                    <option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option><option value="FOREX">FOREX</option>
                 </select>
-                <input type="text" id="u-key" placeholder="API KEY">
-                <input type="password" id="u-sec" placeholder="API SECRET">
-                <input type="password" id="u-pass" placeholder="API PASSPHRASE">
-                <button class="btn-action" id="btn-launch" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
+                <button class="btn-action" id="btn-launch">🚀 LANCER LE BOUCLIER</button>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-pay-title">💳 ACTIVATION SÉCURISÉE</h3>
-                <div class="pay-box">
-                    <div class="pay-method">
-                        <div class="pay-icon">U</div>
-                        <div><b style="color:white;">USDT (TRC20)</b><div class="wallet-addr">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div>
-                    </div>
-                    <div class="pay-method" style="border:none;">
-                        <div class="pay-icon" style="background:var(--accent);">M</div>
-                        <div><b style="color:white;">MOBILE MONEY</b><div style="color:var(--accent);">+237 655 50 97 38</div></div>
-                    </div>
-                </div>
                 <button class="btn-action" id="btn-pay-bot" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
             </div>
         </div>
 
         <div id="macro" class="content-section" style="display:none;">
-            <div class="card">
-                <h3 id="t-macro-title">📢 MACRO NEWS PRO</h3>
-                <iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe>
-            </div>
+            <div class="card"><h3 id="t-macro-title">📢 MACRO NEWS</h3><iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe></div>
         </div>
 
         <div id="faq" class="content-section" style="display:none;">
-            <div class="card"><h3 id="t-team-title">🛡️ TEAM</h3><div id="team-list" class="team-grid"></div></div>
-            <div class="card"><h3 id="f-faq-title">💡 FAQ (10 QUESTIONS SMC)</h3><div id="faq-container"></div></div>
+            <div class="card"><h3 id="t-team-title">🛡️ TEAM</h3><div id="team-list"></div></div>
         </div>
     </div>
 
     <script>
-        const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
-        const WATCHLIST = { "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"], "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] };
+        const WATCHLIST = { "AI": ["FET", "RNDR"], "RWA": ["ONDO", "OM"], "DEPIN": ["FIL", "IOTX"] };
 
         function autoCheck() {
-            let input = document.getElementById('pass-code').value;
-            if(input.length === 6) {
-                if(input === "197800") doUnlock();
+            let val = document.getElementById('pass-code').value;
+            if(val.length === 6) {
+                if(val === "197800") doUnlock();
                 else document.getElementById('pass-code').value = "";
             }
         }
-     
         function forceUnlock() {
-            let input = document.getElementById('pass-code').value;
-            if(input === "197800") doUnlock();
-            else { alert("🔒 PIN INCORRECT"); document.getElementById('pass-code').value = ""; }
+            if(document.getElementById('pass-code').value === "197800") doUnlock();
+            else alert("PIN INCORRECT");
         }
-
         function doUnlock() {
             document.getElementById('lock-screen').style.display = "none"; 
             document.getElementById('main-interface').style.display = "block"; 
-            initScanner(); translateAll(document.getElementById('lang-switch').value); updateTime(); create3DLogo();
-        }
-
-        let logo3D;
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        function create3DLogo() {
-            if(logo3D) return;
-            logo3D = new THREE.Group();
-            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: false, transparent: true, opacity: 0.9 });
-            const core = new THREE.Mesh(new THREE.IcosahedronGeometry(120, 1), mat);
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(190, 5, 16, 100), mat);
-            ring.rotation.x = Math.PI/2;
-            logo3D.add(core, ring);
-            logo3D.position.set(0, 0, 0);
-            scene.add(logo3D);
-        }
-
-        const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500));
-        const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.PointsMaterial({ color: 0x3b82f6, size: 1.5 }));
-        scene.add(stars); camera.position.z = 500;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.y += 0.0003;
-            if(logo3D) { logo3D.rotation.y += 0.01; logo3D.rotation.x += 0.005; }
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        async function lancerRobot() {
-            const cap = document.getElementById('u-capital').value;
-            const ex = document.getElementById('u-ex').value;
-            const mkt = document.getElementById('u-market').value;
-            const ak = document.getElementById('u-key').value;
-            const as = document.getElementById('u-sec').value;
-            const ps = document.getElementById('u-pass').value;
-
-            if(!cap || !ak || !as) return alert("Saisir Capital et Clés API");
-
-            try {
-                const response = await fetch(`${CLOUDFLARE_URL}/start`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ capital: cap, exchange: ex, market_type: mkt, ak: ak, as: as, passphrase: ps })
-                });
-                const res = await response.json();
-                document.getElementById('cap-display').innerText = "$" + cap;
-                document.getElementById('ex-display').innerText = ex;
-                document.getElementById('status-light').classList.add('status-active');
-                document.getElementById('status-text').innerText = "LIVE (BOUCLIER ACTIF)";
-                document.getElementById('status-text').style.color = "var(--green)";
-                document.getElementById('terminal').innerHTML = `> CONNECTÉ À ${ex}<br>> MODE : ${mkt}<br>> RÉPONSE : ${res.message}`;
-                showTab('dash', document.getElementById('m-dash'));
-            } catch(e) { document.getElementById('terminal').innerHTML = "> ❌ ERREUR SERVEUR."; }
-        }
-
-        async function scanAll() {
-            document.getElementById('terminal').innerHTML += "<br>> SCAN GLOBAL LANCÉ...";
-            for (let cat in WATCHLIST) {
-                for (let coin of WATCHLIST[cat]) {
-                    try {
-                        const res = await fetch(`${CLOUDFLARE_URL}/scan`, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ symbol: `${coin}/USDT` })
-                        });
-                        const data = await res.json();
-                        const el = document.getElementById(`status-${coin}`);
-                        if(data.status === "signal_found") el.innerHTML = `<b style="color:var(--green)">🔥 SWEEP!</b>`;
-                        else el.innerText = "NO SIGNAL";
-                    } catch(e) {}
-                }
-            }
+            initScanner(); translateAll('fr'); updateTime(); create3DLogo();
         }
 
         const translations = {
             fr: {
-                lTitle: "ACCÈS SÉCURISÉ", btnLogin: "CONNEXION", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "RAFRAÎCHIR LE SCAN", tConfig: "📝 CONFIGURATION API", lCap: "CAPITAL TRADING ($)", lEx: "ÉCHANGEUR", lMkt: "MARCHÉ CIBLE", btnLaunch: "🚀 LANCER LE BOUCLIER", tPay: "💳 ACTIVATION SÉCURISÉE", btnPay: "VALIDER AU BOT", tMacro: "📢 MACRO NEWS PRO",
-                team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risque"}],
-                faq: [{q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "4. Interne vs Externe ?", a: "Cible vers FVG."}, {q: "5. Inducement ?", a: "Piège retail."}]
+                lTitle: "ACCÈS SÉCURISÉ", btnLogin: "CONNEXION", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM",
+                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SNIPER SCANNER", btnScan: "RAFRAÎCHIR", tConfig: "📝 CONFIGURATION API", lCap: "CAPITAL ($)", lEx: "ÉCHANGEUR", lMkt: "MARCHÉ CIBLE", btnLaunch: "🚀 LANCER LE BOUCLIER", tPay: "💳 ACTIVATION", btnPay: "VALIDER AU BOT", tMacro: "📢 MACRO NEWS", tTeam: "🛡️ TEAM",
+                team: ["👑 NASSER (Fondateur)", "🇨🇲 BERTRAND (Tech)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)"]
             },
             en: {
-                lTitle: "SECURE ACCESS", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
-                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER (M15)", btnScan: "REFRESH SCAN", tConfig: "📝 API CONFIGURATION", lCap: "TRADING CAPITAL ($)", lEx: "EXCHANGE", lMkt: "TARGET MARKET", btnLaunch: "🚀 LAUNCH SHIELD", tPay: "💳 SECURE ACTIVATION", btnPay: "VALIDATE ON BOT", tMacro: "📢 MACRO NEWS PRO",
-                team: [{n: "👑 NASSER", r: "Founder"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyst"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
-                faq: [{q: "1. Why the Sweep ?", a: "To take bank liquidity."}, {q: "2. What is an FVG ?", a: "Price imbalance."}, {q: "3. PD Array ?", a: "SMC Compass."}, {q: "4. Internal vs External ?", a: "Target towards FVG."}, {q: "5. Inducement ?", a: "Retail trap."}]
-            },
-            es: {
-                lTitle: "ACCESO SEGURO", btnLogin: "ACCEDER", mDash: "TABLERO", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO/FAQ",
-                tCap: "CAPITAL ACTIVO", tEx: "EXCHANGE", tScan: "🔍 ESCANER SNIPER (M15)", btnScan: "REFRESCAR ESCANEO", tConfig: "📝 CONFIGURACIÓN API", lCap: "CAPITAL TRADING ($)", lEx: "EXCHANGE", lMkt: "MERCADO OBJETIVO", btnLaunch: "🚀 LANZAR ESCUDO", tPay: "💳 ACTIVACIÓN SEGURA", btnPay: "VALIDAR EN BOT", tMacro: "📢 MACRO NOTICIAS PRO",
-                team: [{n: "👑 NASSER", r: "Fundador"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Gerente"}, {n: "🇬🇵 MARIE", r: "Analista"}, {n: "🇹🇬 ALBERT", r: "Experto"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Datos"}, {n: "🇧🇯 SEBASTIEN", r: "Riesgo"}],
-                faq: [{q: "1. ¿Por qué el Sweep?", a: "Para tomar liquidez bancaria."}, {q: "2. ¿Qué es un FVG?", a: "Desequilibrio de precios."}, {q: "3. ¿PD Array?", a: "Brújula SMC."}, {q: "4. ¿Interno vs Externo?", a: "Objetivo hacia FVG."}, {q: "5. ¿Inducement?", a: "Trampa retail."}]
+                lTitle: "SECURE ACCESS", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM",
+                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER", btnScan: "REFRESH", tConfig: "📝 API CONFIGURATION", lCap: "CAPITAL ($)", lEx: "EXCHANGE", lMkt: "TARGET MARKET", btnLaunch: "🚀 LAUNCH SHIELD", tPay: "💳 ACTIVATION", btnPay: "VALIDATE ON BOT", tMacro: "📢 MACRO NEWS", tTeam: "🛡️ TEAM",
+                team: ["👑 NASSER (Founder)", "🇨🇲 BERTRAND (Tech)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyst)", "🇹🇬 ALBERT (Expert)"]
             },
             ar: {
                 lTitle: "دخول آمن", btnLogin: "دخول", mDash: "لوحة التحكم", mScan: "الفاحص", mPay: "الدفع", mInscr: "التسجيل", mMacro: "الأخبار", mFaq: "الفريق",
-                tCap: "رأس المال النشط", tEx: "المنصة", tScan: "🔍 فاحص القناص (M15)", btnScan: "تحديث الفحص", tConfig: "📝 إعدادات 
+                tCap: "رأس المال", tEx: "المنصة", tScan: "🔍 فاحص القناص", btnScan: "تحديث", tConfig: "📝 إعدادات API", lCap: "رأس المال ($)", lEx: "المنصة", lMkt: "السوق المستهدف", btnLaunch: "🚀 إطلاق الدرع", tPay: "💳 تفعيل", btnPay: "تأكيد في البوت", tMacro: "📢 أخبار", tTeam: "🛡️ الفريق",
+                team: ["👑 ناصر (المؤسس)", "🇨🇲 برتراند", "🇬🇦 إيفا", "🇬🇵 ماري", "🇹🇬 ألبرت"]
+            },
+            es: {
+                lTitle: "ACCESO SEGURO", btnLogin: "ACCEDER", mDash: "TABLERO", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO",
+                tCap: "CAPITAL ACTIVO", tEx: "EXCHANGE", tScan: "🔍 ESCANER SNIPER", btnScan: "REFRESCAR", tConfig: "📝 CONFIGURACIÓN API", lCap: "CAPITAL ($)", lEx: "EXCHANGE", lMkt: "MERCADO", btnLaunch: "🚀 LANZAR ESCUDO", tPay: "💳 ACTIVACIÓN", btnPay: "VALIDAR", tMacro: "📢 NOTICIAS", tTeam: "🛡️ EQUIPO",
+                team: ["👑 NASSER (Fundador)", "🇨🇲 BERTRAND", "🇬🇦 EVA", "🇬🇵 MARIE", "🇹🇬 ALBERT"]
+            },
+            de: {
+                lTitle: "ZUGANG", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "ANMELDUNG", mMacro: "MAKRO NEWS", mFaq: "TEAM",
+                tCap: "KAPITAL", tEx: "BÖRSE", tScan: "🔍 SNIPER SCANNER", btnScan: "AKTUALISIEREN", tConfig: "📝 API KONFIG", lCap: "KAPITAL ($)", lEx: "BÖRSE", lMkt: "MARKT", btnLaunch: "🚀 START", tPay: "💳 AKTIVIERUNG", btnPay: "VALIDIEREN", tMacro: "📢 MAKRO NEWS", tTeam: "🛡️ TEAM",
+                team: ["👑 NASSER (Gründer)", "🇨🇲 BERTRAND", "🇬🇦 EVA", "🇬🇵 MARIE", "🇹🇬 ALBERT"]
+            }
+        };
+
+        function translateAll(lang) {
+            const d = translations[lang] || translations['fr'];
+            document.getElementById('l-title').innerText = d.lTitle;
+            document.getElementById('btn-login').innerText = d.btnLogin;
+            document.getElementById('m-dash').innerText = d.mDash;
+            document.getElementById('m-scan').innerText = d.mScan;
+            document.getElementById('m-pay').innerText = d.mPay;
+            document.getElementById('m-inscr').innerText = d.mInscr;
+            document.getElementById('m-macro').innerText = d.mMacro;
+            document.getElementById('m-faq').innerText = d.mFaq;
+            document.getElementById('t-cap-dash').innerText = d.tCap;
+            document.getElementById('t-ex-dash').innerText = d.tEx;
+            document.getElementById('t-scan').innerText = d.tScan;
+            document.getElementById('btn-scan-refresh').innerText = d.btnScan;
+            document.getElementById('t-config-title').innerText = d.tConfig;
+            document.getElementById('l-cap').innerText = d.lCap;
+            document.getElementById('l-ex').innerText = d.lEx;
+            document.getElementById('l-mkt').innerText = d.lMkt;
+            document.getElementById('btn-launch').innerText = d.btnLaunch;
+            document.getElementById('t-pay-title').innerText = d.tPay;
+            document.getElementById('btn-pay-bot').innerText = d.btnPay;
+            document.getElementById('t-macro-title').innerText = d.tMacro;
+            document.getElementById('t-team-title').innerText = d.tTeam;
+            let tHtml = ""; d.team.forEach(m => tHtml += `<div class="member"><b>${m}</b></div>`);
+            document.getElementById('team-list').innerHTML = tHtml;
+            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
+
+        function initScanner() {
+            let h = ""; for(let c in WATCHLIST) {
+                h += `<div style="color:var(--gold); margin-top:10px;">${c}</div>`;
+                WATCHLIST[c].forEach(coin => h += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #111;"><span>${coin}</span><span>WAIT...</span></div>`);
+            }
+            document.getElementById('full-scan-list').innerHTML = h;
+        }
+
+        function showTab(id, el) { 
+            document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
+            document.getElementById(id).style.display='block'; 
+            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
+
+        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
+
+        let logo3D; const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        function create3DLogo() {
+            logo3D = new THREE.Group();
+            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true });
+            const core = new THREE.Mesh(new THREE.IcosahedronGeometry(120, 1), mat);
+            logo3D.add(core); scene.add(logo3D); camera.position.z = 500; animate();
+        }
+        function animate() { requestAnimationFrame(animate); if(logo3D) { logo3D.rotation.y += 0.01; logo3D.rotation.x += 0.005; } renderer.render(scene, camera); }
+    </script>
+</body>
+                             </html>
+            
