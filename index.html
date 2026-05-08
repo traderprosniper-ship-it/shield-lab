@@ -8,10 +8,12 @@
     <style>
     :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
     body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
+    
+    /* CADRE LANGUES RÉDUIT EN HAUT À DROITE */
+    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; outline: none; }
+    
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.8; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.03); z-index: -1; letter-spacing: 20px; pointer-events: none; }
-    
-    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; cursor: pointer; }
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
     #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
     
@@ -27,6 +29,11 @@
     .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
     .status-dot { display: inline-block; width: 8px; height: 8px; background: #555; border-radius: 50%; margin-right: 5px; }
     .status-active { background: var(--green); box-shadow: 0 0 10px var(--green); animation: blink 1.5s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    
+    .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
+    .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
+    .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
     .member { border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 10px; text-align: left; background: rgba(255,255,255,0.02); border-radius: 5px; margin-top: 5px; }
     </style>
 </head>
@@ -35,7 +42,7 @@
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option>
+        <option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option><option value="de">DE</option><option value="es">ES</option>
     </select>
 
     <div id="lock-screen">
@@ -53,57 +60,59 @@
         <div class="nav-tabs" style="top:40px;">
             <div id="m-inscr" class="nav-item" onclick="showTab('inscr', this)">INSCRIPTION</div>
             <div id="m-macro" class="nav-item" onclick="showTab('macro', this)">MACRO NEWS</div>
-            <div id="m-faq" class="nav-item" onclick="showTab('faq', this)">TEAM</div>
+            <div id="m-faq" class="nav-item" onclick="showTab('faq', this)">TEAM/FAQ</div>
         </div>
 
         <div id="dash" class="content-section">
             <div class="card">
-                <div style="text-align: left; margin-bottom: 10px;">
-                    <span id="status-light" class="status-dot"></span> <small id="status-text" style="color:#555">DÉCONNECTÉ</small>
+                <div style="text-align: left;"><span id="status-light" class="status-dot"></span> <small id="status-text">DÉCONNECTÉ</small></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top:10px;">
+                    <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="color:var(--gold);">$0.00</b></div>
+                    <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="color:var(--accent);">WAITING</b></div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="font-size: 20px; color: var(--gold);">$0.00</b></div>
-                    <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="font-size: 16px; color: var(--accent);">WAITING</b></div>
-                </div>
-                <div id="ny-time" style="font-size: 14px; margin: 15px 0;">NY: --:--:--</div>
+                <div id="ny-time" style="margin:15px 0;">NY: --:--:--</div>
                 <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
             </div>
         </div>
 
         <div id="scan" class="content-section" style="display:none;">
             <div class="card">
-                <h3 id="t-scan">🔍 SNIPER SCANNER</h3>
-                <div class="live-screen" style="height: 250px;" id="full-scan-list"></div>
-                <button id="btn-scan-refresh" class="btn-action">RAFRAÎCHIR</button>
+                <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
+                <div class="live-screen" style="height: 300px;"><div id="full-scan-list" class="scan-list"></div></div>
+                <button class="btn-action" id="btn-scan-refresh" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-config-title">📝 CONFIGURATION API</h3>
-                <label id="l-cap">CAPITAL TRADING ($)</label>
-                <input type="number" id="u-capital" placeholder="...">
+                <label id="l-cap">CAPITAL ($)</label><input type="number" id="u-capital" placeholder="Ex: 25">
                 <label id="l-ex">ÉCHANGEUR</label>
                 <select id="u-ex">
                     <option value="MEXC">MEXC</option><option value="OKX">OKX</option><option value="BINGX">BINGX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="GATE IO">GATE IO</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option><option value="VANTAGE FX">VANTAGE FX</option>
                 </select>
                 <label id="l-mkt">MARCHÉ CIBLE</label>
-                <select id="u-market">
-                    <option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option><option value="FOREX">FOREX</option>
-                </select>
-                <button class="btn-action" id="btn-launch">🚀 LANCER LE BOUCLIER</button>
+                <select id="u-market"><option value="PERP">PERPETUAL</option><option value="SPOT">SPOT</option><option value="FOREX">FOREX</option></select>
+                <label>API KEY</label><input type="text" id="u-key" placeholder="API KEY">
+                <label>API SECRET</label><input type="password" id="u-sec" placeholder="SECRET">
+                <label>PASSPHRASE</label><input type="password" id="u-pass" placeholder="PASSPHRASE">
+                <button class="btn-action" id="btn-launch" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-pay-title">💳 ACTIVATION SÉCURISÉE</h3>
+                <div class="live-screen" style="height:auto;">USDT TRC20: TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
                 <button class="btn-action" id="btn-pay-bot" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
             </div>
         </div>
 
         <div id="macro" class="content-section" style="display:none;">
-            <div class="card"><h3 id="t-macro-title">📢 MACRO NEWS</h3><iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe></div>
+            <div class="card">
+                <h3 id="t-macro-title">📢 MACRO NEWS PRO</h3>
+                <iframe src="https://sslecal2.investing.com?importance=2,3&countries=5&calType=day&timeZone=12&lang=5" width="100%" height="450" frameborder="0"></iframe>
+            </div>
         </div>
 
         <div id="faq" class="content-section" style="display:none;">
@@ -112,14 +121,16 @@
     </div>
 
     <script>
-        const WATCHLIST = { "AI": ["FET", "RNDR"], "RWA": ["ONDO", "OM"], "DEPIN": ["FIL", "IOTX"] };
+        const WATCHLIST = { 
+            "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], 
+            "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO"], 
+            "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] 
+        };
 
         function autoCheck() {
             let val = document.getElementById('pass-code').value;
-            if(val.length === 6) {
-                if(val === "197800") doUnlock();
-                else document.getElementById('pass-code').value = "";
-            }
+            if(val.length === 6 && val === "197800") doUnlock();
+            else if(val.length === 6) document.getElementById('pass-code').value = "";
         }
         function forceUnlock() {
             if(document.getElementById('pass-code').value === "197800") doUnlock();
@@ -134,28 +145,18 @@
         const translations = {
             fr: {
                 lTitle: "ACCÈS SÉCURISÉ", btnLogin: "CONNEXION", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM",
-                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SNIPER SCANNER", btnScan: "RAFRAÎCHIR", tConfig: "📝 CONFIGURATION API", lCap: "CAPITAL ($)", lEx: "ÉCHANGEUR", lMkt: "MARCHÉ CIBLE", btnLaunch: "🚀 LANCER LE BOUCLIER", tPay: "💳 ACTIVATION", btnPay: "VALIDER AU BOT", tMacro: "📢 MACRO NEWS", tTeam: "🛡️ TEAM",
-                team: ["👑 NASSER (Fondateur)", "🇨🇲 BERTRAND (Tech)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)"]
+                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SNIPER SCANNER", btnScan: "RAFRAÎCHIR LE SCAN", tConfig: "📝 CONFIGURATION API", lCap: "CAPITAL ($)", lEx: "ÉCHANGEUR", lMkt: "MARCHÉ CIBLE", btnLaunch: "🚀 LANCER LE BOUCLIER", tPay: "💳 ACTIVATION", btnPay: "VALIDER AU BOT", tMacro: "📢 MACRO NEWS PRO", tTeam: "🛡️ TEAM",
+                team: ["👑 NASSER (Fondateur)", "🇨🇲 BERTRAND (Tech)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇦 BEATRICE (Marketing)", "🇧🇯 FRANCO (Data)", "🇧🇯 SEBASTIEN (Risk)"]
             },
             en: {
                 lTitle: "SECURE ACCESS", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM",
-                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER", btnScan: "REFRESH", tConfig: "📝 API CONFIGURATION", lCap: "CAPITAL ($)", lEx: "EXCHANGE", lMkt: "TARGET MARKET", btnLaunch: "🚀 LAUNCH SHIELD", tPay: "💳 ACTIVATION", btnPay: "VALIDATE ON BOT", tMacro: "📢 MACRO NEWS", tTeam: "🛡️ TEAM",
-                team: ["👑 NASSER (Founder)", "🇨🇲 BERTRAND (Tech)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyst)", "🇹🇬 ALBERT (Expert)"]
+                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER", btnScan: "REFRESH SCAN", tConfig: "📝 API CONFIGURATION", lCap: "CAPITAL ($)", lEx: "EXCHANGE", lMkt: "TARGET MARKET", btnLaunch: "🚀 LAUNCH SHIELD", tPay: "💳 ACTIVATION", btnPay: "VALIDATE ON BOT", tMacro: "📢 MACRO NEWS PRO", tTeam: "🛡️ TEAM",
+                team: ["👑 NASSER", "🇨🇲 BERTRAND", "🇬🇦 EVA", "🇬🇵 MARIE", "🇹🇬 ALBERT", "🇨🇦 BEATRICE", "🇧🇯 FRANCO", "🇧🇯 SEBASTIEN"]
             },
             ar: {
                 lTitle: "دخول آمن", btnLogin: "دخول", mDash: "لوحة التحكم", mScan: "الفاحص", mPay: "الدفع", mInscr: "التسجيل", mMacro: "الأخبار", mFaq: "الفريق",
-                tCap: "رأس المال", tEx: "المنصة", tScan: "🔍 فاحص القناص", btnScan: "تحديث", tConfig: "📝 إعدادات API", lCap: "رأس المال ($)", lEx: "المنصة", lMkt: "السوق المستهدف", btnLaunch: "🚀 إطلاق الدرع", tPay: "💳 تفعيل", btnPay: "تأكيد في البوت", tMacro: "📢 أخبار", tTeam: "🛡️ الفريق",
-                team: ["👑 ناصر (المؤسس)", "🇨🇲 برتراند", "🇬🇦 إيفا", "🇬🇵 ماري", "🇹🇬 ألبرت"]
-            },
-            es: {
-                lTitle: "ACCESO SEGURO", btnLogin: "ACCEDER", mDash: "TABLERO", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO",
-                tCap: "CAPITAL ACTIVO", tEx: "EXCHANGE", tScan: "🔍 ESCANER SNIPER", btnScan: "REFRESCAR", tConfig: "📝 CONFIGURACIÓN API", lCap: "CAPITAL ($)", lEx: "EXCHANGE", lMkt: "MERCADO", btnLaunch: "🚀 LANZAR ESCUDO", tPay: "💳 ACTIVACIÓN", btnPay: "VALIDAR", tMacro: "📢 NOTICIAS", tTeam: "🛡️ EQUIPO",
-                team: ["👑 NASSER (Fundador)", "🇨🇲 BERTRAND", "🇬🇦 EVA", "🇬🇵 MARIE", "🇹🇬 ALBERT"]
-            },
-            de: {
-                lTitle: "ZUGANG", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "ANMELDUNG", mMacro: "MAKRO NEWS", mFaq: "TEAM",
-                tCap: "KAPITAL", tEx: "BÖRSE", tScan: "🔍 SNIPER SCANNER", btnScan: "AKTUALISIEREN", tConfig: "📝 API KONFIG", lCap: "KAPITAL ($)", lEx: "BÖRSE", lMkt: "MARKT", btnLaunch: "🚀 START", tPay: "💳 AKTIVIERUNG", btnPay: "VALIDIEREN", tMacro: "📢 MAKRO NEWS", tTeam: "🛡️ TEAM",
-                team: ["👑 NASSER (Gründer)", "🇨🇲 BERTRAND", "🇬🇦 EVA", "🇬🇵 MARIE", "🇹🇬 ALBERT"]
+                tCap: "رأس المال", tEx: "المنصة", tScan: "🔍 فاحص القناص", btnScan: "تحديث الفحص", tConfig: "📝 إعدادات API", lCap: "رأس المال ($)", lEx: "المنصة", lMkt: "السوق المستهدف", btnLaunch: "🚀 إطلاق الدرع", tPay: "💳 تفعيل", btnPay: "تأكيد", tMacro: "📢 أخبار ماكرو", tTeam: "🛡️ الفريق",
+                team: ["👑 ناصر", "🇨🇲 برتراند", "🇬🇦 إيفا", "🇬🇵 ماري", "🇹🇬 ألبرت", "🇨🇦 بياتريس", "🇧🇯 فرانكو", "🇧🇯 سيباستيان"]
             }
         };
 
@@ -189,8 +190,8 @@
 
         function initScanner() {
             let h = ""; for(let c in WATCHLIST) {
-                h += `<div style="color:var(--gold); margin-top:10px;">${c}</div>`;
-                WATCHLIST[c].forEach(coin => h += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #111;"><span>${coin}</span><span>WAIT...</span></div>`);
+                h += `<div class="scan-category">${c}</div>`;
+                WATCHLIST[c].forEach(coin => h += `<div class="scan-row"><span>${coin}</span> <span id="status-${coin}">WAIT...</span></div>`);
             }
             document.getElementById('full-scan-list').innerHTML = h;
         }
@@ -217,5 +218,5 @@
         function animate() { requestAnimationFrame(animate); if(logo3D) { logo3D.rotation.y += 0.01; logo3D.rotation.x += 0.005; } renderer.render(scene, camera); }
     </script>
 </body>
-                             </html>
-            
+    </html>
+                
