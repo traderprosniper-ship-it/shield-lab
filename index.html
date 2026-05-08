@@ -7,13 +7,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
     :root { --bg: #010101; --card: rgba(10, 10, 10, 0.98); --text: #e2e8f0; --accent: #3b82f6; --green: #00ff88; --red: #ff3333; --gold: #ffd700; --border: #1a1a1a; }
-    body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; }
-    
-    /* CADRE LANGUES RÉDUIT EN HAUT À DROITE */
-    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 4px; padding: 3px 8px; font-size: 11px; cursor: pointer; outline: none; }
-    
+    body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; overflow-x: hidden; height: 100%; transition: direction 0.3s ease; }
     #algo-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.8; }
     #ifda-bg-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; font-weight: 900; color: rgba(59, 130, 246, 0.03); z-index: -1; letter-spacing: 20px; pointer-events: none; }
+    
+    .lang-selector { position: fixed; top: 10px; right: 10px; z-index: 10000; background: #000; border: 1px solid var(--gold); color: white; border-radius: 5px; padding: 5px; font-size: 12px; width: auto; cursor: pointer; }
     #lock-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; }
     #main-interface { position: relative; z-index: 10; height: 100vh; overflow-y: auto; padding-top: 50px; display: none; }
     
@@ -24,17 +22,27 @@
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin: 10px; backdrop-filter: blur(20px); text-align: center; }
     input, select { width: 100%; background: #000; border: 1px solid var(--border); color: var(--gold); padding: 12px; border-radius: 8px; margin-top: 8px; font-size: 13px; text-align: center; outline: none; }
     label { display: block; font-size: 10px; color: var(--accent); margin-top: 10px; text-align: left; text-transform: uppercase; }
-    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+    .btn-action { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; transition: 0.3s; }
     
     .live-screen { background: rgba(0,0,0,0.95); border: 1px solid var(--green); height: 100px; padding: 10px; font-size: 10px; color: var(--green); overflow-y: auto; text-align: left; margin-top: 10px; border-radius: 5px; }
     .status-dot { display: inline-block; width: 8px; height: 8px; background: #555; border-radius: 50%; margin-right: 5px; }
     .status-active { background: var(--green); box-shadow: 0 0 10px var(--green); animation: blink 1.5s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-    
+
     .scan-list { display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 11px; }
     .scan-category { color: var(--gold); font-weight: bold; margin-top: 10px; border-bottom: 1px solid #222; padding-bottom: 3px; }
     .scan-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid #0a0a0a; }
-    .member { border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 10px; text-align: left; background: rgba(255,255,255,0.02); border-radius: 5px; margin-top: 5px; }
+
+    .pay-box { background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 15px; border-radius: 10px; text-align: left; margin-top: 15px; }
+    .pay-method { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #111; padding-bottom: 10px; }
+    .pay-icon { width: 30px; height: 30px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black; }
+    .wallet-addr { font-size: 10px; color: var(--green); word-break: break-all; background: #000; padding: 8px; border-radius: 5px; margin-top: 5px; border: 1px dashed var(--green); }
+
+    .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .member { border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 10px; text-align: left; background: rgba(255,255,255,0.02); border-radius: 5px; cursor: pointer; }
+    .faq-item { border-bottom: 1px solid #111; padding: 12px 0; cursor: pointer; text-align: left; }
+    .faq-q { font-size: 13px; font-weight: bold; color: var(--gold); }
+    .faq-a { display: none; font-size: 12px; color: #aaa; padding-top: 8px; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -42,13 +50,13 @@
     <div id="ifda-bg-text">IFDA</div>
 
     <select class="lang-selector" id="lang-switch" onchange="translateAll(this.value)">
-        <option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option><option value="de">DE</option><option value="es">ES</option>
+        <option value="fr">🇫🇷 FR</option><option value="en">🇺🇸 EN</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option><option value="es">🇪🇸 ES</option>
     </select>
 
     <div id="lock-screen">
-        <h2 id="l-title">ACCÈS SÉCURISÉ</h2>
+        <h2 id="l-title" style="color:var(--gold); letter-spacing:5px;">IFDA ACCESS</h2>
         <input type="password" id="pass-code" placeholder="PIN" maxlength="6" oninput="autoCheck()" style="width:180px;">
-        <button class="btn-action" id="btn-login" style="width:180px;" onclick="forceUnlock()">CONNEXION</button>
+        <button class="btn-action" style="width:180px;" onclick="forceUnlock()">LOGIN</button>
     </div>
 
     <div id="main-interface">
@@ -65,46 +73,60 @@
 
         <div id="dash" class="content-section">
             <div class="card">
-                <div style="text-align: left;"><span id="status-light" class="status-dot"></span> <small id="status-text">DÉCONNECTÉ</small></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top:10px;">
-                    <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="color:var(--gold);">$0.00</b></div>
-                    <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="color:var(--accent);">WAITING</b></div>
+                <div style="text-align: left; margin-bottom: 10px;">
+                    <span id="status-light" class="status-dot"></span> <small id="status-text" style="color:#555">DÉCONNECTÉ</small>
                 </div>
-                <div id="ny-time" style="margin:15px 0;">NY: --:--:--</div>
-                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD READY...</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div><small id="t-cap-dash">CAPITAL ACTIF</small><br><b id="cap-display" style="font-size: 20px; color: var(--gold);">$0.00</b></div>
+                    <div><small id="t-ex-dash">ÉCHANGEUR</small><br><b id="ex-display" style="font-size: 16px; color: var(--accent);">WAITING</b></div>
+                </div>
+                <div id="ny-time" style="font-size: 14px; color: var(--text); margin: 15px 0;">NY: --:--:--</div>
+                <div class="live-screen" id="terminal">> SANGMELIMA SHIELD ONLINE...</div>
             </div>
         </div>
 
         <div id="scan" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-scan">🔍 SNIPER SCANNER (M15)</h3>
-                <div class="live-screen" style="height: 300px;"><div id="full-scan-list" class="scan-list"></div></div>
-                <button class="btn-action" id="btn-scan-refresh" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
+                <div class="live-screen" style="height: 300px; border-color: var(--accent);"><div class="scan-list" id="full-scan-list"></div></div>
+                <button id="btn-scan-refresh" class="btn-action" style="background:var(--gold); color:black;" onclick="scanAll()">REFRESH GLOBAL SCAN</button>
             </div>
         </div>
 
         <div id="inscr" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-config-title">📝 CONFIGURATION API</h3>
-                <label id="l-cap">CAPITAL ($)</label><input type="number" id="u-capital" placeholder="Ex: 25">
-                <label id="l-ex">ÉCHANGEUR</label>
+                <label>CAPITAL TRADING ($)</label>
+                <input type="number" id="u-capital" placeholder="Entrez montant">
+                <label>ÉCHANGEUR</label>
                 <select id="u-ex">
                     <option value="MEXC">MEXC</option><option value="OKX">OKX</option><option value="BINGX">BINGX</option><option value="KUCOIN">KUCOIN</option><option value="BYBIT">BYBIT</option><option value="GATE IO">GATE IO</option><option value="BINANCE">BINANCE</option><option value="EXNESS">EXNESS</option><option value="VANTAGE FX">VANTAGE FX</option>
                 </select>
-                <label id="l-mkt">MARCHÉ CIBLE</label>
-                <select id="u-market"><option value="PERP">PERPETUAL</option><option value="SPOT">SPOT</option><option value="FOREX">FOREX</option></select>
-                <label>API KEY</label><input type="text" id="u-key" placeholder="API KEY">
-                <label>API SECRET</label><input type="password" id="u-sec" placeholder="SECRET">
-                <label>PASSPHRASE</label><input type="password" id="u-pass" placeholder="PASSPHRASE">
-                <button class="btn-action" id="btn-launch" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
+                <label>MARCHÉ CIBLE</label>
+                <select id="u-market">
+                    <option value="PERP">CRYPTO PERPETUAL</option><option value="SPOT">CRYPTO SPOT</option><option value="FOREX">FOREX (CURRENCIES)</option>
+                </select>
+                <input type="text" id="u-key" placeholder="API KEY">
+                <input type="password" id="u-sec" placeholder="API SECRET">
+                <input type="password" id="u-pass" placeholder="API PASSPHRASE">
+                <button class="btn-action" onclick="lancerRobot()">🚀 LANCER LE BOUCLIER</button>
             </div>
         </div>
 
         <div id="pay" class="content-section" style="display:none;">
             <div class="card">
                 <h3 id="t-pay-title">💳 ACTIVATION SÉCURISÉE</h3>
-                <div class="live-screen" style="height:auto;">USDT TRC20: TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div>
-                <button class="btn-action" id="btn-pay-bot" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
+                <div class="pay-box">
+                    <div class="pay-method">
+                        <div class="pay-icon">U</div>
+                        <div><b style="color:white;">USDT (TRC20)</b><div class="wallet-addr">TWB8yQtCr9A6JS2on6efKVr5dwsxNhos3b</div></div>
+                    </div>
+                    <div class="pay-method" style="border:none;">
+                        <div class="pay-icon" style="background:var(--accent);">M</div>
+                        <div><b style="color:white;">MOBILE MONEY</b><div style="color:var(--accent);">+237 655 50 97 38</div></div>
+                    </div>
+                </div>
+                <button class="btn-action" onclick="window.open('https://t.me/IFDA_SHIELD_BOT')">VALIDER AU BOT</button>
             </div>
         </div>
 
@@ -116,107 +138,138 @@
         </div>
 
         <div id="faq" class="content-section" style="display:none;">
-            <div class="card"><h3 id="t-team-title">🛡️ TEAM</h3><div id="team-list"></div></div>
+            <div class="card"><h3 id="t-team-title">🛡️ TEAM</h3><div id="team-list" class="team-grid"></div></div>
+            <div class="card"><h3 id="f-faq-title">💡 FAQ (10 QUESTIONS SMC)</h3><div id="faq-container"></div></div>
         </div>
     </div>
 
     <script>
-        const WATCHLIST = { 
-            "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], 
-            "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO"], 
-            "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] 
-        };
+        const CLOUDFLARE_URL = "https://slight-magnitude-ceiling-charger.trycloudflare.com";
+        const WATCHLIST = { "AI": ["FET", "RNDR", "TAO", "NEAR", "AKT", "OCEAN", "AGIX"], "RWA": ["ONDO", "OM", "PENDLE", "POLYX", "CFG", "RIO", "CTC"], "DEPIN": ["FIL", "HNT", "AR", "THETA", "LPT", "IOTX", "JASMY"] };
 
-        function autoCheck() {
-            let val = document.getElementById('pass-code').value;
-            if(val.length === 6 && val === "197800") doUnlock();
-            else if(val.length === 6) document.getElementById('pass-code').value = "";
-        }
-        function forceUnlock() {
-            if(document.getElementById('pass-code').value === "197800") doUnlock();
-            else alert("PIN INCORRECT");
-        }
-        function doUnlock() {
-            document.getElementById('lock-screen').style.display = "none"; 
-            document.getElementById('main-interface').style.display = "block"; 
-            initScanner(); translateAll('fr'); updateTime(); create3DLogo();
-        }
-
+        // DÉFINITION COMPLÈTE DES LANGUES
         const translations = {
             fr: {
-                lTitle: "ACCÈS SÉCURISÉ", btnLogin: "CONNEXION", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM",
-                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SNIPER SCANNER", btnScan: "RAFRAÎCHIR LE SCAN", tConfig: "📝 CONFIGURATION API", lCap: "CAPITAL ($)", lEx: "ÉCHANGEUR", lMkt: "MARCHÉ CIBLE", btnLaunch: "🚀 LANCER LE BOUCLIER", tPay: "💳 ACTIVATION", btnPay: "VALIDER AU BOT", tMacro: "📢 MACRO NEWS PRO", tTeam: "🛡️ TEAM",
-                team: ["👑 NASSER (Fondateur)", "🇨🇲 BERTRAND (Tech)", "🇬🇦 EVA (Manager)", "🇬🇵 MARIE (Analyste)", "🇹🇬 ALBERT (Expert)", "🇨🇦 BEATRICE (Marketing)", "🇧🇯 FRANCO (Data)", "🇧🇯 SEBASTIEN (Risk)"]
+                lTitle: "ACCÈS SÉCURISÉ", mDash: "TABLEAU DE BORD", mScan: "SCANNER", mPay: "PAIEMENT", mInscr: "INSCRIPTION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "CAPITAL ACTIF", tEx: "ÉCHANGEUR", tScan: "🔍 SCANNER SNIPER (M15)", tConfig: "📝 CONFIGURATION API", btnLaunch: "🚀 LANCER LE BOUCLIER",
+                team: [{n: "👑 NASSER", r: "Fondateur"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyste"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
+                faq: [{q: "1. Pourquoi le Sweep ?", a: "Prendre la liquidité bancaire."}, {q: "2. C'est quoi un FVG ?", a: "Déséquilibre de prix."}, {q: "3. PD Array ?", a: "Boussole SMC."}, {q: "10. SANGMELIMA ?", a: "Ton bouclier ICT."}]
             },
             en: {
-                lTitle: "SECURE ACCESS", btnLogin: "LOGIN", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM",
-                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER", btnScan: "REFRESH SCAN", tConfig: "📝 API CONFIGURATION", lCap: "CAPITAL ($)", lEx: "EXCHANGE", lMkt: "TARGET MARKET", btnLaunch: "🚀 LAUNCH SHIELD", tPay: "💳 ACTIVATION", btnPay: "VALIDATE ON BOT", tMacro: "📢 MACRO NEWS PRO", tTeam: "🛡️ TEAM",
-                team: ["👑 NASSER", "🇨🇲 BERTRAND", "🇬🇦 EVA", "🇬🇵 MARIE", "🇹🇬 ALBERT", "🇨🇦 BEATRICE", "🇧🇯 FRANCO", "🇧🇯 SEBASTIEN"]
+                lTitle: "SECURE ACCESS", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "PAYMENT", mInscr: "REGISTRATION", mMacro: "MACRO NEWS", mFaq: "TEAM/FAQ",
+                tCap: "ACTIVE CAPITAL", tEx: "EXCHANGE", tScan: "🔍 SNIPER SCANNER (M15)", tConfig: "📝 API CONFIGURATION", btnLaunch: "🚀 LAUNCH SHIELD",
+                team: [{n: "👑 NASSER", r: "Founder"}, {n: "🇨🇲 BERTRAND", r: "Tech"}, {n: "🇬🇦 EVA", r: "Manager"}, {n: "🇬🇵 MARIE", r: "Analyst"}, {n: "🇹🇬 ALBERT", r: "Expert"}, {n: "🇨🇦 BEATRICE", r: "Marketing"}, {n: "🇧🇯 FRANCO", r: "Data"}, {n: "🇧🇯 SEBASTIEN", r: "Risk"}],
+                faq: [{q: "1. Why Sweep?", a: "To take bank liquidity."}, {q: "2. What is FVG?", a: "Price imbalance."}, {q: "3. PD Array?", a: "SMC Compass."}, {q: "10. SANGMELIMA?", a: "Your ICT shield."}]
             },
             ar: {
-                lTitle: "دخول آمن", btnLogin: "دخول", mDash: "لوحة التحكم", mScan: "الفاحص", mPay: "الدفع", mInscr: "التسجيل", mMacro: "الأخبار", mFaq: "الفريق",
-                tCap: "رأس المال", tEx: "المنصة", tScan: "🔍 فاحص القناص", btnScan: "تحديث الفحص", tConfig: "📝 إعدادات API", lCap: "رأس المال ($)", lEx: "المنصة", lMkt: "السوق المستهدف", btnLaunch: "🚀 إطلاق الدرع", tPay: "💳 تفعيل", btnPay: "تأكيد", tMacro: "📢 أخبار ماكرو", tTeam: "🛡️ الفريق",
-                team: ["👑 ناصر", "🇨🇲 برتراند", "🇬🇦 إيفا", "🇬🇵 ماري", "🇹🇬 ألبرت", "🇨🇦 بياتريس", "🇧🇯 فرانكو", "🇧🇯 سيباستيان"]
+                lTitle: "دخول آمن", mDash: "لوحة التحكم", mScan: "ماسح ضوئي", mPay: "الدفع", mInscr: "التسجيل", mMacro: "الأخبار", mFaq: "الفريق",
+                tCap: "رأس المال", tEx: "المنصة", tScan: "🔍 قناص السوق (M15)", tConfig: "📝 إعدادات API", btnLaunch: "🚀 تشغيل الدرع",
+                team: [{n: "👑 NASSER", r: "مؤسس"}, {n: "🇨🇲 BERTRAND", r: "تقني"}, {n: "🇬🇦 EVA", r: "مدير"}, {n: "🇬🇵 MARIE", r: "محلل"}, {n: "🇹🇬 ALBERT", r: "خبير"}, {n: "🇨🇦 BEATRICE", r: "تسويق"}, {n: "🇧🇯 FRANCO", r: "بيانات"}, {n: "🇧🇯 SEBASTIEN", r: "مخاطر"}],
+                faq: [{q: "1. لماذا السويب؟", a: "لأخذ السيولة البنكية."}, {q: "2. ما هو FVG؟", a: "عدم توازن السعر."}, {q: "3. ما هو PD Array؟", a: "بوصلة SMC."}, {q: "10. SANGMELIMA؟", a: "درعك الخاص."}]
+            },
+            es: {
+                lTitle: "ACCESO SEGURO", mDash: "PANEL", mScan: "ESCANER", mPay: "PAGO", mInscr: "REGISTRO", mMacro: "NOTICIAS", mFaq: "EQUIPO",
+                tCap: "CAPITAL ACTIVO", tEx: "EXCHANGE", tScan: "🔍 ESCANER SNIPER (M15)", tConfig: "📝 CONFIG API", btnLaunch: "🚀 INICIAR ESCUDO",
+                team: [{n: "👑 NASSER", r: "Fundador"}, {n: "🇨🇲 BERTRAND", r: "Tech"}],
+                faq: [{q: "1. ¿Por qué Sweep?", a: "Tomar liquidez bancaria."}]
+            },
+            de: {
+                lTitle: "SICHERER ZUGRIFF", mDash: "DASHBOARD", mScan: "SCANNER", mPay: "ZAHLUNG", mInscr: "REGISTRIERUNG", mMacro: "NEWS", mFaq: "TEAM",
+                tCap: "AKTIVES KAPITAL", tEx: "BÖRSE", tScan: "🔍 SNIPER SCANNER (M15)", tConfig: "📝 API SETUP", btnLaunch: "🚀 SCHILD STARTEN",
+                team: [{n: "👑 NASSER", r: "Gründer"}, {n: "🇨🇲 BERTRAND", r: "Tech"}],
+                faq: [{q: "1. Warum Sweep?", a: "Bankliquidität nehmen."}]
             }
         };
 
         function translateAll(lang) {
-            const d = translations[lang] || translations['fr'];
+            const d = translations[lang] || translations['en'];
+            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
             document.getElementById('l-title').innerText = d.lTitle;
-            document.getElementById('btn-login').innerText = d.btnLogin;
             document.getElementById('m-dash').innerText = d.mDash;
             document.getElementById('m-scan').innerText = d.mScan;
             document.getElementById('m-pay').innerText = d.mPay;
             document.getElementById('m-inscr').innerText = d.mInscr;
             document.getElementById('m-macro').innerText = d.mMacro;
             document.getElementById('m-faq').innerText = d.mFaq;
-            document.getElementById('t-cap-dash').innerText = d.tCap;
-            document.getElementById('t-ex-dash').innerText = d.tEx;
-            document.getElementById('t-scan').innerText = d.tScan;
-            document.getElementById('btn-scan-refresh').innerText = d.btnScan;
-            document.getElementById('t-config-title').innerText = d.tConfig;
-            document.getElementById('l-cap').innerText = d.lCap;
-            document.getElementById('l-ex').innerText = d.lEx;
-            document.getElementById('l-mkt').innerText = d.lMkt;
-            document.getElementById('btn-launch').innerText = d.btnLaunch;
-            document.getElementById('t-pay-title').innerText = d.tPay;
-            document.getElementById('btn-pay-bot').innerText = d.btnPay;
-            document.getElementById('t-macro-title').innerText = d.tMacro;
-            document.getElementById('t-team-title').innerText = d.tTeam;
-            let tHtml = ""; d.team.forEach(m => tHtml += `<div class="member"><b>${m}</b></div>`);
+            if(document.getElementById('t-cap-dash')) document.getElementById('t-cap-dash').innerText = d.tCap;
+            if(document.getElementById('t-ex-dash')) document.getElementById('t-ex-dash').innerText = d.tEx;
+            if(document.getElementById('t-scan')) document.getElementById('t-scan').innerText = d.tScan;
+            if(document.getElementById('t-config-title')) document.getElementById('t-config-title').innerText = d.tConfig;
+            const btnLaunch = document.querySelector('.btn-action[onclick*="lancerRobot"]');
+            if(btnLaunch) btnLaunch.innerText = d.btnLaunch;
+            let tHtml = ""; d.team.forEach(m => { tHtml += `<div class="member"><b>${m.n}</b><br><small>${m.r}</small></div>`; });
             document.getElementById('team-list').innerHTML = tHtml;
-            document.body.style.direction = (lang === 'ar') ? 'rtl' : 'ltr';
+            let fHtml = ""; d.faq.forEach(fi => { fHtml += `<div class="faq-item" onclick="toggleFaq(this)"><b>${fi.q}</b><div class="faq-a">${fi.a}</div></div>`; });
+            document.getElementById('faq-container').innerHTML = fHtml;
         }
 
-        function initScanner() {
-            let h = ""; for(let c in WATCHLIST) {
-                h += `<div class="scan-category">${c}</div>`;
-                WATCHLIST[c].forEach(coin => h += `<div class="scan-row"><span>${coin}</span> <span id="status-${coin}">WAIT...</span></div>`);
+        function autoCheck() {
+            let input = document.getElementById('pass-code').value;
+            if(input.length === 6) {
+                if(input === "197800") doUnlock();
+                else document.getElementById('pass-code').value = "";
             }
-            document.getElementById('full-scan-list').innerHTML = h;
+        }
+     
+        function forceUnlock() {
+            let input = document.getElementById('pass-code').value;
+            if(input === "197800") doUnlock();
+            else { alert("🔒 PIN INCORRECT"); document.getElementById('pass-code').value = ""; }
         }
 
-        function showTab(id, el) { 
-            document.querySelectorAll('.content-section').forEach(s => s.style.display='none'); 
-            document.getElementById(id).style.display='block'; 
-            document.querySelectorAll('.nav-tabs .nav-item').forEach(i => i.classList.remove('active')); 
-            el.classList.add('active'); 
+        function doUnlock() {
+            document.getElementById('lock-screen').style.display = "none"; 
+            document.getElementById('main-interface').style.display = "block"; 
+            initScanner(); translateAll('fr'); updateTime(); create3DLogo();
         }
 
-        function updateTime() { document.getElementById('ny-time').innerText = "NY: " + new Date().toLocaleTimeString('fr-FR', {timeZone:'America/New_York'}); setTimeout(updateTime, 1000); }
-
-        let logo3D; const scene = new THREE.Scene();
+        let logo3D;
+        const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('algo-canvas'), alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+
         function create3DLogo() {
+            if(logo3D) return;
             logo3D = new THREE.Group();
-            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: true });
+            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, wireframe: false, transparent: true, opacity: 0.9 });
             const core = new THREE.Mesh(new THREE.IcosahedronGeometry(120, 1), mat);
-            logo3D.add(core); scene.add(logo3D); camera.position.z = 500; animate();
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(190, 5, 16, 100), mat);
+            ring.rotation.x = Math.PI/2;
+            logo3D.add(core, ring);
+            logo3D.position.set(0, 0, 0);
+            scene.add(logo3D);
         }
-        function animate() { requestAnimationFrame(animate); if(logo3D) { logo3D.rotation.y += 0.01; logo3D.rotation.x += 0.005; } renderer.render(scene, camera); }
-    </script>
-</body>
-    </html>
-                
+
+        const pts = []; for(let i=0; i<600; i++) pts.push(THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500), THREE.MathUtils.randFloatSpread(2500));
+        const stars = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.PointsMaterial({ color: 0x3b82f6, size: 1.5 }));
+        scene.add(stars); camera.position.z = 500;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0003;
+            if(logo3D) { logo3D.rotation.y += 0.01; logo3D.rotation.x += 0.005; }
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        async function lancerRobot() {
+            const cap = document.getElementById('u-capital').value;
+            const ex = document.getElementById('u-ex').value;
+            const mkt = document.getElementById('u-market').value;
+            const ak = document.getElementById('u-key').value;
+            const as = document.getElementById('u-sec').value;
+            const ps = document.getElementById('u-pass').value;
+
+            if(!cap || !ak || !as) return alert("Saisir Capital et Clés API");
+
+            try {
+                const response = await fetch(`${CLOUDFLARE_URL}/start`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ capital: cap, exchange: ex, market_type: mkt, ak: ak, as: as, passphrase: ps })
+                });
+                const res = await response.json();
+                document.getElementById('cap-display').innerText = "$" + cap;
+                document.getElementById('ex-display').innerText = ex;
+                document.getElementById('s
